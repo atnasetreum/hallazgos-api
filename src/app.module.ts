@@ -3,11 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EnvConfiguration, JoiValidationSchema } from '@config';
+
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
       load: [EnvConfiguration],
       validationSchema: JoiValidationSchema,
@@ -23,6 +26,7 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     AuthModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
