@@ -8,7 +8,6 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EnvConfiguration, JoiValidationSchema } from '@config';
-
 import { AppKeyMiddleware, JwtMiddleware } from '@shared/middlewares';
 import { JwtService } from '@shared/services';
 import { AuthModule } from './auth/auth.module';
