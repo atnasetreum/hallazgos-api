@@ -25,7 +25,7 @@ export class UsersService {
   }
 
   findAll(): Promise<User[]> {
-    const userId = Number(this.request['userId']);
+    const userId = this.request['user'].userId as number;
     console.log({ userId });
     return this.userRepository.find({
       where: {

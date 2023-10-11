@@ -43,7 +43,10 @@ export class AppModule implements NestModule {
     consumer.apply(AppKeyMiddleware).forRoutes('*');
     consumer
       .apply(JwtMiddleware)
-      .exclude({ path: 'auth/login', method: RequestMethod.POST })
+      .exclude(
+        { path: 'auth/check-token', method: RequestMethod.POST },
+        { path: 'auth/login', method: RequestMethod.POST },
+      )
       .forRoutes('*');
   }
 }

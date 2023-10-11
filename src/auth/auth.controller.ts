@@ -15,6 +15,20 @@ export class AuthController {
 
     response.setHeader('Set-Cookie', token);
 
-    return response.json({ message: 'Bienvenido al sistema' });
+    return response.json({ message: 'Inicio de sesión correctamente.' });
+  }
+
+  @Post('/logout')
+  async logout(@Res() response: Response) {
+    const token = await this.authService.logout();
+
+    response.setHeader('Set-Cookie', token);
+
+    return response.json({ message: 'Sesión cerrada correctamente.' });
+  }
+
+  @Post('/check-token')
+  checkToken() {
+    return this.authService.checkToken();
   }
 }
