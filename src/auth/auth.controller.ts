@@ -10,11 +10,11 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
-  login(@Body() loginAuthDto: LoginAuthDto, @Res() response: Response) {
-    const token = this.authService.login(loginAuthDto);
+  async login(@Body() loginAuthDto: LoginAuthDto, @Res() response: Response) {
+    const token = await this.authService.login(loginAuthDto);
 
     response.setHeader('Set-Cookie', token);
 
-    return response.json({ message: 'Inicio de sesión correctamente' });
+    return response.json({ message: 'Bienvenido al sistema' });
   }
 }
