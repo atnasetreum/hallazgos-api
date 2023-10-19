@@ -10,15 +10,27 @@ export default class ManufacturingPlantsSeeder implements Seeder {
     const data = [
       {
         name: 'Cuautitlán',
+        link: 'https://maps.app.goo.gl/nLEwYidJwCwhScGA6',
+        lat: 19.662601755683117,
+        lng: -99.19024656931825,
       },
       {
         name: 'Tepotzotlán',
+        link: 'https://maps.app.goo.gl/kHRZhX6eM6YmQnjP6',
+        lat: 19.714173149900997,
+        lng: -99.20358979999999,
       },
       {
         name: 'Barranquilla',
+        link: 'https://maps.app.goo.gl/wLFnZoGDeJ7nkaWD8',
+        lat: 10.951554871145627,
+        lng: -74.90768598465914,
       },
       {
         name: 'Manizales',
+        link: 'https://maps.app.goo.gl/J9eRW4sKknodPu8Z8',
+        lat: 5.056225853154673,
+        lng: -75.48626507116478,
       },
     ];
 

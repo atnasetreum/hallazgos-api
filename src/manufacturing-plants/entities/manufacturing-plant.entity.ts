@@ -14,6 +14,15 @@ export class ManufacturingPlant {
   @Column({ unique: true })
   name: string;
 
+  @Column({ unique: true })
+  link: string;
+
+  @Column('decimal')
+  lat: number;
+
+  @Column('decimal')
+  lng: number;
+
   @Column({ default: true })
   isActive: boolean;
 
