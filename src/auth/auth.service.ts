@@ -50,6 +50,7 @@ export class AuthService {
         email,
         isActive: true,
       },
+      relations: ['manufacturingPlants'],
       select: {
         id: true,
         password: true,
@@ -58,6 +59,9 @@ export class AuthService {
 
     if (!user)
       throw new NotFoundException(`Usuario con email ${email} no encontrado`);
+
+    if (!user.manufacturingPlants.length)
+      throw new UnauthorizedException('Usuario no tiene plantas asignadas');
 
     if (!(await argon2.verify(user.password, password))) {
       throw new UnauthorizedException('Credenciales no válidas');

@@ -13,6 +13,11 @@ import { AppKeyMiddleware, JwtMiddleware } from '@shared/middlewares';
 import { JwtService } from '@shared/services';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { ManufacturingPlantsModule } from './manufacturing-plants/manufacturing-plants.module';
+import { EvidencesModule } from './evidences/evidences.module';
+import { TypeEvidencesModule } from './type-evidences/type-evidences.module';
+import { TypesModule } from './types/types.module';
+import { ZonesModule } from './zones/zones.module';
 
 @Module({
   imports: [
@@ -34,6 +39,11 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     UsersModule,
+    ManufacturingPlantsModule,
+    EvidencesModule,
+    TypeEvidencesModule,
+    TypesModule,
+    ZonesModule,
   ],
   controllers: [],
   providers: [JwtService],

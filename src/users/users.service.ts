@@ -25,8 +25,6 @@ export class UsersService {
   }
 
   findAll(): Promise<User[]> {
-    const userId = this.request['user'].userId as number;
-    console.log({ userId });
     return this.userRepository.find({
       where: {
         isActive: true,
@@ -44,6 +42,23 @@ export class UsersService {
 
     if (!user)
       throw new NotFoundException(`Usuario con id ${id} no encontrado`);
+
+    return user;
+  }
+
+  async getInformationCurrentUser(): Promise<User> {
+    const userId = this.request['user'].userId as number;
+
+    const user = await this.userRepository.findOne({
+      where: {
+        id: userId,
+        isActive: true,
+      },
+      relations: ['manufacturingPlants', 'zones'],
+    });
+
+    if (!user)
+      throw new NotFoundException(`Usuario con id ${userId} no encontrado`);
 
     return user;
   }
