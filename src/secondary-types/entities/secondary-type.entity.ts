@@ -4,17 +4,19 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
   OneToMany,
 } from 'typeorm';
 
+import { MainType } from 'main-types/entities/main-type.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 
-@Entity({ name: 'zones' })
-export class Zone {
+@Entity()
+export class SecondaryType {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
 
   @Column({ default: true })
@@ -26,6 +28,9 @@ export class Zone {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Evidence, (evidence) => evidence.zone)
+  @ManyToOne(() => MainType, (mainType) => mainType.secondaryTypes)
+  mainType: MainType;
+
+  @OneToMany(() => Evidence, (evidence) => evidence.secondaryType)
   evidences: Evidence[];
 }

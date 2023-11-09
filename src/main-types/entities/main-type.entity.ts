@@ -7,10 +7,11 @@ import {
   OneToMany,
 } from 'typeorm';
 
+import { SecondaryType } from 'secondary-types/entities/secondary-type.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 
-@Entity({ name: 'zones' })
-export class Zone {
+@Entity()
+export class MainType {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,6 +27,9 @@ export class Zone {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Evidence, (evidence) => evidence.zone)
+  @OneToMany(() => SecondaryType, (secondaryType) => secondaryType.mainType)
+  secondaryTypes: SecondaryType[];
+
+  @OneToMany(() => Evidence, (evidence) => evidence.mainType)
   evidences: Evidence[];
 }

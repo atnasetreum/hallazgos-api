@@ -53,6 +53,12 @@ export class UsersService {
       where: {
         id: userId,
         isActive: true,
+        manufacturingPlants: {
+          isActive: true,
+        },
+        zones: {
+          isActive: true,
+        },
       },
       relations: ['manufacturingPlants', 'zones'],
     });

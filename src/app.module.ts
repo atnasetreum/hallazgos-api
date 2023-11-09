@@ -15,9 +15,9 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ManufacturingPlantsModule } from './manufacturing-plants/manufacturing-plants.module';
 import { EvidencesModule } from './evidences/evidences.module';
-import { TypeEvidencesModule } from './type-evidences/type-evidences.module';
-import { TypesModule } from './types/types.module';
 import { ZonesModule } from './zones/zones.module';
+import { MainTypesModule } from './main-types/main-types.module';
+import { SecondaryTypesModule } from './secondary-types/secondary-types.module';
 
 @Module({
   imports: [
@@ -41,9 +41,9 @@ import { ZonesModule } from './zones/zones.module';
     UsersModule,
     ManufacturingPlantsModule,
     EvidencesModule,
-    TypeEvidencesModule,
-    TypesModule,
     ZonesModule,
+    MainTypesModule,
+    SecondaryTypesModule,
   ],
   controllers: [],
   providers: [JwtService],

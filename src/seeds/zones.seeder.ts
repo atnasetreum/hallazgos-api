@@ -9,19 +9,19 @@ export default class ZonesSeeder implements Seeder {
 
     const data = [
       {
-        name: 'PERFUMERIA',
+        name: 'Perfumería',
       },
       {
-        name: 'SAPONIFICACION',
+        name: 'Saponificación',
       },
       {
-        name: 'SECADO',
+        name: 'Secado',
       },
       {
-        name: 'MANTENIMIENTO',
+        name: 'Mantenimiento',
       },
       {
-        name: 'LOGISTICA',
+        name: 'Logística',
       },
     ];
 

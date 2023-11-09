@@ -1,3 +1,6 @@
+#folder
+/public/static/images/evidences
+
 # enviroments
 .env.development
 .env.production

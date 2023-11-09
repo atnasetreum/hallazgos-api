@@ -14,7 +14,13 @@ export default class UsersSeeder implements Seeder {
 
     const zoneRepository = dataSource.getRepository(Zone);
 
-    const manufacturingPlants = await manufacturingPlantRepository.find();
+    //const manufacturingPlants = await manufacturingPlantRepository.find();
+
+    const manufacturingPlants = await manufacturingPlantRepository.find({
+      where: {
+        id: 1,
+      },
+    });
 
     const zones = await zoneRepository.find();
 

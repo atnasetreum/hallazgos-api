@@ -8,11 +8,13 @@ import {
   BeforeUpdate,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import * as argon2 from 'argon2';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Zone } from 'zones/entities/zone.entity';
+import { Evidence } from 'evidences/entities/evidence.entity';
 
 @Entity()
 export class User {
@@ -51,6 +53,9 @@ export class User {
     name: 'user_zones',
   })
   zones: Zone[];
+
+  @OneToMany(() => Evidence, (evidence) => evidence.user)
+  evidences: Evidence[];
 
   @BeforeInsert()
   @BeforeUpdate()

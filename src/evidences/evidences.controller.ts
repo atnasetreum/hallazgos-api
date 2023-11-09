@@ -6,18 +6,39 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
 
 import { EvidencesService } from './evidences.service';
 import { CreateEvidenceDto, UpdateEvidenceDto } from './dto';
+import { diskStorage } from 'multer';
 
 @Controller('evidences')
 export class EvidencesController {
   constructor(private readonly evidencesService: EvidencesService) {}
 
   @Post()
-  create(@Body() createEvidenceDto: CreateEvidenceDto) {
-    return this.evidencesService.create(createEvidenceDto);
+  @UseInterceptors(
+    AnyFilesInterceptor({
+      storage: diskStorage({
+        destination: './public/static/images/evidences',
+        filename(req, file, callback) {
+          req;
+          callback(null, file.originalname);
+        },
+      }),
+      limits: {
+        fileSize: 2097152, //2 Megabytes
+      },
+    }),
+  )
+  create(
+    @Body() createEvidenceDto: CreateEvidenceDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    return this.evidencesService.create(createEvidenceDto, files);
   }
 
   @Get()

@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
+import { Evidence } from 'evidences/entities/evidence.entity';
 @Entity()
 export class ManufacturingPlant {
   @PrimaryGeneratedColumn()
@@ -31,4 +33,7 @@ export class ManufacturingPlant {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Evidence, (evidence) => evidence.manufacturingPlant)
+  evidences: Evidence[];
 }
