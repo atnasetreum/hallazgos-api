@@ -38,7 +38,7 @@ export class AuthService {
       httpOnly: true,
       secure: this.environment !== 'development',
       //sameSite: 'strict',
-      sameSite: 'lax',
+      sameSite: 'none',
       path: '/',
     };
   }
