@@ -30,7 +30,7 @@ export class User {
   @Column({ select: false })
   password: string;
 
-  @Column({ default: 'user' })
+  @Column()
   role: string;
 
   @Column({ default: true })

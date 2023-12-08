@@ -21,6 +21,7 @@ import { EvidencesModule } from './evidences/evidences.module';
 import { ZonesModule } from './zones/zones.module';
 import { MainTypesModule } from './main-types/main-types.module';
 import { SecondaryTypesModule } from './secondary-types/secondary-types.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { SecondaryTypesModule } from './secondary-types/secondary-types.module';
     ZonesModule,
     MainTypesModule,
     SecondaryTypesModule,
+    MailModule,
   ],
   controllers: [],
   providers: [JwtService],

@@ -12,6 +12,7 @@ import { SecondaryTypesService } from 'secondary-types/secondary-types.service';
 import { ZonesService } from 'zones/zones.service';
 import { Evidence } from './entities/evidence.entity';
 import { UsersService } from 'users/users.service';
+import { MailService } from 'mail/mail.service';
 
 @Injectable()
 export class EvidencesService {
@@ -24,6 +25,7 @@ export class EvidencesService {
     private readonly secondaryTypesService: SecondaryTypesService,
     private readonly zonesService: ZonesService,
     private readonly usersService: UsersService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(
@@ -52,7 +54,7 @@ export class EvidencesService {
 
     const user = await this.usersService.findOne(userId);
 
-    await this.evidenceRepository.save(
+    const evidenceCurrent = await this.evidenceRepository.save(
       this.evidenceRepository.create({
         imgEvidence,
         manufacturingPlant,
@@ -62,6 +64,33 @@ export class EvidencesService {
         user,
       }),
     );
+
+    const plantUsers =
+      await this.usersService.findAllByPlant(manufacturingPlantId);
+
+    if (!plantUsers.length) {
+      throw new BadRequestException(
+        `No se ha encontrado usuarios asignados para la planta ${manufacturingPlant.name}`,
+      );
+    }
+
+    const responsible = await plantUsers.find(
+      (user) => user.role === 'Supervisor',
+    );
+
+    if (!responsible)
+      throw new BadRequestException(
+        `No se ha encontrado un supervisor asignador para la planta ${manufacturingPlant.name}`,
+      );
+
+    for (let i = 0; i < plantUsers.length; i++) {
+      const userToSendEmail = plantUsers[i];
+      await this.mailService.sendCreate({
+        user: userToSendEmail,
+        evidenceCurrent,
+        responsible,
+      });
+    }
 
     return 'ok';
   }

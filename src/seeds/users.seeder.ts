@@ -29,15 +29,24 @@ export default class UsersSeeder implements Seeder {
         name: 'Eduardo Garcia',
         email: 'eduardo-266@hotmail.com',
         password: '123',
-        role: 'admin',
+        role: 'Administrador',
         manufacturingPlants,
         zones,
       },
-      {
+      /*{
         name: 'Omar Arrieta',
         email: 'sst@hadamexico.com',
         password: '201390Oaam',
         role: 'admin',
+        manufacturingPlants,
+        zones,
+      },*/
+
+      {
+        name: 'Eduardo Supervisor',
+        email: 'atnasetreum@gmail.com',
+        password: '123',
+        role: 'Supervisor',
         manufacturingPlants,
         zones,
       },

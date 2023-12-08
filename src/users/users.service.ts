@@ -32,6 +32,17 @@ export class UsersService {
     });
   }
 
+  findAllByPlant(plantId: number): Promise<User[]> {
+    return this.userRepository.find({
+      where: {
+        isActive: true,
+        manufacturingPlants: {
+          id: plantId,
+        },
+      },
+    });
+  }
+
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: {
