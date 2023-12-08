@@ -83,7 +83,13 @@ export class EvidencesService {
           isActive: true,
         },
       },
-      relations: ['manufacturingPlant', 'mainType', 'secondaryType', 'zone'],
+      relations: [
+        'manufacturingPlant',
+        'mainType',
+        'secondaryType',
+        'zone',
+        'user',
+      ],
       order: {
         createdAt: 'DESC',
       },
