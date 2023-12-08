@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Request } from 'express';
@@ -28,17 +28,15 @@ export class EvidencesService {
 
   async create(
     createEvidenceDto: CreateEvidenceDto,
-    files: Array<Express.Multer.File>,
+    file: Express.Multer.File,
   ) {
+    if (!file) {
+      throw new BadRequestException('No se ha enviado ningún archivo');
+    }
+
     const userId = this.request['user'].userId as number;
 
-    const { originalname: imgEvidence } = files.find((file) => {
-      return file.originalname.includes('evidence');
-    });
-
-    const { originalname: imgSignature } = files.find((file) => {
-      return file.originalname.includes('signature');
-    });
+    const { originalname: imgEvidence } = file;
 
     const { manufacturingPlantId, typeHallazgo, type, zone } =
       createEvidenceDto;
@@ -57,7 +55,6 @@ export class EvidencesService {
     await this.evidenceRepository.save(
       this.evidenceRepository.create({
         imgEvidence,
-        imgSignature,
         manufacturingPlant,
         mainType,
         secondaryType,

@@ -7,13 +7,14 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common';
-import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { diskStorage } from 'multer';
 
 import { EvidencesService } from './evidences.service';
 import { CreateEvidenceDto, UpdateEvidenceDto } from './dto';
-import { diskStorage } from 'multer';
 
 @Controller('evidences')
 export class EvidencesController {
@@ -21,7 +22,7 @@ export class EvidencesController {
 
   @Post()
   @UseInterceptors(
-    AnyFilesInterceptor({
+    FileInterceptor('file', {
       storage: diskStorage({
         destination: './public/static/images/evidences',
         filename(req, file, callback) {
@@ -36,9 +37,9 @@ export class EvidencesController {
   )
   create(
     @Body() createEvidenceDto: CreateEvidenceDto,
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.evidencesService.create(createEvidenceDto, files);
+    return this.evidencesService.create(createEvidenceDto, file);
   }
 
   @Get()

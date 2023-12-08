@@ -21,9 +21,6 @@ export class Evidence {
   @Column()
   imgEvidence: string;
 
-  @Column()
-  imgSignature: string;
-
   @Column({ default: true })
   isActive: boolean;
 
