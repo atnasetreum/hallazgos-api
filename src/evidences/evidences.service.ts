@@ -1,8 +1,13 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Request } from 'express';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { CreateEvidenceDto, UpdateEvidenceDto } from './dto';
 import { REQUEST } from '@nestjs/core';
@@ -13,6 +18,8 @@ import { ZonesService } from 'zones/zones.service';
 import { Evidence } from './entities/evidence.entity';
 import { UsersService } from 'users/users.service';
 import { MailService } from 'mail/mail.service';
+import { User } from 'users/entities/user.entity';
+import { STATUS_OPEN } from '@shared/constants';
 
 @Injectable()
 export class EvidencesService {
@@ -36,7 +43,7 @@ export class EvidencesService {
       throw new BadRequestException('No se ha enviado ningún archivo');
     }
 
-    const userId = this.request['user'].userId as number;
+    const { id: userId } = this.request['user'] as User;
 
     const { originalname: imgEvidence } = file;
 
@@ -54,6 +61,15 @@ export class EvidencesService {
 
     const user = await this.usersService.findOne(userId);
 
+    const supervisor = await this.usersService.findSupervisor(
+      manufacturingPlant.id,
+    );
+
+    if (!supervisor)
+      throw new BadRequestException(
+        `No se ha encontrado un supervisor asignador para la planta ${manufacturingPlant.name}`,
+      );
+
     const evidenceCurrent = await this.evidenceRepository.save(
       this.evidenceRepository.create({
         imgEvidence,
@@ -62,6 +78,8 @@ export class EvidencesService {
         secondaryType,
         zone: zoneRow,
         user,
+        supervisor,
+        status: STATUS_OPEN,
       }),
     );
 
@@ -74,33 +92,49 @@ export class EvidencesService {
       );
     }
 
-    const responsible = await plantUsers.find(
-      (user) => user.role === 'Supervisor',
-    );
-
-    if (!responsible)
-      throw new BadRequestException(
-        `No se ha encontrado un supervisor asignador para la planta ${manufacturingPlant.name}`,
-      );
-
     for (let i = 0; i < plantUsers.length; i++) {
       const userToSendEmail = plantUsers[i];
       await this.mailService.sendCreate({
         user: userToSendEmail,
         evidenceCurrent,
-        responsible,
       });
     }
 
     return 'ok';
   }
 
-  findAll() {
-    return this.evidenceRepository.find({
+  async saveSolution(id: number, file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('No se ha enviado ningún archivo');
+    }
+
+    const evidence = await this.findOne(id);
+
+    const { originalname: imgSolution } = file;
+
+    evidence.imgSolution = imgSolution;
+    evidence.solutionDate = new Date();
+    evidence.status = 'Cerrado';
+
+    return this.evidenceRepository.save(evidence);
+  }
+
+  async findAll() {
+    const { manufacturingPlants } = this.request['user'] as User;
+
+    const manufacturingPlantsIds = manufacturingPlants.map(
+      (manufacturingPlant) => manufacturingPlant.id,
+    );
+
+    if (!manufacturingPlantsIds.length)
+      throw new BadRequestException('No se ha encontrado plantas asignadas');
+
+    const evidences = await this.evidenceRepository.find({
       where: {
         isActive: true,
         manufacturingPlant: {
           isActive: true,
+          id: In(manufacturingPlantsIds),
         },
         mainType: {
           isActive: true,
@@ -118,15 +152,36 @@ export class EvidencesService {
         'secondaryType',
         'zone',
         'user',
+        'supervisor',
       ],
       order: {
         createdAt: 'DESC',
       },
     });
+
+    return evidences;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} evidence`;
+  async findOne(id: number) {
+    const evidence = await this.evidenceRepository.findOne({
+      where: {
+        id,
+        isActive: true,
+      },
+      relations: [
+        'manufacturingPlant',
+        'mainType',
+        'secondaryType',
+        'zone',
+        'user',
+        'supervisor',
+      ],
+    });
+
+    if (!evidence)
+      throw new NotFoundException('No se ha encontrado el hallazgo');
+
+    return evidence;
   }
 
   update(id: number, updateEvidenceDto: UpdateEvidenceDto) {

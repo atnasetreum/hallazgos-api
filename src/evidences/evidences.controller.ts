@@ -42,6 +42,28 @@ export class EvidencesController {
     return this.evidencesService.create(createEvidenceDto, file);
   }
 
+  @Post('/solution/:id')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './public/static/images/evidences',
+        filename(req, file, callback) {
+          req;
+          callback(null, file.originalname);
+        },
+      }),
+      limits: {
+        fileSize: 2097152, //2 Megabytes
+      },
+    }),
+  )
+  saveSolution(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string,
+  ) {
+    return this.evidencesService.saveSolution(+id, file);
+  }
+
   @Get()
   findAll() {
     return this.evidencesService.findAll();

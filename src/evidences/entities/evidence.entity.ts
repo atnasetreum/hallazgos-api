@@ -21,6 +21,15 @@ export class Evidence {
   @Column()
   imgEvidence: string;
 
+  @Column({ default: '' })
+  imgSolution: string;
+
+  @Column({ type: 'timestamptz', default: null })
+  solutionDate: Date;
+
+  @Column()
+  status: string;
+
   @Column({ default: true })
   isActive: boolean;
 
@@ -47,4 +56,7 @@ export class Evidence {
 
   @ManyToOne(() => User, (user) => user.evidences)
   user: User;
+
+  @ManyToOne(() => User, (user) => user.assignedEvidence)
+  supervisor: User;
 }

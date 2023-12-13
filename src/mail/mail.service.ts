@@ -16,11 +16,9 @@ export class MailService {
   async sendCreate({
     user,
     evidenceCurrent,
-    responsible,
   }: {
     user: User;
     evidenceCurrent: Evidence;
-    responsible: User;
   }) {
     const { imgEvidence, manufacturingPlant, mainType } = evidenceCurrent;
 
@@ -38,7 +36,7 @@ export class MailService {
         zone: evidenceCurrent.zone.name,
         userWhoCreated: evidenceCurrent.user.name,
         createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
-        responsible: responsible.name,
+        supervisor: evidenceCurrent.supervisor.name,
       },
       attachments: [
         {

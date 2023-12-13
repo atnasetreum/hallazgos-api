@@ -57,6 +57,9 @@ export class User {
   @OneToMany(() => Evidence, (evidence) => evidence.user)
   evidences: Evidence[];
 
+  @OneToMany(() => Evidence, (evidence) => evidence.supervisor)
+  assignedEvidence: Evidence[];
+
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {

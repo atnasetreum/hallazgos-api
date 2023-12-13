@@ -4,6 +4,7 @@ import { Seeder } from 'typeorm-extension';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { User } from 'users/entities/user.entity';
 import { Zone } from 'zones/entities/zone.entity';
+import { ROLE_ADMINISTRADOR, ROLE_SUPERVISOR } from '@shared/constants';
 
 export default class UsersSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<void> {
@@ -29,7 +30,7 @@ export default class UsersSeeder implements Seeder {
         name: 'Eduardo Garcia',
         email: 'eduardo-266@hotmail.com',
         password: '123',
-        role: 'Administrador',
+        role: ROLE_ADMINISTRADOR,
         manufacturingPlants,
         zones,
       },
@@ -37,7 +38,7 @@ export default class UsersSeeder implements Seeder {
         name: 'Omar Arrieta',
         email: 'sst@hadamexico.com',
         password: '201390Oaam',
-        role: 'admin',
+        role: ROLE_ADMINISTRADOR,
         manufacturingPlants,
         zones,
       },*/
@@ -46,7 +47,7 @@ export default class UsersSeeder implements Seeder {
         name: 'Eduardo Supervisor',
         email: 'atnasetreum@gmail.com',
         password: '123',
-        role: 'Supervisor',
+        role: ROLE_SUPERVISOR,
         manufacturingPlants,
         zones,
       },

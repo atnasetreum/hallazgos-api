@@ -7,12 +7,16 @@ import {
 import { Request, Response, NextFunction } from 'express';
 
 import { JwtService } from '@shared/services';
+import { UsersService } from 'users/users.service';
 
 @Injectable()
 export class JwtMiddleware implements NestMiddleware {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
+  ) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, res: Response, next: NextFunction) {
     res.statusCode;
 
     const token = req.cookies['token'] ? `${req.cookies['token']}` : '';
@@ -23,7 +27,8 @@ export class JwtMiddleware implements NestMiddleware {
 
     try {
       const decoded = this.jwtService.verify(token);
-      req['user'] = { userId: Number(decoded.userId), token };
+      const user = await this.usersService.findOne(decoded.userId);
+      req['user'] = { ...user, token };
       next();
     } catch (error) {
       throw new UnauthorizedException('Credenciales no válidas');

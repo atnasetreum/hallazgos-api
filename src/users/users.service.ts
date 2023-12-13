@@ -7,6 +7,7 @@ import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { ROLE_SUPERVISOR } from '@shared/constants';
 
 @Injectable()
 export class UsersService {
@@ -49,6 +50,7 @@ export class UsersService {
         id,
         isActive: true,
       },
+      relations: ['manufacturingPlants', 'zones'],
     });
 
     if (!user)
@@ -57,8 +59,20 @@ export class UsersService {
     return user;
   }
 
+  findSupervisor(manufacturingPlantId: number): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        isActive: true,
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: {
+          id: manufacturingPlantId,
+        },
+      },
+    });
+  }
+
   async getInformationCurrentUser(): Promise<User> {
-    const userId = this.request['user'].userId as number;
+    const { id: userId } = this.request['user'] as User;
 
     const user = await this.userRepository.findOne({
       where: {
