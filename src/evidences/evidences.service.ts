@@ -20,6 +20,7 @@ import { UsersService } from 'users/users.service';
 import { MailService } from 'mail/mail.service';
 import { User } from 'users/entities/user.entity';
 import { STATUS_OPEN } from '@shared/constants';
+import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 
 @Injectable()
 export class EvidencesService {
@@ -85,8 +86,27 @@ export class EvidencesService {
       }),
     );
 
-    const plantUsers =
-      await this.usersService.findAllByPlant(manufacturingPlantId);
+    await this.notifyByEmail({
+      manufacturingPlant,
+      evidenceCurrent,
+      type: 'create',
+    });
+
+    return 'ok';
+  }
+
+  async notifyByEmail({
+    manufacturingPlant,
+    evidenceCurrent,
+    type,
+  }: {
+    manufacturingPlant: ManufacturingPlant;
+    evidenceCurrent: Evidence;
+    type: string;
+  }) {
+    const plantUsers = await this.usersService.findAllByPlant(
+      manufacturingPlant.id,
+    );
 
     if (!plantUsers.length) {
       throw new BadRequestException(
@@ -96,13 +116,27 @@ export class EvidencesService {
 
     for (let i = 0; i < plantUsers.length; i++) {
       const userToSendEmail = plantUsers[i];
-      await this.mailService.sendCreate({
-        user: userToSendEmail,
-        evidenceCurrent,
-      });
+      switch (type) {
+        case 'create':
+          await this.mailService.sendCreate({
+            user: userToSendEmail,
+            evidenceCurrent,
+          });
+          break;
+        case 'cancel':
+          await this.mailService.sendCancel({
+            user: userToSendEmail,
+            evidenceCurrent,
+          });
+          break;
+        case 'solution':
+          await this.mailService.sendSolution({
+            user: userToSendEmail,
+            evidenceCurrent,
+          });
+          break;
+      }
     }
-
-    return 'ok';
   }
 
   async saveSolution(id: number, file: Express.Multer.File) {
@@ -118,7 +152,19 @@ export class EvidencesService {
     evidence.solutionDate = new Date();
     evidence.status = 'Cerrado';
 
-    return this.evidenceRepository.save(evidence);
+    const evidenceSolution = await this.evidenceRepository.save(evidence);
+
+    const manufacturingPlant = await this.manufacturingPlantsService.findOne(
+      evidenceSolution.manufacturingPlant.id,
+    );
+
+    await this.notifyByEmail({
+      manufacturingPlant,
+      evidenceCurrent: evidenceSolution,
+      type: 'solution',
+    });
+
+    return evidenceSolution;
   }
 
   async findAll(queryEvidenceDto: QueryEvidenceDto) {
@@ -136,7 +182,6 @@ export class EvidencesService {
 
     const evidences = await this.evidenceRepository.find({
       where: {
-        isActive: true,
         manufacturingPlant: {
           isActive: true,
           id: In(manufacturingPlantsIds),
@@ -174,7 +219,6 @@ export class EvidencesService {
     const evidence = await this.evidenceRepository.findOne({
       where: {
         id,
-        isActive: true,
       },
       relations: [
         'manufacturingPlant',
@@ -187,7 +231,7 @@ export class EvidencesService {
     });
 
     if (!evidence)
-      throw new NotFoundException('No se ha encontrado el hallazgo');
+      throw new NotFoundException(`No se ha encontrado el hallazgo #${id}`);
 
     return evidence;
   }
@@ -196,7 +240,24 @@ export class EvidencesService {
     return { id, updateEvidenceDto };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} evidence`;
+  async remove(id: number) {
+    const evidence = await this.findOne(id);
+    await this.evidenceRepository.update(id, {
+      isActive: false,
+      status: 'Cancelado',
+      updatedAt: new Date(),
+    });
+
+    const manufacturingPlant = await this.manufacturingPlantsService.findOne(
+      evidence.manufacturingPlant.id,
+    );
+
+    await this.notifyByEmail({
+      manufacturingPlant,
+      evidenceCurrent: evidence,
+      type: 'cancel',
+    });
+
+    return evidence;
   }
 }
