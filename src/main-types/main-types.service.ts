@@ -22,6 +22,7 @@ export class MainTypesService {
       where: {
         isActive: true,
       },
+      relations: ['secondaryTypes'],
     });
   }
 

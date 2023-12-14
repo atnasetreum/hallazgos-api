@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { In, Repository } from 'typeorm';
 
-import { CreateEvidenceDto, UpdateEvidenceDto } from './dto';
+import { CreateEvidenceDto, QueryEvidenceDto, UpdateEvidenceDto } from './dto';
 import { REQUEST } from '@nestjs/core';
 import { ManufacturingPlantsService } from 'manufacturing-plants/manufacturing-plants.service';
 import { MainTypesService } from 'main-types/main-types.service';
@@ -80,6 +80,8 @@ export class EvidencesService {
         user,
         supervisor,
         status: STATUS_OPEN,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       }),
     );
 
@@ -119,12 +121,15 @@ export class EvidencesService {
     return this.evidenceRepository.save(evidence);
   }
 
-  async findAll() {
+  async findAll(queryEvidenceDto: QueryEvidenceDto) {
     const { manufacturingPlants } = this.request['user'] as User;
 
-    const manufacturingPlantsIds = manufacturingPlants.map(
-      (manufacturingPlant) => manufacturingPlant.id,
-    );
+    const { manufacturingPlantId, mainTypeId, secondaryType, zone } =
+      queryEvidenceDto;
+
+    const manufacturingPlantsIds = manufacturingPlantId
+      ? [manufacturingPlantId]
+      : manufacturingPlants.map((manufacturingPlant) => manufacturingPlant.id);
 
     if (!manufacturingPlantsIds.length)
       throw new BadRequestException('No se ha encontrado plantas asignadas');
@@ -138,12 +143,15 @@ export class EvidencesService {
         },
         mainType: {
           isActive: true,
+          ...(mainTypeId && { id: mainTypeId }),
         },
         secondaryType: {
           isActive: true,
+          ...(secondaryType && { id: secondaryType }),
         },
         zone: {
           isActive: true,
+          ...(zone && { id: zone }),
         },
       },
       relations: [

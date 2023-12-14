@@ -20,6 +20,7 @@ export class SecondaryTypesService {
   findAll() {
     return this.secondaryTypeRepository.find({
       where: { isActive: true },
+      relations: ['mainType'],
     });
   }
 

@@ -8,13 +8,14 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { diskStorage } from 'multer';
 
 import { EvidencesService } from './evidences.service';
-import { CreateEvidenceDto, UpdateEvidenceDto } from './dto';
+import { CreateEvidenceDto, QueryEvidenceDto, UpdateEvidenceDto } from './dto';
 
 @Controller('evidences')
 export class EvidencesController {
@@ -65,8 +66,8 @@ export class EvidencesController {
   }
 
   @Get()
-  findAll() {
-    return this.evidencesService.findAll();
+  findAll(@Query() queryEvidenceDto: QueryEvidenceDto) {
+    return this.evidencesService.findAll(queryEvidenceDto);
   }
 
   @Get(':id')

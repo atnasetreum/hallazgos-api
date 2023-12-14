@@ -33,10 +33,10 @@ export class Evidence {
   @Column({ default: true })
   isActive: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz', default: null })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz', default: null })
   updatedAt: Date;
 
   @ManyToOne(
