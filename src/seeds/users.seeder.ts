@@ -17,12 +17,6 @@ export default class UsersSeeder implements Seeder {
 
     const manufacturingPlants = await manufacturingPlantRepository.find();
 
-    /*const manufacturingPlants = await manufacturingPlantRepository.find({
-      where: {
-        id: 1,
-      },
-    });*/
-
     const zones = await zoneRepository.find();
 
     const data = [
@@ -32,6 +26,7 @@ export default class UsersSeeder implements Seeder {
         password: '123',
         role: ROLE_ADMINISTRADOR,
         manufacturingPlants,
+        //manufacturingPlants: [manufacturingPlants[0], manufacturingPlants[1]],
         zones,
       },
       /*{

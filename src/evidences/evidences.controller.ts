@@ -15,7 +15,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
 import { EvidencesService } from './evidences.service';
-import { CreateEvidenceDto, QueryEvidenceDto, UpdateEvidenceDto } from './dto';
+import {
+  CommentEvidenceDto,
+  CreateEvidenceDto,
+  QueryEvidenceDto,
+  UpdateEvidenceDto,
+} from './dto';
 
 @Controller('evidences')
 export class EvidencesController {
@@ -63,6 +68,11 @@ export class EvidencesController {
     @Param('id') id: string,
   ) {
     return this.evidencesService.saveSolution(+id, file);
+  }
+
+  @Post('/add/comment/:id')
+  addComment(@Param('id') id: string, @Body() comment: CommentEvidenceDto) {
+    return this.evidencesService.addComment(+id, comment);
   }
 
   @Get()

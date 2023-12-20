@@ -9,10 +9,11 @@ import { MainTypesModule } from 'main-types/main-types.module';
 import { SecondaryTypesModule } from 'secondary-types/secondary-types.module';
 import { ZonesModule } from 'zones/zones.module';
 import { UsersModule } from 'users/users.module';
+import { Comment } from './entities/comments.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Evidence]),
+    TypeOrmModule.forFeature([Evidence, Comment]),
     ManufacturingPlantsModule,
     MainTypesModule,
     SecondaryTypesModule,

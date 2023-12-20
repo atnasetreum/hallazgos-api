@@ -9,7 +9,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { In, Repository } from 'typeorm';
 
-import { CreateEvidenceDto, QueryEvidenceDto, UpdateEvidenceDto } from './dto';
+import {
+  CommentEvidenceDto,
+  CreateEvidenceDto,
+  QueryEvidenceDto,
+  UpdateEvidenceDto,
+} from './dto';
 import { REQUEST } from '@nestjs/core';
 import { ManufacturingPlantsService } from 'manufacturing-plants/manufacturing-plants.service';
 import { MainTypesService } from 'main-types/main-types.service';
@@ -19,14 +24,17 @@ import { Evidence } from './entities/evidence.entity';
 import { UsersService } from 'users/users.service';
 import { MailService } from 'mail/mail.service';
 import { User } from 'users/entities/user.entity';
-import { STATUS_OPEN } from '@shared/constants';
+import { STATUS_CANCEL, STATUS_CLOSE, STATUS_OPEN } from '@shared/constants';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
+import { Comment } from './entities/comments.entity';
 
 @Injectable()
 export class EvidencesService {
   constructor(
     @InjectRepository(Evidence)
     private readonly evidenceRepository: Repository<Evidence>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
     @Inject(REQUEST) private readonly request: Request,
     private readonly manufacturingPlantsService: ManufacturingPlantsService,
     private readonly mainTypesService: MainTypesService,
@@ -116,6 +124,9 @@ export class EvidencesService {
 
     for (let i = 0; i < plantUsers.length; i++) {
       const userToSendEmail = plantUsers[i];
+
+      if (process.env.NODE_ENV === 'development') continue;
+
       switch (type) {
         case 'create':
           await this.mailService.sendCreate({
@@ -150,7 +161,7 @@ export class EvidencesService {
 
     evidence.imgSolution = imgSolution;
     evidence.solutionDate = new Date();
-    evidence.status = 'Cerrado';
+    evidence.status = STATUS_CLOSE;
 
     const evidenceSolution = await this.evidenceRepository.save(evidence);
 
@@ -165,6 +176,30 @@ export class EvidencesService {
     });
 
     return evidenceSolution;
+  }
+
+  async addComment(id: number, comment: CommentEvidenceDto) {
+    const evidence = await this.findOne(id);
+    const user = this.request['user'] as User;
+
+    const { comment: commentText } = comment;
+
+    await this.commentRepository.save(
+      this.commentRepository.create({
+        user,
+        comment: commentText,
+        evidence,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }),
+    );
+
+    await this.evidenceRepository.update(id, {
+      updatedAt: new Date(),
+    });
+
+    return this.findOne(id);
   }
 
   async findAll(queryEvidenceDto: QueryEvidenceDto) {
@@ -206,6 +241,7 @@ export class EvidencesService {
         'zone',
         'user',
         'supervisor',
+        'comments',
       ],
       order: {
         createdAt: 'DESC',
@@ -227,6 +263,7 @@ export class EvidencesService {
         'zone',
         'user',
         'supervisor',
+        'comments',
       ],
     });
 
@@ -244,7 +281,7 @@ export class EvidencesService {
     const evidence = await this.findOne(id);
     await this.evidenceRepository.update(id, {
       isActive: false,
-      status: 'Cancelado',
+      status: STATUS_CANCEL,
       updatedAt: new Date(),
     });
 

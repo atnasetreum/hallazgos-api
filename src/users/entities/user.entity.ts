@@ -15,6 +15,7 @@ import * as argon2 from 'argon2';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
+import { Comment } from 'evidences/entities/comments.entity';
 
 @Entity()
 export class User {
@@ -56,6 +57,9 @@ export class User {
 
   @OneToMany(() => Evidence, (evidence) => evidence.user)
   evidences: Evidence[];
+
+  @OneToMany(() => Comment, (evidence) => evidence.user)
+  comments: Comment[];
 
   @OneToMany(() => Evidence, (evidence) => evidence.supervisor)
   assignedEvidence: Evidence[];

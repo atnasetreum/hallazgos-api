@@ -10,8 +10,8 @@ export const expiresIn = () => {
 export const stringToDateWithTime = (date: string | Date) =>
   moment(date).format('LLL');
 
-export const durantionToTime = (startTime: Date, end: Date) => {
-  const duration = moment.duration(moment(end).diff(moment(startTime)));
+export const durantionToTime = (startDate: Date, endDate: Date) => {
+  const duration = moment.duration(moment(endDate).diff(moment(startDate)));
   const hours = duration.hours();
   const minutes = duration.minutes();
   const seconds = duration.seconds();

@@ -22,6 +22,7 @@ import { ZonesModule } from './zones/zones.module';
 import { MainTypesModule } from './main-types/main-types.module';
 import { SecondaryTypesModule } from './secondary-types/secondary-types.module';
 import { MailModule } from './mail/mail.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { MailModule } from './mail/mail.module';
     MainTypesModule,
     SecondaryTypesModule,
     MailModule,
+    DashboardModule,
   ],
   controllers: [],
   providers: [JwtService],
