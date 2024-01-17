@@ -34,10 +34,11 @@ export class AuthService {
   }
 
   get optsSerialize() {
+    console.log({ environment: this.environment });
     return {
       httpOnly: true,
       secure: this.environment !== 'development',
-      sameSite: 'none',
+      sameSite: 'lax',
       path: '/',
     };
   }
