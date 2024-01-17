@@ -36,8 +36,8 @@ export class AuthService {
   get optsSerialize() {
     return {
       httpOnly: true,
-      //secure: this.environment !== 'development',
-      secure: false,
+      secure: this.environment !== 'development',
+      // secure: false,
       sameSite: 'strict',
       path: '/',
     };
