@@ -37,15 +37,15 @@ export class AuthService {
     console.log({ environment: this.environment });
     return {
       httpOnly: true,
-      sameSite: 'none',
+      //sameSite: 'none',
       //httpOnly: true,
       //secure: this.environment !== 'development',
       //secure: false,
       //sameSite: 'strict',
       //path: '/',
 
-      //secure: ENVIRONMENT === "production",
-      //sameSite: ENVIRONMENT === "production" ? "none" : "lax",
+      secure: this.environment === 'production',
+      sameSite: this.environment === 'production' ? 'none' : 'lax',
     };
   }
 
