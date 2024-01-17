@@ -39,7 +39,7 @@ export class AuthService {
       secure: this.environment !== 'development',
       // secure: false,
       //sameSite: 'strict',
-      sameSite: 'same',
+      sameSite: 'none',
       path: '/',
     };
   }
