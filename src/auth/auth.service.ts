@@ -42,8 +42,7 @@ export class AuthService {
       //secure: this.environment !== 'development',
       //secure: false,
       //sameSite: 'strict',
-      //path: '/',
-
+      path: '/',
       secure: this.environment === 'production',
       sameSite: this.environment === 'production' ? 'none' : 'lax',
     };
