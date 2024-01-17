@@ -37,7 +37,7 @@ export class AuthService {
     console.log({ environment: this.environment });
     return {
       httpOnly: true,
-      secure: this.environment !== 'development',
+      secure: true,
       sameSite: 'strict',
       path: '/',
     };
