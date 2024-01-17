@@ -34,17 +34,13 @@ export class AuthService {
   }
 
   get optsSerialize() {
-    console.log({ environment: this.environment });
     return {
       httpOnly: true,
-      //sameSite: 'none',
-      //httpOnly: true,
       //secure: this.environment !== 'development',
-      //secure: false,
-      //sameSite: 'strict',
+      secure: true,
+      sameSite: 'strict',
+      //sameSite: 'none',
       path: '/',
-      secure: this.environment === 'production',
-      sameSite: this.environment === 'production' ? 'none' : 'lax',
     };
   }
 
