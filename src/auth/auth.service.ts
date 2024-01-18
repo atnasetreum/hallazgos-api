@@ -6,16 +6,17 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { REQUEST } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 
 import { serialize } from 'cookie';
 import { Repository } from 'typeorm';
 import * as argon2 from 'argon2';
 import { Request } from 'express';
 
-import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from '@shared/services';
+import { ENV_PRODUCTION } from '@shared/constants';
 import { User } from 'users/entities/user.entity';
-import { ConfigService } from '@nestjs/config';
+import { LoginAuthDto } from './dto/login-auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -36,11 +37,11 @@ export class AuthService {
   get optsSerialize() {
     return {
       httpOnly: true,
-      secure: this.environment === 'production',
-      sameSite: this.environment === 'production' ? 'none' : 'strict',
+      secure: this.environment === ENV_PRODUCTION,
+      sameSite: this.environment === ENV_PRODUCTION ? 'none' : 'strict',
       path: '/',
       domain:
-        this.environment === 'production' ? 'comportarte.com' : 'localhost',
+        this.environment === ENV_PRODUCTION ? 'comportarte.com' : 'localhost',
     };
   }
 
