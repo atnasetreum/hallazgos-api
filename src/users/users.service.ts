@@ -81,9 +81,6 @@ export class UsersService {
         manufacturingPlants: {
           isActive: true,
         },
-        zones: {
-          isActive: true,
-        },
       },
       relations: ['manufacturingPlants', 'zones'],
     });

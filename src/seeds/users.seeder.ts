@@ -37,6 +37,14 @@ export default class UsersSeeder implements Seeder {
 
     const data = [
       {
+        name: 'Eduardo Dominguez',
+        email: 'eduardo-266@hotmail.com',
+        password: '123',
+        role: ROLE_ADMINISTRADOR,
+        manufacturingPlants: [manizales],
+        zones: [],
+      },
+      {
         name: 'Sofia Osorio',
         email: 'sst@hada.com.co',
         password: 'sst',
