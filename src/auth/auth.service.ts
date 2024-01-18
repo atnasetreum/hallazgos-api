@@ -37,7 +37,7 @@ export class AuthService {
     return {
       httpOnly: true,
       secure: this.environment === 'production',
-      sameSite: 'none',
+      sameSite: 'lax',
       path: '/',
     };
   }
