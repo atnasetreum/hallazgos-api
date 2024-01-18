@@ -40,9 +40,7 @@ export class AuthService {
       sameSite: this.environment === 'production' ? 'none' : 'strict',
       path: '/',
       domain:
-        this.environment === 'production'
-          ? 'https://comportarte.com'
-          : 'localhost',
+        this.environment === 'production' ? 'comportarte.com' : 'localhost',
     };
   }
 
