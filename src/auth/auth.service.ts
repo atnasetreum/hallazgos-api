@@ -37,9 +37,12 @@ export class AuthService {
     return {
       httpOnly: true,
       secure: this.environment === 'production',
-      sameSite: 'none',
+      sameSite: 'strict',
       path: '/',
-      domain: 'comportarte.com',
+      domain:
+        this.environment === 'production'
+          ? 'https://comportarte.com'
+          : 'localhost',
     };
   }
 
