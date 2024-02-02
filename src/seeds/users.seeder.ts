@@ -3,11 +3,11 @@ import { Seeder } from 'typeorm-extension';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { User } from 'users/entities/user.entity';
-// import { Zone } from 'zones/entities/zone.entity';
+import { Zone } from 'zones/entities/zone.entity';
 import {
   ROLE_ADMINISTRADOR,
-  //ROLE_GENERAL,
-  //ROLE_SUPERVISOR,
+  ROLE_GENERAL,
+  ROLE_SUPERVISOR,
 } from '@shared/constants';
 
 export default class UsersSeeder implements Seeder {
@@ -17,7 +17,7 @@ export default class UsersSeeder implements Seeder {
     const manufacturingPlantRepository =
       dataSource.getRepository(ManufacturingPlant);
 
-    // const zoneRepository = dataSource.getRepository(Zone);
+    const zoneRepository = dataSource.getRepository(Zone);
 
     const manufacturingPlants = await manufacturingPlantRepository.find();
 
@@ -33,32 +33,114 @@ export default class UsersSeeder implements Seeder {
       (manufacturingPlant) => manufacturingPlant.name === 'Manizales',
     );
 
-    // const zones = await zoneRepository.find();
+    const barranquilla = manufacturingPlants.find(
+      (manufacturingPlant) => manufacturingPlant.name === 'Barranquilla',
+    );
 
-    const data = [
-      {
-        name: 'Eduardo Dominguez',
-        email: 'eduardo-266@hotmail.com',
-        password: '123',
-        role: ROLE_ADMINISTRADOR,
-        manufacturingPlants: [manizales],
-        zones: [],
+    const zonesCuautitlan = await zoneRepository.find({
+      where: {
+        manufacturingPlant: {
+          id: cuautitlan.id,
+        },
       },
+    });
+
+    const zonesTepotzotlan = await zoneRepository.find({
+      where: {
+        manufacturingPlant: {
+          id: tepotzotlan.id,
+        },
+      },
+    });
+
+    const zonaLiquidosTepotzotlan = zonesTepotzotlan.find(
+      (zone) => zone.name === 'Liquidos',
+    );
+
+    const zonaJaboneriaTepotzotlan = zonesTepotzotlan.find(
+      (zone) => zone.name === 'Jaboneria',
+    );
+
+    const zonaPerfumeriaCuatitlan = zonesCuautitlan.find(
+      (zone) => zone.name === 'Perfumeria',
+    );
+
+    const zonaMaceracionesCuatitlan = zonesCuautitlan.find(
+      (zone) => zone.name === 'Maceraciones',
+    );
+
+    const zonaJaboneriaCuatitlan = zonesCuautitlan.find(
+      (zone) => zone.name === 'Jaboneria',
+    );
+
+    const zonaAlmacenTepotzotlan = zonesTepotzotlan.find(
+      (zone) => zone.name === 'Almacen',
+    );
+
+    const zonaAlmacenCuatitlan = zonesCuautitlan.find(
+      (zone) => zone.name === 'Almacen',
+    );
+
+    const usersMexico = [
       {
-        name: 'Sofia Osorio',
-        email: 'sst@hada.com.co',
-        password: 'sst',
-        role: ROLE_ADMINISTRADOR,
-        manufacturingPlants: [manizales],
+        name: 'Diego Loaiza',
+        email: 'dloaiza@hadamexico.com',
+        password: 'dloaiza',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [cuautitlan, tepotzotlan],
         zones: [],
       },
       {
         name: 'Alfonso Arrieta',
         email: 'sst@hadamexico.com',
-        password: '201390Oaam',
+        password: 'crmECA90',
         role: ROLE_ADMINISTRADOR,
         manufacturingPlants: [cuautitlan, tepotzotlan],
         zones: [],
+      },
+      {
+        name: 'David Sanvicente',
+        email: 'dsanvicente@hadamexico.com',
+        password: 'dsanvicente',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [cuautitlan, tepotzotlan],
+        zones: [],
+      },
+      {
+        name: 'David Spaggiari',
+        email: 'dspaggiari@hadamexico.com',
+        password: 'dspaggiari',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [cuautitlan, tepotzotlan],
+        zones: [],
+      },
+      {
+        name: 'Ernesto Zuppa',
+        email: 'ezuppa@hadamexico.com',
+        password: 'ezuppa',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [tepotzotlan],
+        zones: [zonaLiquidosTepotzotlan, zonaJaboneriaTepotzotlan],
+      },
+      {
+        name: 'Geovany Garcia',
+        email: 'sproduccion@hadamexico.com',
+        password: 'sproduccion',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [tepotzotlan],
+        zones: [zonaLiquidosTepotzotlan, zonaJaboneriaTepotzotlan],
+      },
+      {
+        name: 'Froylan Gonzalez / Alexis rodriguez / Liliana Arroyo',
+        email: 'sproduccion.cu@hadamexico.com',
+        password: 'sproduccion.cu',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [cuautitlan],
+        zones: [
+          zonaPerfumeriaCuatitlan,
+          zonaMaceracionesCuatitlan,
+          zonaJaboneriaCuatitlan,
+        ],
       },
       {
         name: 'Susana Trujillo',
@@ -68,6 +150,90 @@ export default class UsersSeeder implements Seeder {
         manufacturingPlants: [cuautitlan, tepotzotlan],
         zones: [],
       },
+      {
+        name: 'Anyela Holguin',
+        email: 'aholguin@hada.com.co',
+        password: 'aholguin',
+        role: ROLE_ADMINISTRADOR,
+        manufacturingPlants: [cuautitlan, tepotzotlan, manizales, barranquilla],
+        zones: [],
+      },
+      {
+        name: 'Ximena Rodriguez',
+        email: 'sst2@hadamexico.com',
+        password: 'sst2',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [cuautitlan, tepotzotlan],
+        zones: [],
+      },
+      {
+        name: 'Gabriela Salgado',
+        email: 'gsalgado@hadameixco.com',
+        password: 'gsalgado',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [cuautitlan, tepotzotlan],
+        zones: [],
+      },
+      {
+        name: 'Fernando Sanchez',
+        email: 'f.sanchez@hadamexico.com',
+        password: 'f.sanchez',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [cuautitlan, tepotzotlan],
+        zones: [zonaAlmacenTepotzotlan],
+      },
+      {
+        name: 'Hector padilla',
+        email: 'hpadilla@hadamexico.com',
+        password: 'hpadilla',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [tepotzotlan],
+        zones: [zonaAlmacenTepotzotlan],
+      },
+      {
+        name: 'Gustavo Herrera',
+        email: 'g.herrera@hadamexico.com',
+        password: 'g.herrera',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [cuautitlan],
+        zones: [zonaAlmacenCuatitlan],
+      },
+      {
+        name: 'Carlos Flores',
+        email: 'c.flores@hadamexico.com',
+        password: 'c.flores',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [cuautitlan, tepotzotlan],
+        zones: [],
+      },
+      {
+        name: 'Juan Dominguez',
+        email: 'jdominguez@hadamexico.com',
+        password: 'jdominguez',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [cuautitlan, tepotzotlan],
+        zones: [],
+      },
+      {
+        name: 'Gabriel Garcia',
+        email: 'g.garcia@hadamexico.com',
+        password: 'g.garcia',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [tepotzotlan, cuautitlan],
+        zones: [],
+      },
+    ];
+
+    const data = [
+      {
+        name: 'Eduardo Dominguez',
+        email: 'eduardo-266@hotmail.com',
+        password: '123',
+        role: ROLE_ADMINISTRADOR,
+        manufacturingPlants: [cuautitlan, tepotzotlan, manizales, barranquilla],
+        zones: [],
+      },
+      ...usersMexico,
     ];
 
     for (let i = 0; i < data.length; i++) {

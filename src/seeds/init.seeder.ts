@@ -12,10 +12,10 @@ export default class InitSeeder implements Seeder {
     await runSeeders(dataSource, {
       seeds: [
         ManufacturingPlantsSeeder,
-        ZonesSeeder,
         UserSeeder,
         MainTypesSeeder,
         SecondaryTypesSeeder,
+        ZonesSeeder,
       ],
     });
   }

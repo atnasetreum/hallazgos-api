@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { Evidence } from 'evidences/entities/evidence.entity';
+import { Zone } from 'zones/entities/zone.entity';
 @Entity()
 export class ManufacturingPlant {
   @PrimaryGeneratedColumn()
@@ -36,4 +37,7 @@ export class ManufacturingPlant {
 
   @OneToMany(() => Evidence, (evidence) => evidence.manufacturingPlant)
   evidences: Evidence[];
+
+  @OneToMany(() => Zone, (zone) => zone.manufacturingPlant)
+  zones: Zone[];
 }

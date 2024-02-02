@@ -13,11 +13,28 @@ export default class SecondaryTypesSeeder implements Seeder {
       name: 'Condición insegura',
     });
     const data1 = [
-      'Máquina sin guarda de seguridad',
-      'Sensor de seguridad sin funcionamiento',
-      'Escalera en mal estado',
-      'Fuga de aceite',
-      'Tubería sin aislamiento de calor',
+      'Derrame de materiales y/o productos',
+      'Equipos en movimiento sin guardas',
+      'Equipos moviles sin check list',
+      'Equipos moviles sin luz rutilante',
+      'Equipos sin paro de emergencia',
+      'Equipos sin señalizar ',
+      'Estructuras dañadas',
+      'Extintores sin señalizacion, seguro y dañados o en piso',
+      'Falta capacidad de carga y estiba maxima en almacén',
+      'Falta de barandal en superficies arriba de 1.50 mts',
+      'Falta de rodapie',
+      'Falta orden y limpieza',
+      'Instalaciones electricas deficientes',
+      'Maquinas y/o equipos improivisados',
+      'Navajas sin protección',
+      'Pallet mal estibado y/o sin playo',
+      'Pasillos bloqueados',
+      'Productos quimicos sin identificar',
+      'Racks dañados',
+      'Regaderas y lavaojos bloqueados o dañados',
+      'Tableros electricos sin identificación ',
+      'Tuberia sin señalizar  ',
     ];
     for (let i = 0, t = data1.length; i < t; i++) {
       const name = data1[i];
@@ -37,12 +54,17 @@ export default class SecondaryTypesSeeder implements Seeder {
       name: 'Comportamiento inseguro',
     });
     const data2 = [
-      'Manipulación de máquina con sensores de seguridad activados',
-      'Uso de paro de emergencia',
-      'Uso adecuado de EPP',
-      'Uso de guardas de seguridad',
-      'Levantamiento de cargas no mayor a 25 kl (Hombre)',
-      'Levantamiento de cargas no mayor a 12.5 kl (Mujer)',
+      'Actividades por arriba de 1.5 mts sin EPP',
+      'Actividades sin permiso de trabajo',
+      'Activides de alto riesgo sin controles.',
+      'Actos de bandalismo (pintas)',
+      'Daño a materiales, equipos y/o herramientas',
+      'Envolturas de alimentos ',
+      'Juegos y/o bromas al personal',
+      'Personal bajo efectos de alcohol y/o sustancias',
+      'Personal sin EPP',
+      'Uniformes sucios o en mal estado',
+      'Uso de barba y/o accesorios',
     ];
     for (let i = 0, t = data2.length; i < t; i++) {
       const name = data2[i];

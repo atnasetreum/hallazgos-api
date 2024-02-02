@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 
 import { Evidence } from 'evidences/entities/evidence.entity';
+import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 
 @Entity({ name: 'zones' })
 export class Zone {
@@ -28,4 +30,10 @@ export class Zone {
 
   @OneToMany(() => Evidence, (evidence) => evidence.zone)
   evidences: Evidence[];
+
+  @ManyToOne(
+    () => ManufacturingPlant,
+    (manufacturingPlant) => manufacturingPlant.zones,
+  )
+  manufacturingPlant: ManufacturingPlant;
 }
