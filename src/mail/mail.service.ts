@@ -36,7 +36,9 @@ export class MailService {
         zone: evidenceCurrent.zone.name,
         userWhoCreated: evidenceCurrent.user.name,
         createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
-        supervisor: evidenceCurrent.supervisor.name,
+        supervisor: evidenceCurrent.supervisors
+          .map((supervisor) => supervisor.name)
+          .join(' / '),
       },
       attachments: [
         {
@@ -75,7 +77,9 @@ export class MailService {
         zone: evidenceCurrent.zone.name,
         userWhoCreated: evidenceCurrent.user.name,
         createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
-        supervisor: evidenceCurrent.supervisor.name,
+        supervisor: evidenceCurrent.supervisors
+          .map((supervisor) => supervisor.name)
+          .join(' / '),
         solutionDate: stringToDateWithTime(evidenceCurrent.solutionDate),
         durantionToTime: durantionToTime(
           evidenceCurrent.createdAt,
@@ -127,7 +131,9 @@ export class MailService {
         zone: evidenceCurrent.zone.name,
         userWhoCreated: evidenceCurrent.user.name,
         createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
-        supervisor: evidenceCurrent.supervisor.name,
+        supervisor: evidenceCurrent.supervisors
+          .map((supervisor) => supervisor.name)
+          .join(' / '),
       },
       attachments: [
         {

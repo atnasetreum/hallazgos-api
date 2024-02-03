@@ -70,13 +70,14 @@ export class EvidencesService {
 
     const user = await this.usersService.findOne(userId);
 
-    const supervisor = await this.usersService.findSupervisor(
+    const supervisors = await this.usersService.findSupervisor(
       manufacturingPlant.id,
+      zone,
     );
 
-    if (!supervisor)
+    if (!supervisors.length)
       throw new BadRequestException(
-        `No se ha encontrado un supervisor asignador para la planta ${manufacturingPlant.name}`,
+        `No se ha encontrado algun supervisor asignador para la planta ${manufacturingPlant.name}, zona ${zoneRow.name}`,
       );
 
     const evidenceCurrent = await this.evidenceRepository.save(
@@ -87,7 +88,7 @@ export class EvidencesService {
         secondaryType,
         zone: zoneRow,
         user,
-        supervisor,
+        supervisors,
         status: STATUS_OPEN,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -124,8 +125,6 @@ export class EvidencesService {
 
     for (let i = 0; i < plantUsers.length; i++) {
       const userToSendEmail = plantUsers[i];
-
-      if (process.env.NODE_ENV === 'development') continue;
 
       switch (type) {
         case 'create':
@@ -240,7 +239,7 @@ export class EvidencesService {
         'secondaryType',
         'zone',
         'user',
-        'supervisor',
+        'supervisors',
         'comments',
       ],
       order: {
@@ -262,7 +261,7 @@ export class EvidencesService {
         'secondaryType',
         'zone',
         'user',
-        'supervisor',
+        'supervisors',
         'comments',
       ],
     });

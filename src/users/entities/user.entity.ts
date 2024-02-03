@@ -49,10 +49,7 @@ export class User {
   })
   manufacturingPlants: ManufacturingPlant[];
 
-  @ManyToMany(() => Zone)
-  @JoinTable({
-    name: 'user_zones',
-  })
+  @OneToMany(() => Zone, (zone) => zone.user)
   zones: Zone[];
 
   @OneToMany(() => Evidence, (evidence) => evidence.user)
@@ -61,8 +58,8 @@ export class User {
   @OneToMany(() => Comment, (evidence) => evidence.user)
   comments: Comment[];
 
-  @OneToMany(() => Evidence, (evidence) => evidence.supervisor)
-  assignedEvidence: Evidence[];
+  /*@ManyToOne(() => Evidence, (evidence) => evidence.supervisors)
+  assignedEvidence: Evidence;*/
 
   @BeforeInsert()
   @BeforeUpdate()

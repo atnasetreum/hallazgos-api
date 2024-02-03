@@ -22,6 +22,10 @@ export class ZonesService {
       where: {
         isActive: true,
       },
+      relations: ['manufacturingPlant'],
+      order: {
+        name: 'ASC',
+      },
     });
   }
 

@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
@@ -59,8 +61,9 @@ export class Evidence {
   @ManyToOne(() => User, (user) => user.evidences)
   user: User;
 
-  @ManyToOne(() => User, (user) => user.assignedEvidence)
-  supervisor: User;
+  @ManyToMany(() => User)
+  @JoinTable()
+  supervisors: User[];
 
   @OneToMany(() => Comment, (comment) => comment.evidence)
   comments: Comment[];

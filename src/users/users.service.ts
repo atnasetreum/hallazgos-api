@@ -1,13 +1,13 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { REQUEST } from '@nestjs/core';
 
 import { Repository } from 'typeorm';
+import { Request } from 'express';
 
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
-import { REQUEST } from '@nestjs/core';
-import { Request } from 'express';
-import { ROLE_SUPERVISOR } from '@shared/constants';
+import { ENV_DEVELOPMENT, ROLE_SUPERVISOR } from '@shared/constants';
 
 @Injectable()
 export class UsersService {
@@ -34,6 +34,18 @@ export class UsersService {
   }
 
   findAllByPlant(plantId: number): Promise<User[]> {
+    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+      return this.userRepository.find({
+        where: {
+          email: 'eduardo-266@hotmail.com',
+          isActive: true,
+          manufacturingPlants: {
+            id: plantId,
+          },
+        },
+      });
+    }
+
     return this.userRepository.find({
       where: {
         isActive: true,
@@ -59,13 +71,19 @@ export class UsersService {
     return user;
   }
 
-  findSupervisor(manufacturingPlantId: number): Promise<User> {
-    return this.userRepository.findOne({
+  async findSupervisor(
+    manufacturingPlantId: number,
+    zoneId: number,
+  ): Promise<User[]> {
+    return this.userRepository.find({
       where: {
         isActive: true,
         role: ROLE_SUPERVISOR,
         manufacturingPlants: {
           id: manufacturingPlantId,
+        },
+        zones: {
+          id: zoneId,
         },
       },
     });

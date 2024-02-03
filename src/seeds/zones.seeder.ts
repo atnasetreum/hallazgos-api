@@ -51,9 +51,14 @@ export default class ZonesSeeder implements Seeder {
     const data = [...dataCuatitlan, ...dataTepozotlan];
 
     for (let i = 0, t = data.length; i < t; i++) {
-      const { name } = data[i];
+      const { name, plant } = data[i];
 
-      const zone = await repository.findOneBy({ name });
+      const zone = await repository.findOneBy({
+        name,
+        manufacturingPlant: {
+          id: plant.id,
+        },
+      });
 
       if (!zone) {
         const zoneCreate = await repository.create({
