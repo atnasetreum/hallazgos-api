@@ -5,6 +5,7 @@ import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-
 import { User } from 'users/entities/user.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import {
+  ENV_DEVELOPMENT,
   ROLE_ADMINISTRADOR,
   ROLE_GENERAL,
   ROLE_SUPERVISOR,
@@ -224,17 +225,38 @@ export default class UsersSeeder implements Seeder {
       },
     ];
 
-    const data = [
+    const userDevs = [
       {
-        name: 'Eduardo Dominguez',
+        name: 'Eduardo Admin',
         email: 'eduardo-266@hotmail.com',
         password: '123',
         role: ROLE_ADMINISTRADOR,
         manufacturingPlants: [cuautitlan, tepotzotlan, manizales, barranquilla],
         zones: [],
       },
-      ...usersMexico,
+      {
+        name: 'Eduardo Supervisor',
+        email: 'eduardo-supervisor@hotmail.com',
+        password: '123',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [cuautitlan, tepotzotlan, manizales, barranquilla],
+        zones: [...zonesCuautitlan, ...zonesTepotzotlan],
+      },
+      {
+        name: 'Eduardo General',
+        email: 'eduardo-general@hotmail.com',
+        password: '123',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [cuautitlan, tepotzotlan, manizales, barranquilla],
+        zones: [],
+      },
     ];
+
+    const data = [...usersMexico];
+
+    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+      data.push(...userDevs);
+    }
 
     for (let i = 0; i < data.length; i++) {
       const dataCurrent = data[i];
