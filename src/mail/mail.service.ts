@@ -44,7 +44,7 @@ export class MailService {
         {
           filename: imgEvidence,
           path:
-            __dirname +
+            process.cwd() +
             '../../../public/static/images/evidences/' +
             imgEvidence,
           cid: 'imgEvidence',

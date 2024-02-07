@@ -70,6 +70,7 @@ export class EvidencesService {
 
     const user = await this.usersService.findOne(userId);
 
+    // TODO: Ignorar los usuarios de desarrollo
     const supervisors = await this.usersService.findSupervisor(
       manufacturingPlant.id,
       zone,
