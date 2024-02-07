@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { REQUEST } from '@nestjs/core';
 
-import { Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { Request } from 'express';
 
 import { CreateUserDto, UpdateUserDto } from './dto';
@@ -55,6 +55,13 @@ export class UsersService {
         manufacturingPlants: {
           id: plantId,
         },
+        email: Not(
+          In([
+            'eduardo-266@hotmail.com',
+            'eduardo-supervisor@hotmail.com',
+            'eduardo-general@hotmail.com',
+          ]),
+        ),
       },
     });*/
   }
@@ -88,6 +95,13 @@ export class UsersService {
         zones: {
           id: zoneId,
         },
+        email: Not(
+          In([
+            'eduardo-266@hotmail.com',
+            'eduardo-supervisor@hotmail.com',
+            'eduardo-general@hotmail.com',
+          ]),
+        ),
       },
     });
   }
