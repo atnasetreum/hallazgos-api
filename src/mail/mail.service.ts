@@ -7,6 +7,11 @@ import { durantionToTime, stringToDateWithTime } from '@shared/utils';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { User } from 'users/entities/user.entity';
 
+const pathImage =
+  process.env.NODE_ENV === ENV_DEVELOPMENT
+    ? __dirname + '../../../public/static/images/evidences/'
+    : 'https://api.comportarte.com/static/images/evidences/';
+
 @Injectable()
 export class MailService {
   constructor(
@@ -22,11 +27,6 @@ export class MailService {
     evidenceCurrent: Evidence;
   }) {
     const { imgEvidence, manufacturingPlant, mainType } = evidenceCurrent;
-
-    const pathImage =
-      process.env.NODE_ENV === ENV_DEVELOPMENT
-        ? __dirname + '../../../public/static/images/evidences/'
-        : 'https://api.comportarte.com/static/images/evidences/';
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -92,10 +92,7 @@ export class MailService {
       attachments: [
         {
           filename: imgEvidence,
-          path:
-            __dirname +
-            '../../../public/static/images/evidences/' +
-            imgEvidence,
+          path: pathImage + imgEvidence,
           cid: 'imgEvidence',
         },
 
@@ -141,10 +138,7 @@ export class MailService {
       attachments: [
         {
           filename: imgEvidence,
-          path:
-            __dirname +
-            '../../../public/static/images/evidences/' +
-            imgEvidence,
+          path: pathImage + imgEvidence,
           cid: 'imgEvidence',
         },
       ],
