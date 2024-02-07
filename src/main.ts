@@ -13,7 +13,6 @@ async function bootstrap() {
       credentials: true,
     },
   });
-
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -23,15 +22,10 @@ async function bootstrap() {
       },
     }),
   );
-
   app.use(cookieParser());
-
   app.setGlobalPrefix('/api/v1');
-
   app.useGlobalFilters(new GlobalExceptionFilter());
-
   await app.listen(process.env.PORT);
-
   console.log(
     `[APP-SERVICE] Running on port: [${process.env.PORT}], environment: [${process.env.NODE_ENV}]`,
   );
