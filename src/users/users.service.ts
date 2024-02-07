@@ -34,26 +34,28 @@ export class UsersService {
   }
 
   findAllByPlant(plantId: number): Promise<User[]> {
-    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
-      return this.userRepository.find({
-        where: {
-          email: 'eduardo-266@hotmail.com',
-          isActive: true,
-          manufacturingPlants: {
-            id: plantId,
-          },
-        },
-      });
-    }
+    console.log({ ENV_DEVELOPMENT });
 
+    //if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
     return this.userRepository.find({
       where: {
+        email: 'eduardo-266@hotmail.com',
         isActive: true,
         manufacturingPlants: {
           id: plantId,
         },
       },
     });
+    //}
+
+    /*return this.userRepository.find({
+      where: {
+        isActive: true,
+        manufacturingPlants: {
+          id: plantId,
+        },
+      },
+    });*/
   }
 
   async findOne(id: number): Promise<User> {
