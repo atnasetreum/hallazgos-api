@@ -5,7 +5,6 @@ import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-
 import { User } from 'users/entities/user.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import {
-  ENV_DEVELOPMENT,
   ROLE_ADMINISTRADOR,
   ROLE_GENERAL,
   ROLE_SUPERVISOR,
@@ -252,11 +251,7 @@ export default class UsersSeeder implements Seeder {
       },
     ];
 
-    const data = [...usersMexico];
-
-    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
-      data.push(...userDevs);
-    }
+    const data = [...userDevs, ...usersMexico];
 
     for (let i = 0; i < data.length; i++) {
       const dataCurrent = data[i];

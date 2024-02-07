@@ -48,6 +48,7 @@ export class UsersService {
     });
     //}
 
+    // TODO: Ignorar los usuarios de desarrollo
     /*return this.userRepository.find({
       where: {
         isActive: true,
