@@ -2,6 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+import { ENV_DEVELOPMENT } from '@shared/constants';
 import { durantionToTime, stringToDateWithTime } from '@shared/utils';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { User } from 'users/entities/user.entity';
@@ -21,6 +22,11 @@ export class MailService {
     evidenceCurrent: Evidence;
   }) {
     const { imgEvidence, manufacturingPlant, mainType } = evidenceCurrent;
+
+    const pathImage =
+      process.env.NODE_ENV === ENV_DEVELOPMENT
+        ? __dirname + '../../../public/static/images/evidences/'
+        : 'https://api.comportarte.com/static/images/evidences/';
 
     await this.mailerService.sendMail({
       to: user.email,
@@ -43,10 +49,7 @@ export class MailService {
       attachments: [
         {
           filename: imgEvidence,
-          path:
-            process.cwd() +
-            '../../../public/static/images/evidences/' +
-            imgEvidence,
+          path: pathImage + imgEvidence,
           cid: 'imgEvidence',
         },
       ],
