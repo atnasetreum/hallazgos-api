@@ -20,6 +20,7 @@ export default class ZonesSeeder implements Seeder {
       { name: 'Calidad', plant: cuatitlan },
       { name: 'Comedor', plant: cuatitlan },
       { name: 'Estacionamiento', plant: cuatitlan },
+      { name: 'Ingeniera', plant: cuatitlan },
       { name: 'Jaboneria', plant: cuatitlan },
       { name: 'Llenadora', plant: cuatitlan },
       { name: 'Maceraciones', plant: cuatitlan },
