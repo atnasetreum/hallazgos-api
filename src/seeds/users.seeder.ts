@@ -97,6 +97,14 @@ export default class UsersSeeder implements Seeder {
       (zone) => zone.name === 'Ingeniera',
     );
 
+    const zonaVestidorHTepotzotlan = zonesTepotzotlan.find(
+      (zone) => zone.name === 'Vestidor H',
+    );
+
+    const zonaVestidorMTepotzotlan = zonesTepotzotlan.find(
+      (zone) => zone.name === 'Vestidor M',
+    );
+
     const usersMexico = [
       {
         name: 'Diego Loaiza',
@@ -136,7 +144,12 @@ export default class UsersSeeder implements Seeder {
         password: 'ezuppa',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [tepotzotlan],
-        zones: [zonaLiquidosTepotzotlan, zonaJaboneriaTepotzotlan],
+        zones: [
+          zonaLiquidosTepotzotlan,
+          zonaJaboneriaTepotzotlan,
+          zonaVestidorHTepotzotlan,
+          zonaVestidorMTepotzotlan,
+        ],
       },
       {
         name: 'Geovany Garcia',
@@ -144,7 +157,12 @@ export default class UsersSeeder implements Seeder {
         password: 'sproduccion',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [tepotzotlan],
-        zones: [zonaLiquidosTepotzotlan, zonaJaboneriaTepotzotlan],
+        zones: [
+          zonaLiquidosTepotzotlan,
+          zonaJaboneriaTepotzotlan,
+          zonaVestidorHTepotzotlan,
+          zonaVestidorMTepotzotlan,
+        ],
       },
       {
         name: 'Froylan Gonzalez / Alexis rodriguez / Liliana Arroyo',
@@ -309,6 +327,9 @@ export default class UsersSeeder implements Seeder {
       if (!user) {
         const userCreate = await userRepository.create(dataCurrent);
         await userRepository.save(userCreate);
+      } else {
+        user.zones = dataCurrent.zones;
+        await userRepository.save(user);
       }
     }
   }
