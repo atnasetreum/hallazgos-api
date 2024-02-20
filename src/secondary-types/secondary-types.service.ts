@@ -21,6 +21,7 @@ export class SecondaryTypesService {
     return this.secondaryTypeRepository.find({
       where: { isActive: true },
       relations: ['mainType'],
+      order: { name: 'ASC' },
     });
   }
 
@@ -33,6 +34,7 @@ export class SecondaryTypesService {
   findAllByManufacturingPlant(id: number) {
     return this.secondaryTypeRepository.find({
       where: { mainType: { id }, isActive: true },
+      order: { name: 'ASC' },
     });
   }
 

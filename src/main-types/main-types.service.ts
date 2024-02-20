@@ -21,8 +21,17 @@ export class MainTypesService {
     return this.mainTypeRepository.find({
       where: {
         isActive: true,
+        secondaryTypes: {
+          isActive: true,
+        },
       },
       relations: ['secondaryTypes'],
+      order: {
+        name: 'ASC',
+        secondaryTypes: {
+          name: 'ASC',
+        },
+      },
     });
   }
 
