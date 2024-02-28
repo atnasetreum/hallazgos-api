@@ -105,6 +105,10 @@ export default class UsersSeeder implements Seeder {
       (zone) => zone.name === 'Vestidor M',
     );
 
+    const zonaAguaDesionizadaTepotzotlan = zonesTepotzotlan.find(
+      (zone) => zone.name === 'Agua Desionizada',
+    );
+
     const usersMexico = [
       {
         name: 'Diego Loaiza',
@@ -149,6 +153,7 @@ export default class UsersSeeder implements Seeder {
           zonaJaboneriaTepotzotlan,
           zonaVestidorHTepotzotlan,
           zonaVestidorMTepotzotlan,
+          zonaAguaDesionizadaTepotzotlan,
         ],
       },
       {
@@ -162,6 +167,7 @@ export default class UsersSeeder implements Seeder {
           zonaJaboneriaTepotzotlan,
           zonaVestidorHTepotzotlan,
           zonaVestidorMTepotzotlan,
+          zonaAguaDesionizadaTepotzotlan,
         ],
       },
       {
