@@ -1,170 +1,162 @@
 import { REQUEST } from '@nestjs/core';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Request } from 'express';
-import { In, Repository } from 'typeorm';
-import * as moment from 'moment';
+import { In, MoreThan, Repository } from 'typeorm';
 
-import { Evidence } from 'evidences/entities/evidence.entity';
 import { User } from 'users/entities/user.entity';
-import { STATUS_CLOSE } from '@shared/constants';
+import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
+import { groupBy } from '@shared/utils';
 
 import 'moment/locale/es';
 
 @Injectable()
 export class DashboardService {
   constructor(
-    @InjectRepository(Evidence)
-    private readonly evidenceRepository: Repository<Evidence>,
+    @InjectRepository(ManufacturingPlant)
+    private readonly manufacturingPlant: Repository<ManufacturingPlant>,
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
-  get manufacturingPlants() {
-    return (this.request['user'] as User).manufacturingPlants;
-  }
+  async findAllStatus() {
+    const user = this.request['user'] as User;
 
-  get manufacturingPlantsIds() {
-    const manufacturingPlantsIds = this.manufacturingPlants.map(
+    const manufacturingPlantsIds = user.manufacturingPlants.map(
       (manufacturingPlant) => manufacturingPlant.id,
     );
 
-    if (!manufacturingPlantsIds.length)
-      throw new BadRequestException('No se ha encontrado plantas asignadas');
-
-    return manufacturingPlantsIds;
-  }
-
-  async findAllStatus() {
-    const manufacturingPlantsIds = this.manufacturingPlantsIds;
-
-    const evidences = await this.evidenceRepository.find({
-      where: {
-        manufacturingPlant: {
-          isActive: true,
+    const manufacturingPlantsWithEvidences = await this.manufacturingPlant.find(
+      {
+        where: {
           id: In(manufacturingPlantsIds),
+          isActive: true,
+          evidences: MoreThan(0),
         },
+        relations: ['evidences'],
+        loadEagerRelations: true,
       },
-      relations: ['manufacturingPlant'],
+    );
+
+    const evidencesTotal = manufacturingPlantsWithEvidences.reduce(
+      (acc, project) => acc + project.evidences.length,
+      0,
+    );
+
+    const statusData = manufacturingPlantsWithEvidences.map((project) => {
+      const porcentaje = Number(
+        (project.evidences.length / evidencesTotal) * 100,
+      );
+      return {
+        name: `${project.name} (${project.evidences.length})`,
+        y: Number(porcentaje.toFixed(2)),
+        drilldown: project.name,
+      };
     });
 
-    const getEvidencesCurrent = (manufacturingPlantId: number) =>
-      evidences.filter(
-        (evidence) => evidence.manufacturingPlant.id === manufacturingPlantId,
-      );
+    const statusSeries = [];
 
-    const getDrilldownGroupedstatus = (manufacturingPlantId: number) => {
-      const evidencesCurrent = getEvidencesCurrent(manufacturingPlantId);
+    for (let i = 0, t = manufacturingPlantsWithEvidences.length; i < t; i++) {
+      const projectCurrent = manufacturingPlantsWithEvidences[i];
 
-      const status = evidencesCurrent.map((evidence) => evidence.status);
+      const clientsGroupStatus = groupBy(projectCurrent.evidences, 'status');
 
-      const objStatusCounter = {};
-      let total = 0;
+      const data = [];
 
-      for (let i = 0, t = status.length; i < t; i++) {
-        const statusCurrent = status[i];
-        total += 1;
-        if (!objStatusCounter[statusCurrent]) {
-          objStatusCounter[statusCurrent] = 1;
-        } else {
-          objStatusCounter[statusCurrent] += 1;
-        }
+      for (const key in clientsGroupStatus) {
+        const clients = clientsGroupStatus[key];
+        const porcentaje = Number(
+          (clients.length / projectCurrent.evidences.length) * 100,
+        );
+        data.push([
+          `${key} (${clients.length})`,
+          Number(porcentaje.toFixed(2)),
+        ]);
       }
 
-      const array = [];
-      const statusAdd = [];
-
-      for (let i = 0, t = evidencesCurrent.length; i < t; i++) {
-        const evicence = evidencesCurrent[i];
-        const statusCurrent = evicence.status;
-        if (!array[statusCurrent] && !statusAdd.includes(statusCurrent)) {
-          array.push([
-            statusCurrent,
-            (objStatusCounter[statusCurrent] * 100) / total,
-          ]);
-          statusAdd.push(statusCurrent);
-        }
-      }
-
-      return array;
-    };
-
-    const calculatePercentage = (manufacturingPlantId: number) => {
-      const totalEvidences = evidences.length;
-      const totalEvidencesCurrent =
-        getEvidencesCurrent(manufacturingPlantId).length;
-      const percentage = (totalEvidencesCurrent * 100) / totalEvidences;
-      return percentage;
-    };
+      statusSeries.push({
+        name: `${projectCurrent.name}`,
+        id: projectCurrent.name,
+        data,
+      });
+    }
 
     return {
-      series: [
-        {
-          name: 'Plantas',
-          colorByPoint: true,
-          data: this.manufacturingPlants.map((manufacturingPlant) => ({
-            name: manufacturingPlant.name,
-            y: calculatePercentage(manufacturingPlant.id),
-            drilldown: manufacturingPlant.name,
-          })),
-        },
-      ],
-      drilldown: {
-        series: this.manufacturingPlants.map((manufacturingPlant) => ({
-          name: manufacturingPlant.name,
-          id: manufacturingPlant.name,
-          data: getDrilldownGroupedstatus(manufacturingPlant.id),
-        })),
-      },
+      statusData,
+      statusSeries,
     };
   }
 
-  async findRelevantData() {
-    const manufacturingPlants = this.manufacturingPlants;
+  async findAllZones() {
+    const user = this.request['user'] as User;
 
-    const averageSolutionTime = (evidences: Evidence[]) => {
-      let averageSolution = '';
+    const manufacturingPlantsIds = user.manufacturingPlants.map(
+      (manufacturingPlant) => manufacturingPlant.id,
+    );
 
-      const arrayDurations = [];
+    const manufacturingPlantsWithEvidences = await this.manufacturingPlant.find(
+      {
+        where: {
+          id: In(manufacturingPlantsIds),
+          isActive: true,
+          evidences: MoreThan(0),
+        },
+        relations: ['evidences', 'evidences.zone'],
+        loadEagerRelations: true,
+      },
+    );
 
-      for (let i = 0; i < evidences.length; i++) {
-        const evidence = evidences[i];
-        const durantionToTime = moment.duration(
-          moment(evidence.solutionDate).diff(moment(evidence.createdAt)),
+    const evidencesTotal = manufacturingPlantsWithEvidences.reduce(
+      (acc, project) => acc + project.evidences.length,
+      0,
+    );
+
+    const statusData = manufacturingPlantsWithEvidences.map((project) => {
+      const porcentaje = Number(
+        (project.evidences.length / evidencesTotal) * 100,
+      );
+      return {
+        name: `${project.name} (${project.evidences.length})`,
+        y: Number(porcentaje.toFixed(2)),
+        drilldown: project.name,
+      };
+    });
+
+    const statusSeries = [];
+
+    for (let i = 0, t = manufacturingPlantsWithEvidences.length; i < t; i++) {
+      const projectCurrent = manufacturingPlantsWithEvidences[i];
+
+      const evidencesArray = projectCurrent.evidences.map((item) => ({
+        ...item,
+        zoneName: item.zone.name,
+      }));
+
+      const clientsGroupStatus = groupBy(evidencesArray, 'zoneName');
+
+      const data = [];
+
+      for (const key in clientsGroupStatus) {
+        const clients = clientsGroupStatus[key];
+        const porcentaje = Number(
+          (clients.length / projectCurrent.evidences.length) * 100,
         );
-
-        arrayDurations.push(durantionToTime);
+        data.push([
+          `${key} (${clients.length})`,
+          Number(porcentaje.toFixed(2)),
+        ]);
       }
 
-      averageSolution = arrayDurations.length
-        ? moment
-            .duration(
-              arrayDurations.reduce((a, b) => a + b) / arrayDurations.length,
-            )
-            .humanize()
-        : '';
-
-      return averageSolution;
-    };
-
-    const averageSolutionTimeByManufacturingPlant = {};
-
-    for (let i = 0, t = manufacturingPlants.length; i < t; i++) {
-      const manufacturingPlant = manufacturingPlants[i];
-      const evidences = await this.evidenceRepository.find({
-        where: {
-          status: STATUS_CLOSE,
-          manufacturingPlant: {
-            isActive: true,
-            id: manufacturingPlant.id,
-          },
-        },
+      statusSeries.push({
+        name: `${projectCurrent.name}`,
+        id: projectCurrent.name,
+        data,
       });
-
-      averageSolutionTimeByManufacturingPlant[manufacturingPlant.name] =
-        averageSolutionTime(evidences);
     }
 
-    return { averageSolutionTimeByManufacturingPlant };
+    return {
+      statusData,
+      statusSeries,
+    };
   }
 }

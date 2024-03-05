@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DashboardService } from './dashboard.service';
 import { DashboardController } from './dashboard.controller';
-import { Evidence } from 'evidences/entities/evidence.entity';
+import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Evidence])],
+  imports: [TypeOrmModule.forFeature([ManufacturingPlant])],
   controllers: [DashboardController],
   providers: [DashboardService],
   exports: [TypeOrmModule, DashboardService],

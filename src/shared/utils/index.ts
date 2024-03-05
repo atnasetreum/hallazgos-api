@@ -19,3 +19,17 @@ export const durantionToTime = (startDate: Date, endDate: Date) => {
     seconds ? seconds + 's' : ''
   }`;
 };
+
+export const groupBy = (
+  items: {
+    [key: string]: any;
+  }[],
+  key: string,
+) =>
+  items.reduce(
+    (result, item) => ({
+      ...result,
+      [item[key]]: [...(result[item[key]] || []), item],
+    }),
+    {},
+  );

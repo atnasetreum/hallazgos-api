@@ -11,8 +11,8 @@ export class DashboardController {
     return this.dashboardService.findAllStatus();
   }
 
-  @Get('relevant-data')
-  findRelevantData() {
-    return this.dashboardService.findRelevantData();
+  @Get('zones')
+  findAllZones() {
+    return this.dashboardService.findAllZones();
   }
 }
