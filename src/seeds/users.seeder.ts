@@ -109,6 +109,14 @@ export default class UsersSeeder implements Seeder {
       (zone) => zone.name === 'Agua Desionizada',
     );
 
+    const zonaComedorTepotzotlan = zonesTepotzotlan.find(
+      (zone) => zone.name === 'Comedor',
+    );
+
+    const zonaComedorCuatitlan = zonesCuautitlan.find(
+      (zone) => zone.name === 'Comedor',
+    );
+
     const usersMexico = [
       {
         name: 'Diego Loaiza',
@@ -284,7 +292,12 @@ export default class UsersSeeder implements Seeder {
         password: 'aimitola',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [tepotzotlan, cuautitlan],
-        zones: [zonaIngenieriaCuatitlan, zonaIngenieriaTepotzotlan],
+        zones: [
+          zonaIngenieriaCuatitlan,
+          zonaIngenieriaTepotzotlan,
+          zonaComedorTepotzotlan,
+          zonaComedorCuatitlan,
+        ],
       },
       {
         name: 'Gerardo Villegas',
@@ -300,6 +313,14 @@ export default class UsersSeeder implements Seeder {
         password: 'cvelasquez',
         role: ROLE_GENERAL,
         manufacturingPlants: [cuautitlan, tepotzotlan],
+        zones: [],
+      },
+      {
+        name: 'Kenia Larios',
+        email: 'klarios@hadamexico.com',
+        password: 'klarios',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [tepotzotlan],
         zones: [],
       },
     ];
