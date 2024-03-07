@@ -323,6 +323,14 @@ export default class UsersSeeder implements Seeder {
         manufacturingPlants: [tepotzotlan],
         zones: [],
       },
+      {
+        name: 'Juan Camilo',
+        email: 'jgonzalez@hada.com.co',
+        password: 'jgonzalez',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [tepotzotlan, cuautitlan],
+        zones: [],
+      },
     ];
 
     const userDevs = [
