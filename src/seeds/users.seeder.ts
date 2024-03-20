@@ -117,6 +117,14 @@ export default class UsersSeeder implements Seeder {
       (zone) => zone.name === 'Comedor',
     );
 
+    const allZonesManizales = await zoneRepository.find({
+      where: {
+        manufacturingPlant: {
+          id: manizales.id,
+        },
+      },
+    });
+
     const usersMexico = [
       {
         name: 'Diego Loaiza',
@@ -279,14 +287,6 @@ export default class UsersSeeder implements Seeder {
         zones: [zonaCalidadTepotzotlan, zonaCalidadCuatitlan],
       },
       {
-        name: 'Sofía Osorio',
-        email: 'sst@hada.com.co',
-        password: 'sst',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [tepotzotlan, cuautitlan],
-        zones: [],
-      },
-      {
         name: 'Arnold Imitola',
         email: 'aimitola@hadamexico.com',
         password: 'aimitola',
@@ -339,6 +339,70 @@ export default class UsersSeeder implements Seeder {
         manufacturingPlants: [cuautitlan],
         zones: [],
       },
+      {
+        name: 'Sofía Osorio',
+        email: 'sst@hada.com.co',
+        password: 'sst',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [manizales],
+        zones: allZonesManizales,
+      },
+      {
+        name: 'Sandra Mejía',
+        email: 'smejia@hada.com.co',
+        password: 'smejia',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [manizales],
+        zones: allZonesManizales,
+      },
+      {
+        name: 'Diva Valencia',
+        email: 'dvalencia@hada.com.co',
+        password: 'dvalencia',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [manizales],
+        zones: [],
+      },
+      {
+        name: 'Julian Buritica',
+        email: 'jburitica@hada.com.co',
+        password: 'jburitica',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [manizales],
+        zones: [],
+      },
+      {
+        name: 'Juliana Aguirre',
+        email: 'jaguirre@hada.com.co',
+        password: 'jaguirre',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [manizales],
+        zones: [],
+      },
+      {
+        name: 'Tatiana Echeverry',
+        email: 'archivo@hada.com.co',
+        password: 'archivo',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [manizales],
+        zones: [],
+      },
+      {
+        name: 'Paola Bojaca',
+        email: 'pbojaca@hada.com.co',
+        password: 'pbojaca',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [manizales],
+        zones: [],
+      },
+      {
+        name: 'Lady Hernandez',
+        email: 'auxfacturacion@hada.com.co',
+        password: 'auxfacturacion',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [manizales],
+        zones: [],
+      },
     ];
 
     const userDevs = [
@@ -380,6 +444,7 @@ export default class UsersSeeder implements Seeder {
         await userRepository.save(userCreate);
       } else {
         user.zones = dataCurrent.zones;
+        user.manufacturingPlants = dataCurrent.manufacturingPlants;
         await userRepository.save(user);
       }
     }

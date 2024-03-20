@@ -12,7 +12,7 @@ export default class ZonesSeeder implements Seeder {
 
     const cuatitlan = await repositoryMP.findOneBy({ name: 'Cuautitlán' });
     const tepozotlan = await repositoryMP.findOneBy({ name: 'Tepotzotlán' });
-    //const manizales = await repositoryMP.findOneBy({ name: 'Manizales' });
+    const manizales = await repositoryMP.findOneBy({ name: 'Manizales' });
     // const barranquilla = await repositoryMP.findOneBy({ name: 'Barranquilla' });
 
     const dataCuatitlan = [
@@ -49,7 +49,27 @@ export default class ZonesSeeder implements Seeder {
       { name: 'Vestidor M', plant: tepozotlan },
     ];
 
-    const data = [...dataCuatitlan, ...dataTepozotlan];
+    const dataManizales = [
+      { name: 'Archivo Manizales', plant: manizales },
+      { name: 'Laboratorio Innovación', plant: manizales },
+      { name: 'Lote Persia', plant: manizales },
+      { name: 'Piso 9 Área administrativa', plant: manizales },
+      { name: 'Piso 9 Café Magia', plant: manizales },
+      { name: 'Piso 9 Recepción', plant: manizales },
+      { name: 'Piso 9 Sala Cristalino', plant: manizales },
+      { name: 'Piso 9 Sala de Juntas', plant: manizales },
+      { name: 'Piso 9 Sala Deseo', plant: manizales },
+      { name: 'Piso 9 Sala Heno de Pravia', plant: manizales },
+      { name: 'Piso 9 Sala Magia', plant: manizales },
+      { name: 'Piso 15 Área administrativa', plant: manizales },
+      { name: 'Piso 15 Presidencia', plant: manizales },
+      { name: 'Piso 15 Recepción', plant: manizales },
+      { name: 'Piso 15 Sala Dans', plant: manizales },
+      { name: 'Piso 15 Sala Mec', plant: manizales },
+      { name: 'Piso 15 Terraza Encanto', plant: manizales },
+    ];
+
+    const data = [...dataCuatitlan, ...dataTepozotlan, ...dataManizales];
 
     for (let i = 0, t = data.length; i < t; i++) {
       const { name, plant } = data[i];
