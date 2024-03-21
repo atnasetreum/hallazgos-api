@@ -13,7 +13,7 @@ export default class ZonesSeeder implements Seeder {
     const cuatitlan = await repositoryMP.findOneBy({ name: 'Cuautitlán' });
     const tepozotlan = await repositoryMP.findOneBy({ name: 'Tepotzotlán' });
     const manizales = await repositoryMP.findOneBy({ name: 'Manizales' });
-    // const barranquilla = await repositoryMP.findOneBy({ name: 'Barranquilla' });
+    const barranquilla = await repositoryMP.findOneBy({ name: 'Barranquilla' });
 
     const dataCuatitlan = [
       { name: 'Almacen', plant: cuatitlan },
@@ -69,7 +69,46 @@ export default class ZonesSeeder implements Seeder {
       { name: 'Piso 15 Terraza Encanto', plant: manizales },
     ];
 
-    const data = [...dataCuatitlan, ...dataTepozotlan, ...dataManizales];
+    const dataBarranquilla = [
+      { name: 'Almacén de Repuestos', plant: barranquilla },
+      { name: 'Ambiental/PTAR', plant: barranquilla },
+      { name: 'Automatización', plant: barranquilla },
+      { name: 'BPM', plant: barranquilla },
+      { name: 'Calidad', plant: barranquilla },
+      { name: 'Casino y Aseo General', plant: barranquilla },
+      { name: 'Comercio Exterior', plant: barranquilla },
+      { name: 'Compras', plant: barranquilla },
+      { name: 'ECOFIRE', plant: barranquilla },
+      {
+        name: 'Excelencia Corporativa/Miembro del COPASST',
+        plant: barranquilla,
+      },
+      { name: 'Gestion Humana', plant: barranquilla },
+      { name: 'Hadabio', plant: barranquilla },
+      { name: 'Ingeniería de Proyectos', plant: barranquilla },
+      { name: 'Líquidos', plant: barranquilla },
+      { name: 'Logística/Bodegas', plant: barranquilla },
+      { name: 'Mantenimiento Eléctrico', plant: barranquilla },
+      { name: 'Mantenimiento Locativo', plant: barranquilla },
+      { name: 'Mantenimiento Mecánico', plant: barranquilla },
+      { name: 'Mantenimiento Mecánico /Caldera', plant: barranquilla },
+      { name: 'Metrología', plant: barranquilla },
+      { name: 'Miembro del COPASST', plant: barranquilla },
+      { name: 'Miembro del COPASST', plant: barranquilla },
+      {
+        name: 'Producción de Solidos /Líneas de Producción',
+        plant: barranquilla,
+      },
+      { name: 'Seguridad y Salud en el Trabajo', plant: barranquilla },
+      { name: 'TIC', plant: barranquilla },
+    ];
+
+    const data = [
+      ...dataCuatitlan,
+      ...dataTepozotlan,
+      ...dataManizales,
+      ...dataBarranquilla,
+    ];
 
     for (let i = 0, t = data.length; i < t; i++) {
       const { name, plant } = data[i];
