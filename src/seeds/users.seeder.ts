@@ -37,6 +37,10 @@ export default class UsersSeeder implements Seeder {
       (manufacturingPlant) => manufacturingPlant.name === 'Barranquilla',
     );
 
+    const CEDIAlfacer = manufacturingPlants.find(
+      (manufacturingPlant) => manufacturingPlant.name === 'CEDI Alfacer',
+    );
+
     const zonesCuautitlan = await zoneRepository.find({
       where: {
         manufacturingPlant: {
@@ -132,70 +136,6 @@ export default class UsersSeeder implements Seeder {
         },
       },
     });
-
-    const zonaAlmacenDeRepuestosBarranquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Almacén de Repuestos',
-    );
-
-    const zonaHadabioBarranquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Hadabio',
-    );
-
-    const zonaIngenieriaDeProyectosBarranquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Ingeniería de Proyectos',
-    );
-
-    const zonaMantenimientoElectrico = zonesBarraquilla.find(
-      (zone) => zone.name === 'Mantenimiento Eléctrico',
-    );
-
-    const zonaMantenimientoMecanicoCalderaBarranquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Mantenimiento Mecánico /Caldera',
-    );
-
-    const zonaIngenieriaDeProyectosBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Ingeniería de Proyectos',
-    );
-
-    const zonaProduccionDeSolidosBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Producción de Solidos /Líneas de Producción',
-    );
-
-    const zonaMantenimientoMecanicoBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Mantenimiento Mecánico',
-    );
-
-    const zonaMetrologiaBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Metrología',
-    );
-
-    const zonaAutomatizacionBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Automatización',
-    );
-
-    const zonaMantenimientoLocativoBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Mantenimiento Locativo',
-    );
-
-    const zonaLogisticaBodegasBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Logística/Bodegas',
-    );
-
-    const zonaECOFIREBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'ECOFIRE',
-    );
-
-    const zonaLiquidosBarranquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Líquidos',
-    );
-
-    const zonaCasinoYAseoGeneralBarraquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Casino y Aseo General',
-    );
-
-    const zonaCalidadBarranquilla = zonesBarraquilla.find(
-      (zone) => zone.name === 'Calidad',
-    );
 
     const usersMexico = [
       {
@@ -482,252 +422,212 @@ export default class UsersSeeder implements Seeder {
 
     const usersBarranquilla = [
       {
-        name: 'ALEXANDER RAFAEL VEGA ROMERO',
-        email: 'avega@hadainternational.com',
-        password: 'avega',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaAlmacenDeRepuestosBarranquilla],
+        name: 'Carolina Velasquez',
+        email: 'cvelasquez@hada.com.co',
+        password: 'cvelasquez',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [CEDIAlfacer, barranquilla],
+        zones: [],
       },
       {
-        name: 'BELKIS MARIA TORRES DIAZ',
+        name: 'Juan Camilo Gonzalez',
+        email: 'jgonzalez@hada.com.co',
+        password: 'jgonzalez',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [CEDIAlfacer, barranquilla],
+        zones: [],
+      },
+      {
+        name: 'Belkis Torres',
         email: 'btorres@hadainternational.com',
         password: 'btorres',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'BRENDA MARGARITA VALDERRAMA BARRAZA',
-        email: 'bvalderrama@hadainternational.com',
-        password: 'bvalderrama',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [barranquilla],
-        zones: [zonaHadabioBarranquilla],
+        zones: zonesBarraquilla,
       },
       {
-        name: 'CRISTIAN DANIEL GIL PATIÑO',
-        email: 'cgil@hadainternational.com',
-        password: 'cgil',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaIngenieriaDeProyectosBarranquilla],
-      },
-      {
-        name: 'FERNANDO URQUIJO ALFONSO',
-        email: 'furquijo@hadainternational.com',
-        password: 'furquijo',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaMantenimientoElectrico],
-      },
-      {
-        name: 'HERNANDO ALFONSO YEPES ORTEGA',
-        email: 'hyepes@hadainternational.com',
-        password: 'hyepes',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaMantenimientoMecanicoCalderaBarranquilla],
-      },
-      {
-        name: 'JHON FREDI VALENCIA DUQUE',
-        email: 'jvalencia@hadainternational.com',
-        password: 'jvalencia',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaIngenieriaDeProyectosBarraquilla],
-      },
-      {
-        name: 'JHONNY FRANCO BLANDON',
-        email: 'jfranco@hadainternational.com',
-        password: 'jfranco',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'JOAN SEBASTIAN JIMENEZ SIADO',
-        email: 'jjimenez@hadainternational.com',
-        password: 'jjimenez',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaProduccionDeSolidosBarraquilla],
-      },
-      {
-        name: 'LENDYS MARIA PEREZ HERRERA',
-        email: 'lperez@hadainternational.com',
-        password: 'lperez',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'LEONARDO FABIO USMA ARANGO',
-        email: 'lusma@hadainternational.com',
-        password: 'lusma',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaMantenimientoMecanicoBarraquilla],
-      },
-      {
-        name: 'LIBARDO JAIR LIZARAZO BENITEZ',
-        email: 'llizarazo@hadainternational.com',
-        password: 'llizarazo',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'LUIS FELIPE GUZMAN ROCA',
-        email: 'lguzman@hadainternational.com',
-        password: 'lguzman',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaProduccionDeSolidosBarraquilla],
-      },
-      {
-        name: 'MARIA CAMILA DOMINGUEZ CHAMORRO',
-        email: 'mdominguez@hadainternational.com',
-        password: 'mdominguez',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaProduccionDeSolidosBarraquilla],
-      },
-      {
-        name: 'MARIO ALBERTO GARCIA RODRIGUEZ',
-        email: 'mgarcia@hadainternational.com',
-        password: 'mgarcia',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaIngenieriaDeProyectosBarraquilla],
-      },
-      {
-        name: 'MARIO ALBERTO ORELLANO SANCHEZ',
-        email: 'morellano@hadainternational.com',
-        password: 'morellano',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaProduccionDeSolidosBarraquilla],
-      },
-      {
-        name: 'MAURICIO RAFAEL PEREZ ROLONG',
-        email: 'mperez@hadainternational.com',
-        password: 'mperez',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'MILAGROS SUGEIDIS MOLINARES MOLINA',
-        email: 'mmolinares@hadainternational.COM',
-        password: 'mmolinares',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'PETER ALEXANDER BARRIOS CALDERON',
-        email: 'cmetrologia@hadainternational.com',
-        password: 'cmetrologia',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaMetrologiaBarraquilla],
-      },
-      {
-        name: 'POLINA ANDREA HERNANDEZ ARTEAGA',
-        email: 'phernandez@hadainternational.com',
-        password: 'phernandez',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'RAFAEL GUILLERMO LARA PADILLA',
-        email: 'rlara@hadainternational.com',
-        password: 'rlara',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaIngenieriaDeProyectosBarranquilla],
-      },
-      {
-        name: 'RANDY STIVEN CONRADO BALZA',
-        email: 'rconrado@hadainternational.com',
-        password: 'rconrado',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaAutomatizacionBarraquilla],
-      },
-      {
-        name: 'RICARDO ANDRES MARTINEZ ARANGO',
-        email: 'rmartinez@hadainternational.com',
-        password: 'rmartinez',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaProduccionDeSolidosBarraquilla],
-      },
-      {
-        name: 'RICHARD JAIR ECHAVEZ ACUÑA',
-        email: 'cseguridad@hadainternational.com',
-        password: 'cseguridad',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'VICTOR AUGUSTO CONSUEGRA GOENAGA',
-        email: 'vconsuegra@hadainternational.com',
-        password: 'vconsuegra',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaMantenimientoLocativoBarraquilla],
-      },
-      {
-        name: 'WILFREDO VERGARA SALAZAR',
-        email: 'wvergara@hadainternational.com',
-        password: 'wvergara',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaMantenimientoMecanicoBarraquilla],
-      },
-      {
-        name: 'WILMER ANTONIO OSPINA RIVERA',
-        email: 'wospina@hadainternational.com',
-        password: 'wospina',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'YESID PLATA ASCANIO',
+        name: 'Yesid Plata',
         email: 'yplata@hadainternational.com',
         password: 'yplata',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [barranquilla],
-        zones: [zonaLogisticaBodegasBarraquilla],
+        zones: zonesBarraquilla,
       },
       {
-        name: 'YESID EZEQUIEL CHAVEZ SALCEDO',
-        email: 'ychavez@hadainternational.com',
-        password: 'ychavez',
+        name: 'Polina Hernandez',
+        email: 'phernandez@hadainternational.com',
+        password: 'phernandez',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [barranquilla],
-        zones: [zonaProduccionDeSolidosBarraquilla],
+        zones: zonesBarraquilla,
       },
       {
-        name: 'MIGUEL PALACIO',
-        email: 'mpalacio@hadainternational.com',
-        password: 'mpalacio',
+        name: 'Donaldo Hernandez',
+        email: 'dhernandez@hadainternational.com',
+        password: 'dhernandez',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [barranquilla],
-        zones: [zonaECOFIREBarraquilla],
+        zones: zonesBarraquilla,
       },
       {
-        name: 'Yoel San juan',
-        email: 'auxliquidos@hadainternational.com',
-        password: 'auxliquidos',
+        name: 'Charet Macias',
+        email: 'analistasistemadegestion@hadainternational.com',
+        password: 'analistasistemadegestion',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [barranquilla],
-        zones: [zonaLiquidosBarranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Richard Echavez',
+        email: 'cseguridad@hadainternational.com',
+        password: 'cseguridad',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Milagro Molinares',
+        email: 'mmolinares@hadainternational.com',
+        password: 'mmolinares',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Roberto Gutierrez',
+        email: 'rgutierrez@hadainternational.com',
+        password: 'rgutierrez',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [barranquilla],
+        zones: [],
+      },
+      {
+        name: 'Anyela Holguin',
+        email: 'aholguin@hada.com.co',
+        password: 'aholguin',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [CEDIAlfacer, barranquilla],
+        zones: [],
+      },
+      {
+        name: 'Diego Londoño',
+        email: 'dlondono@hada.com.co',
+        password: 'dlondono',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [CEDIAlfacer],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Libardo Lizarazo',
+        email: 'llizarazo@hadainternational.com',
+        password: 'llizarazo',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Camilo Salazar',
+        email: 'csalazar@hadainternational.com',
+        password: 'csalazar',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [barranquilla],
+        zones: [],
+      },
+      {
+        name: 'Laury Bustillo',
+        email: 'lbustillo@hadainternational.com',
+        password: 'lbustillo',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Ricardo Martinez',
+        email: 'rmartinez@hadainternational.com',
+        password: 'rmartinez',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Diego Díaz',
+        email: 'ddiaz@hada.com.co',
+        password: 'ddiaz',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Coordinadores de producción',
+        email: 'cproduccion@hadainternational.com',
+        password: 'cproduccion',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'John Carbonell',
+        email: 'jcarbonell@hadainternational.com',
+        password: 'jcarbonell',
+        role: ROLE_GENERAL,
+        manufacturingPlants: [barranquilla],
+        zones: [],
+      },
+      {
+        name: 'Fernando Urquijo',
+        email: 'furquijo@hadainternational.com',
+        password: 'furquijo',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Hernando Yepez',
+        email: 'hyepes@hadainternational.com',
+        password: 'hyepes',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Victor Consuegra',
+        email: 'vconsuegra@hadainternational.com',
+        password: 'vconsuegra',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Luis Fernando Muñoz',
+        email: 'jefedeseguridad@hadainternational.com',
+        password: 'jefedeseguridad',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Gustavo Tarazona',
+        email: 'gustavo.tarazonap@dhl.com',
+        password: 'gustavo.tarazonap',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Jhonny Franco',
+        email: 'jfranco@hadainternational.com',
+        password: 'jfranco',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
+      },
+      {
+        name: 'Leonardo Leon',
+        email: 'analisisinstrumental@hadainternational.com',
+        password: 'analisisinstrumental',
+        role: ROLE_SUPERVISOR,
+        manufacturingPlants: [barranquilla],
+        zones: zonesBarraquilla,
       },
       {
         name: 'Martin Ruiz',
@@ -735,39 +635,7 @@ export default class UsersSeeder implements Seeder {
         password: 'mruiz',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [barranquilla],
-        zones: [zonaCasinoYAseoGeneralBarraquilla],
-      },
-      {
-        name: 'Diego Diaz',
-        email: 'ddiaz@hada.com.co',
-        password: 'auxfacturacion',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaProduccionDeSolidosBarraquilla],
-      },
-      {
-        name: 'ANDREA RODRIGUEZ',
-        email: 'arodriguez@hadainternational.com',
-        password: 'arodriguez',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'DAWIN TAPIAS',
-        email: 'dtapias@hadainternational.com',
-        password: 'dtapias',
-        role: ROLE_GENERAL,
-        manufacturingPlants: [barranquilla],
-        zones: [],
-      },
-      {
-        name: 'LEONARDO LEON',
-        email: 'lleon@hadainternational.com',
-        password: 'lleon',
-        role: ROLE_SUPERVISOR,
-        manufacturingPlants: [barranquilla],
-        zones: [zonaCalidadBarranquilla],
+        zones: zonesBarraquilla,
       },
     ];
 

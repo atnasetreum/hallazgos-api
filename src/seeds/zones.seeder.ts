@@ -14,6 +14,7 @@ export default class ZonesSeeder implements Seeder {
     const tepozotlan = await repositoryMP.findOneBy({ name: 'Tepotzotlán' });
     const manizales = await repositoryMP.findOneBy({ name: 'Manizales' });
     const barranquilla = await repositoryMP.findOneBy({ name: 'Barranquilla' });
+    const cediAlfacer = await repositoryMP.findOneBy({ name: 'CEDI Alfacer' });
 
     const dataCuatitlan = [
       { name: 'Almacen', plant: cuatitlan },
@@ -70,37 +71,64 @@ export default class ZonesSeeder implements Seeder {
     ];
 
     const dataBarranquilla = [
-      { name: 'Almacén de Repuestos', plant: barranquilla },
-      { name: 'Ambiental/PTAR', plant: barranquilla },
-      { name: 'Automatización', plant: barranquilla },
-      { name: 'BPM', plant: barranquilla },
-      { name: 'Calidad', plant: barranquilla },
-      { name: 'Casino y Aseo General', plant: barranquilla },
-      { name: 'Comercio Exterior', plant: barranquilla },
-      { name: 'Compras', plant: barranquilla },
-      { name: 'ECOFIRE', plant: barranquilla },
-      {
-        name: 'Excelencia Corporativa/Miembro del COPASST',
-        plant: barranquilla,
-      },
-      { name: 'Gestion Humana', plant: barranquilla },
-      { name: 'Hadabio', plant: barranquilla },
-      { name: 'Ingeniería de Proyectos', plant: barranquilla },
-      { name: 'Líquidos', plant: barranquilla },
-      { name: 'Logística/Bodegas', plant: barranquilla },
-      { name: 'Mantenimiento Eléctrico', plant: barranquilla },
-      { name: 'Mantenimiento Locativo', plant: barranquilla },
-      { name: 'Mantenimiento Mecánico', plant: barranquilla },
-      { name: 'Mantenimiento Mecánico /Caldera', plant: barranquilla },
-      { name: 'Metrología', plant: barranquilla },
-      { name: 'Miembro del COPASST', plant: barranquilla },
-      { name: 'Miembro del COPASST', plant: barranquilla },
-      {
-        name: 'Producción de Solidos /Líneas de Producción',
-        plant: barranquilla,
-      },
-      { name: 'Seguridad y Salud en el Trabajo', plant: barranquilla },
-      { name: 'TIC', plant: barranquilla },
+      { name: 'Almacen de repuesto', plant: barranquilla },
+      { name: 'Almacenamiento de Molido', plant: barranquilla },
+      { name: 'Area de Molino', plant: barranquilla },
+      { name: 'Area perimetral fase 1, 2 y 3', plant: barranquilla },
+      { name: 'Area perimetral fase 4', plant: barranquilla },
+      { name: 'Axia', plant: barranquilla },
+      { name: 'Bodega de almacenamient', plant: barranquilla },
+      { name: 'Bodega de almacenamiento fase 4', plant: barranquilla },
+      { name: 'Cafeteria ', plant: barranquilla },
+      { name: 'Cafetería fase 1', plant: barranquilla },
+      { name: 'Centro de acopio ', plant: barranquilla },
+      { name: 'Control de acceso - Recepción Fase 4', plant: barranquilla },
+      { name: 'Control de acceso Fase 1', plant: barranquilla },
+      { name: 'Cuarto de contramuestra', plant: barranquilla },
+      { name: 'Cuarto de lavado', plant: barranquilla },
+      { name: 'Empaque manual fase 4', plant: barranquilla },
+      { name: 'Mezclado fase 1 y 2', plant: barranquilla },
+      { name: 'Mezclado Fase 4', plant: barranquilla },
+      { name: 'Oficinas 1er piso', plant: barranquilla },
+      { name: 'Oficinas 2do piso', plant: barranquilla },
+      { name: 'Oficinas 2do piso', plant: barranquilla },
+      { name: 'Oficinas 3er piso', plant: barranquilla },
+      { name: 'Patio de tanques', plant: barranquilla },
+      { name: 'Planta de producción acabado fase 1 y 2', plant: barranquilla },
+      { name: 'Planta de producción Acabado fase 4', plant: barranquilla },
+      { name: 'Planta de producción fase 1, 2 y 3', plant: barranquilla },
+      { name: 'Planta de producción fase 4', plant: barranquilla },
+      { name: 'Planta de producción Hada Ecofire', plant: barranquilla },
+      { name: 'Recepción Fase 1', plant: barranquilla },
+      { name: 'Sala de capacitaciones', plant: barranquilla },
+      { name: 'Saponificación y Secado ', plant: barranquilla },
+      { name: 'Servicios a la producción', plant: barranquilla },
+      { name: 'Shut de basuras', plant: barranquilla },
+      { name: 'Taller de mantenimiento  - Ingeniería', plant: barranquilla },
+      { name: 'Torre de enfriamiento', plant: barranquilla },
+      { name: 'Vestidor- Baño Contratistas fase 4', plant: barranquilla },
+      { name: 'Vestidor- Baño M fase 1', plant: barranquilla },
+      { name: 'Vestidor- Baño M fase 4', plant: barranquilla },
+      { name: 'Vestidor-Baño H fase 1', plant: barranquilla },
+      { name: 'Vestidor-Baño H fase 4', plant: barranquilla },
+    ];
+
+    const dataCEDIAlfacer = [
+      { name: 'Area de alistamiento', plant: cediAlfacer },
+      { name: 'Area de baterias', plant: cediAlfacer },
+      { name: 'Area de devoluciones y PNC', plant: cediAlfacer },
+      { name: 'Area perimetral ', plant: cediAlfacer },
+      { name: 'Baño Hombre', plant: cediAlfacer },
+      { name: 'Baño Mujer', plant: cediAlfacer },
+      { name: 'Bodega de almacenamiento', plant: cediAlfacer },
+      { name: 'Cafetería', plant: cediAlfacer },
+      { name: 'Caniles', plant: cediAlfacer },
+      { name: 'Cuarto de aseo', plant: cediAlfacer },
+      { name: 'Muelles', plant: cediAlfacer },
+      { name: 'Oficinas ', plant: cediAlfacer },
+      { name: 'Recepción', plant: cediAlfacer },
+      { name: 'Vestier Hombre', plant: cediAlfacer },
+      { name: 'Vestier Mujer', plant: cediAlfacer },
     ];
 
     const data = [
@@ -108,6 +136,7 @@ export default class ZonesSeeder implements Seeder {
       ...dataTepozotlan,
       ...dataManizales,
       ...dataBarranquilla,
+      ...dataCEDIAlfacer,
     ];
 
     for (let i = 0, t = data.length; i < t; i++) {

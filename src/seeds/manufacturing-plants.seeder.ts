@@ -32,6 +32,12 @@ export default class ManufacturingPlantsSeeder implements Seeder {
         lat: 5.056225853154673,
         lng: -75.48626507116478,
       },
+      {
+        name: 'CEDI Alfacer',
+        link: 'https://maps.app.goo.gl/fmyuNsyG4gGDoa5Z9',
+        lat: 10.9670024,
+        lng: -74.7681337,
+      },
     ];
 
     for (let i = 0, t = data.length; i < t; i++) {
