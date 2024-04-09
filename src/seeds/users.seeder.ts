@@ -137,6 +137,14 @@ export default class UsersSeeder implements Seeder {
       },
     });
 
+    const zonesCEDIAlfacer = await zoneRepository.find({
+      where: {
+        manufacturingPlant: {
+          id: CEDIAlfacer.id,
+        },
+      },
+    });
+
     const usersMexico = [
       {
         name: 'Diego Loaiza',
@@ -515,7 +523,7 @@ export default class UsersSeeder implements Seeder {
         password: 'dlondono',
         role: ROLE_SUPERVISOR,
         manufacturingPlants: [CEDIAlfacer],
-        zones: zonesBarraquilla,
+        zones: zonesCEDIAlfacer,
       },
       {
         name: 'Libardo Lizarazo',
