@@ -428,7 +428,7 @@ export default class UsersSeeder implements Seeder {
       },
     ];
 
-    const usersBarranquilla = [
+    const usersBarranquillaCEDIAlfacer = [
       {
         name: 'Carolina Velasquez',
         email: 'cvelasquez@hada.com.co',
@@ -653,7 +653,13 @@ export default class UsersSeeder implements Seeder {
         email: 'eduardo-266@hotmail.com',
         password: '123',
         role: ROLE_ADMINISTRADOR,
-        manufacturingPlants: [cuautitlan, tepotzotlan, manizales, barranquilla],
+        manufacturingPlants: [
+          cuautitlan,
+          tepotzotlan,
+          manizales,
+          barranquilla,
+          CEDIAlfacer,
+        ],
         zones: [],
       },
       {
@@ -661,15 +667,33 @@ export default class UsersSeeder implements Seeder {
         email: 'eduardo-supervisor@hotmail.com',
         password: '123',
         role: ROLE_SUPERVISOR,
-        manufacturingPlants: [cuautitlan, tepotzotlan, manizales, barranquilla],
-        zones: [...zonesCuautitlan, ...zonesTepotzotlan],
+        manufacturingPlants: [
+          cuautitlan,
+          tepotzotlan,
+          manizales,
+          barranquilla,
+          CEDIAlfacer,
+        ],
+        zones: [
+          ...zonesCuautitlan,
+          ...zonesTepotzotlan,
+          ...zonesBarraquilla,
+          ...zonesCEDIAlfacer,
+          ...allZonesManizales,
+        ],
       },
       {
         name: 'Eduardo General',
         email: 'eduardo-general@hotmail.com',
         password: '123',
         role: ROLE_GENERAL,
-        manufacturingPlants: [cuautitlan, tepotzotlan, manizales, barranquilla],
+        manufacturingPlants: [
+          cuautitlan,
+          tepotzotlan,
+          manizales,
+          barranquilla,
+          CEDIAlfacer,
+        ],
         zones: [],
       },
     ];
@@ -678,7 +702,7 @@ export default class UsersSeeder implements Seeder {
       ...userDevs,
       ...usersMexico,
       ...userManizales,
-      ...usersBarranquilla,
+      ...usersBarranquillaCEDIAlfacer,
     ];
 
     for (let i = 0; i < data.length; i++) {
