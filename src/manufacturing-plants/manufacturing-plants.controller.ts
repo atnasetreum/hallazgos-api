@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { ManufacturingPlantsService } from './manufacturing-plants.service';
 import {
   CreateManufacturingPlantDto,
+  QueryManufacturingPlantDto,
   UpdateManufacturingPlantDto,
 } from './dto';
 
@@ -26,8 +28,8 @@ export class ManufacturingPlantsController {
   }
 
   @Get()
-  findAll() {
-    return this.manufacturingPlantsService.findAll();
+  findAll(@Query() queryManufacturingPlantDto: QueryManufacturingPlantDto) {
+    return this.manufacturingPlantsService.findAll(queryManufacturingPlantDto);
   }
 
   @Get(':id')

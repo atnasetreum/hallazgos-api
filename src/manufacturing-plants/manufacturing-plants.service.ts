@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
 import {
   CreateManufacturingPlantDto,
+  QueryManufacturingPlantDto,
   UpdateManufacturingPlantDto,
 } from './dto';
 import { ManufacturingPlant } from './entities/manufacturing-plant.entity';
@@ -20,10 +21,16 @@ export class ManufacturingPlantsService {
     return createManufacturingPlantDto;
   }
 
-  findAll() {
+  findAll(queryManufacturingPlantDto: QueryManufacturingPlantDto) {
+    const { name } = queryManufacturingPlantDto;
+
     return this.manufacturingPlantRepository.find({
       where: {
         isActive: true,
+        ...(name && { name: ILike(`%${name}%`) }),
+      },
+      order: {
+        id: 'DESC',
       },
     });
   }
