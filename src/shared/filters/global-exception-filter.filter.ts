@@ -92,6 +92,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         status = HttpStatus.BAD_REQUEST;
         message = (exception as BadRequestException).message;
         code = (exception as any).code;
+
+        console.log({
+          message,
+          code,
+          exception: exception,
+        });
         break;
       default:
         status = HttpStatus.INTERNAL_SERVER_ERROR;

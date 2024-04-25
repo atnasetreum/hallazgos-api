@@ -20,10 +20,10 @@ export class ManufacturingPlant {
   @Column({ unique: true })
   link: string;
 
-  @Column('decimal')
+  @Column('decimal', { unique: true })
   lat: number;
 
-  @Column('decimal')
+  @Column('decimal', { unique: true })
   lng: number;
 
   @Column({ default: true })
