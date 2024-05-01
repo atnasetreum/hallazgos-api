@@ -2,10 +2,10 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { REQUEST } from '@nestjs/core';
 
-import { In, Not, Repository } from 'typeorm';
+import { ILike, In, Not, Repository } from 'typeorm';
 import { Request } from 'express';
 
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, QueryUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { ENV_DEVELOPMENT, ROLE_SUPERVISOR } from '@shared/constants';
 
@@ -25,10 +25,28 @@ export class UsersService {
     return this.findOne(user.id);
   }
 
-  findAll(): Promise<User[]> {
+  findAll(queryUserDto: QueryUserDto): Promise<User[]> {
+    const { name, manufacturingPlantId, rule, zoneId } = queryUserDto;
+
     return this.userRepository.find({
       where: {
         isActive: true,
+        ...(name && { name: ILike(`%${name}%`) }),
+        ...(manufacturingPlantId && {
+          manufacturingPlants: { id: In([manufacturingPlantId]) },
+        }),
+        ...(rule && { role: rule }),
+        ...(zoneId && { zones: { id: In([zoneId]) }, role: ROLE_SUPERVISOR }),
+      },
+      relations: ['manufacturingPlants', 'zones'],
+      order: {
+        id: 'DESC',
+        manufacturingPlants: {
+          name: 'ASC',
+        },
+        zones: {
+          name: 'ASC',
+        },
       },
     });
   }
@@ -139,11 +157,9 @@ export class UsersService {
   async remove(id: number): Promise<User> {
     await this.findOne(id);
 
-    return await this.userRepository.save(
-      await this.userRepository.preload({
-        id,
-        isActive: false,
-      }),
-    );
+    return await this.userRepository.save({
+      id,
+      isActive: false,
+    });
   }
 }
