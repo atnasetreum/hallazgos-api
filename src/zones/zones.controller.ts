@@ -6,10 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { ZonesService } from './zones.service';
-import { CreateZoneDto, UpdateZoneDto } from './dto';
+import { CreateZoneDto, QueryZoneDto, UpdateZoneDto } from './dto';
 
 @Controller('zones')
 export class ZonesController {
@@ -21,8 +22,8 @@ export class ZonesController {
   }
 
   @Get()
-  findAll() {
-    return this.zonesService.findAll();
+  findAll(@Query() queryZoneDto: QueryZoneDto) {
+    return this.zonesService.findAll(queryZoneDto);
   }
 
   @Get(':id')

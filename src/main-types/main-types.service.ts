@@ -27,6 +27,7 @@ export class MainTypesService {
         isActive: true,
         ...(name && { name: ILike(`%${name}%`) }),
       },
+      relations: ['secondaryTypes'],
       order: {
         id: 'DESC',
       },
@@ -39,6 +40,7 @@ export class MainTypesService {
         id,
         ...(isActive && { isActive }),
       },
+      relations: ['secondaryTypes'],
     });
 
     if (!mainType) {
