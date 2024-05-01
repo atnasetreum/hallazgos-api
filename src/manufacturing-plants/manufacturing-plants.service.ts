@@ -82,7 +82,7 @@ export class ManufacturingPlantsService {
     return this.manufacturingPlantRepository.findOne({
       where: {
         id,
-        isActive: true,
+        isActive: false,
       },
     });
   }

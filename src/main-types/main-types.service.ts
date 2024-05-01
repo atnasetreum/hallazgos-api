@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 
-import { CreateMainTypeDto, UpdateMainTypeDto } from './dto';
+import { CreateMainTypeDto, QueryMainTypeDto, UpdateMainTypeDto } from './dto';
 import { MainType } from './entities/main-type.entity';
 
 @Injectable()
@@ -13,45 +13,67 @@ export class MainTypesService {
     private readonly mainTypeRepository: Repository<MainType>,
   ) {}
 
-  create(createMainTypeDto: CreateMainTypeDto) {
-    return createMainTypeDto;
+  async create(createMainTypeDto: CreateMainTypeDto): Promise<MainType> {
+    const mainType = await this.mainTypeRepository.create(createMainTypeDto);
+
+    return this.mainTypeRepository.save(mainType);
   }
 
-  findAll() {
+  findAll(queryMainTypeDto: QueryMainTypeDto): Promise<MainType[]> {
+    const { name } = queryMainTypeDto;
+
     return this.mainTypeRepository.find({
       where: {
         isActive: true,
-        secondaryTypes: {
-          isActive: true,
-        },
+        ...(name && { name: ILike(`%${name}%`) }),
       },
-      relations: ['secondaryTypes'],
       order: {
-        name: 'ASC',
-        secondaryTypes: {
-          name: 'ASC',
-        },
+        id: 'DESC',
       },
     });
   }
 
-  findOne(id: number) {
+  async findOne(id: number, isActive = true): Promise<MainType> {
+    const mainType = await this.mainTypeRepository.findOne({
+      where: {
+        id,
+        ...(isActive && { isActive }),
+      },
+    });
+
+    if (!mainType) {
+      throw new NotFoundException(`Criterio con ID ${id} no encontrado`);
+    }
+
+    return mainType;
+  }
+
+  async update(
+    id: number,
+    updateMainTypeDto: UpdateMainTypeDto,
+  ): Promise<MainType> {
+    await this.findOne(id);
+
+    const manufacturingPlant = await this.mainTypeRepository.preload({
+      id,
+      ...updateMainTypeDto,
+    });
+
+    return this.mainTypeRepository.save(manufacturingPlant);
+  }
+
+  async remove(id: number): Promise<MainType> {
+    await this.findOne(id);
+
+    await this.mainTypeRepository.update(id, {
+      isActive: false,
+    });
+
     return this.mainTypeRepository.findOne({
       where: {
         id,
-        isActive: true,
+        isActive: false,
       },
     });
-  }
-
-  update(id: number, updateMainTypeDto: UpdateMainTypeDto) {
-    return {
-      id,
-      updateMainTypeDto,
-    };
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} mainType`;
   }
 }

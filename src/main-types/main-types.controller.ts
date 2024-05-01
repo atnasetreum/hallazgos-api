@@ -6,10 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { MainTypesService } from './main-types.service';
-import { CreateMainTypeDto, UpdateMainTypeDto } from './dto';
+import { CreateMainTypeDto, QueryMainTypeDto, UpdateMainTypeDto } from './dto';
 
 @Controller('main-types')
 export class MainTypesController {
@@ -21,8 +22,8 @@ export class MainTypesController {
   }
 
   @Get()
-  findAll() {
-    return this.mainTypesService.findAll();
+  findAll(@Query() queryMainTypeDto: QueryMainTypeDto) {
+    return this.mainTypesService.findAll(queryMainTypeDto);
   }
 
   @Get(':id')
