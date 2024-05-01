@@ -6,10 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { SecondaryTypesService } from './secondary-types.service';
-import { CreateSecondaryTypeDto, UpdateSecondaryTypeDto } from './dto';
+import {
+  CreateSecondaryTypeDto,
+  QuerySecondaryTypeDto,
+  UpdateSecondaryTypeDto,
+} from './dto';
 
 @Controller('secondary-types')
 export class SecondaryTypesController {
@@ -21,8 +26,8 @@ export class SecondaryTypesController {
   }
 
   @Get()
-  findAll() {
-    return this.secondaryTypesService.findAll();
+  findAll(@Query() querySecondaryTypeDto: QuerySecondaryTypeDto) {
+    return this.secondaryTypesService.findAll(querySecondaryTypeDto);
   }
 
   @Get('by/manufacturing-plant/:id')

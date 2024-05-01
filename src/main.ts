@@ -3,7 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 import * as cookieParser from 'cookie-parser';
 
-import { GlobalExceptionFilter } from '@shared/filters';
+//import { GlobalExceptionFilter } from '@shared/filters';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -28,7 +28,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('/api/v1');
 
-  app.useGlobalFilters(new GlobalExceptionFilter());
+  //app.useGlobalFilters(new GlobalExceptionFilter());
 
   await app.listen(process.env.PORT);
 
