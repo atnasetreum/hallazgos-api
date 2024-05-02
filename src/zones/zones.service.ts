@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 
 import { Zone } from 'zones/entities/zone.entity';
 import { CreateZoneDto, QueryZoneDto, UpdateZoneDto } from './dto';
@@ -28,15 +28,35 @@ export class ZonesService {
     return this.zoneRepository.save(zone);
   }
 
-  findAll(queryZoneDto: QueryZoneDto): Promise<Zone[]> {
-    const { name, manufacturingPlantId } = queryZoneDto;
+  async findAll(queryZoneDto: QueryZoneDto): Promise<Zone[]> {
+    const { name, manufacturingPlantId, manufacturingPlantNames } =
+      queryZoneDto;
+
+    const manufacturingPlantIds = [];
+
+    if (manufacturingPlantId) {
+      manufacturingPlantIds.push(manufacturingPlantId);
+    } else if (manufacturingPlantNames?.length && !manufacturingPlantId) {
+      for (let i = 0, t = manufacturingPlantNames.length; i < t; i++) {
+        const manufacturingPlantName = manufacturingPlantNames[i];
+
+        const manufacturing =
+          await this.manufacturingPlantsService.findOneByName(
+            manufacturingPlantName,
+          );
+
+        if (manufacturing) {
+          manufacturingPlantIds.push(manufacturing.id);
+        }
+      }
+    }
 
     return this.zoneRepository.find({
       where: {
         isActive: true,
         ...(name && { name: ILike(`%${name}%`) }),
-        ...(manufacturingPlantId && {
-          manufacturingPlant: { id: manufacturingPlantId },
+        ...(manufacturingPlantIds.length && {
+          manufacturingPlant: { id: In(manufacturingPlantIds) },
         }),
       },
       relations: ['manufacturingPlant'],
@@ -60,6 +80,30 @@ export class ZonesService {
     }
 
     return zone;
+  }
+
+  async findAllByManufacturingPlantNames(names: string[]): Promise<Zone[]> {
+    const zones = [];
+
+    for (let i = 0; i < names.length; i++) {
+      const [manufacturingPlantName, zoneName] = names[i].split(' - ');
+      const zone = await this.zoneRepository.findOne({
+        where: {
+          name: zoneName,
+          isActive: true,
+          manufacturingPlant: {
+            name: manufacturingPlantName,
+            isActive: true,
+          },
+        },
+      });
+
+      if (zone) {
+        zones.push(zone);
+      }
+    }
+
+    return zones;
   }
 
   async update(id: number, updateZoneDto: UpdateZoneDto): Promise<Zone> {

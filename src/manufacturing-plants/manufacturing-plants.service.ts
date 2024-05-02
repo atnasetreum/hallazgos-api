@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { ILike, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 
 import {
   CreateManufacturingPlantDto,
@@ -56,6 +56,30 @@ export class ManufacturingPlantsService {
     }
 
     return manufacturingPlant;
+  }
+
+  async findOneByName(name: string): Promise<ManufacturingPlant> {
+    const manufacturing = await this.manufacturingPlantRepository.findOne({
+      where: {
+        name,
+        isActive: true,
+      },
+    });
+
+    if (!manufacturing) {
+      throw new NotFoundException(`Planta con nombre ${name} no encontrada`);
+    }
+
+    return manufacturing;
+  }
+
+  async findAllByNames(names: string[]): Promise<ManufacturingPlant[]> {
+    return this.manufacturingPlantRepository.find({
+      where: {
+        name: In(names),
+        isActive: true,
+      },
+    });
   }
 
   async update(

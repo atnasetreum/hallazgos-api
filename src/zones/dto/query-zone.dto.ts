@@ -1,4 +1,10 @@
-import { IsOptional, IsPositive, IsString } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 export class QueryZoneDto {
   @IsOptional()
@@ -8,4 +14,10 @@ export class QueryZoneDto {
   @IsOptional()
   @IsPositive()
   manufacturingPlantId: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  manufacturingPlantNames: string[];
 }

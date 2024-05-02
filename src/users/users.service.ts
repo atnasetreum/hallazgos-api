@@ -8,6 +8,8 @@ import { Request } from 'express';
 import { CreateUserDto, QueryUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { ENV_DEVELOPMENT, ROLE_SUPERVISOR } from '@shared/constants';
+import { ManufacturingPlantsService } from 'manufacturing-plants/manufacturing-plants.service';
+import { ZonesService } from 'zones/zones.service';
 
 @Injectable()
 export class UsersService {
@@ -15,11 +17,35 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @Inject(REQUEST) private readonly request: Request,
+    private readonly manufacturingPlantsService: ManufacturingPlantsService,
+    private readonly zonesService: ZonesService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const { name, email, password, rule, manufacturingPlantNames, zoneNames } =
+      createUserDto;
+
+    const manufacturingPlants =
+      await this.manufacturingPlantsService.findAllByNames(
+        manufacturingPlantNames,
+      );
+
+    let zones = [];
+
+    if (rule === ROLE_SUPERVISOR) {
+      zones =
+        await this.zonesService.findAllByManufacturingPlantNames(zoneNames);
+    }
+
     const user = await this.userRepository.save(
-      this.userRepository.create(createUserDto),
+      this.userRepository.create({
+        name,
+        email,
+        ...(password && { password }),
+        role: rule,
+        manufacturingPlants,
+        zones,
+      }),
     );
 
     return this.findOne(user.id);
@@ -38,7 +64,7 @@ export class UsersService {
         ...(rule && { role: rule }),
         ...(zoneId && { zones: { id: In([zoneId]) }, role: ROLE_SUPERVISOR }),
       },
-      relations: ['manufacturingPlants', 'zones'],
+      relations: ['manufacturingPlants', 'zones', 'zones.manufacturingPlant'],
       order: {
         id: 'DESC',
         manufacturingPlants: {
@@ -87,7 +113,7 @@ export class UsersService {
         id,
         isActive: true,
       },
-      relations: ['manufacturingPlants', 'zones'],
+      relations: ['manufacturingPlants', 'zones', 'zones.manufacturingPlant'],
     });
 
     if (!user)
@@ -142,16 +168,33 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    await this.findOne(id);
+    const user = await this.findOne(id);
 
-    const user = await this.userRepository.save(
-      await this.userRepository.preload({
-        id,
-        ...updateUserDto,
-      }),
-    );
+    const { name, email, password, rule, manufacturingPlantNames, zoneNames } =
+      updateUserDto;
 
-    return this.findOne(user.id);
+    const manufacturingPlants =
+      await this.manufacturingPlantsService.findAllByNames(
+        manufacturingPlantNames,
+      );
+
+    let zones = [];
+
+    if (rule === ROLE_SUPERVISOR) {
+      zones =
+        await this.zonesService.findAllByManufacturingPlantNames(zoneNames);
+    }
+
+    user.name = name;
+    user.email = email;
+    if (password) {
+      user.password = password;
+    }
+    user.role = rule;
+    user.zones = zones;
+    user.manufacturingPlants = manufacturingPlants;
+
+    return this.userRepository.save({ ...user });
   }
 
   async remove(id: number): Promise<User> {
