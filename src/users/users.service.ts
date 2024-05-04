@@ -4,6 +4,7 @@ import { REQUEST } from '@nestjs/core';
 
 import { ILike, In, Not, Repository } from 'typeorm';
 import { Request } from 'express';
+import * as argon2 from 'argon2';
 
 import { CreateUserDto, QueryUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
@@ -188,7 +189,7 @@ export class UsersService {
     user.name = name;
     user.email = email;
     if (password) {
-      user.password = password;
+      user.password = await argon2.hash(password);
     }
     user.role = rule;
     user.zones = zones;

@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
-  BeforeUpdate,
   ManyToMany,
   JoinTable,
   OneToMany,
@@ -62,7 +61,6 @@ export class User {
   assignedEvidence: Evidence;*/
 
   @BeforeInsert()
-  @BeforeUpdate()
   async hashPassword() {
     this.password = await argon2.hash(this.password);
   }
