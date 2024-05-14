@@ -48,7 +48,10 @@ export class User {
   })
   manufacturingPlants: ManufacturingPlant[];
 
-  @OneToMany(() => Zone, (zone) => zone.user)
+  @ManyToMany(() => Zone)
+  @JoinTable({
+    name: 'user_zones',
+  })
   zones: Zone[];
 
   @OneToMany(() => Evidence, (evidence) => evidence.user)

@@ -10,6 +10,7 @@ import { SecondaryTypesModule } from 'secondary-types/secondary-types.module';
 import { ZonesModule } from 'zones/zones.module';
 import { UsersModule } from 'users/users.module';
 import { Comment } from './entities/comments.entity';
+import { EvidencesResolver } from './evidences.resolver';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { Comment } from './entities/comments.entity';
     UsersModule,
   ],
   controllers: [EvidencesController],
-  providers: [EvidencesService],
+  providers: [EvidencesService, EvidencesResolver],
   exports: [TypeOrmModule, EvidencesService],
 })
 export class EvidencesModule {}

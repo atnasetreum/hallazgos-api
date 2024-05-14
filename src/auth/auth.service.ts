@@ -13,10 +13,10 @@ import { Repository } from 'typeorm';
 import * as argon2 from 'argon2';
 import { Request } from 'express';
 
-import { JwtService } from '@shared/services';
 import { ENV_PRODUCTION } from '@shared/constants';
 import { User } from 'users/entities/user.entity';
 import { LoginAuthDto } from './dto/login-auth.dto';
+import { JwtService } from './jwt.service';
 
 @Injectable()
 export class AuthService {

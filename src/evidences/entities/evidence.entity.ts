@@ -1,3 +1,5 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+
 import {
   Entity,
   Column,
@@ -18,8 +20,10 @@ import { User } from 'users/entities/user.entity';
 import { Comment } from './comments.entity';
 
 @Entity()
+@ObjectType()
 export class Evidence {
   @PrimaryGeneratedColumn()
+  @Field(() => ID)
   id: number;
 
   @Column()
