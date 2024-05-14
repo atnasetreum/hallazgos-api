@@ -15,4 +15,9 @@ export class DashboardController {
   findAllZones() {
     return this.dashboardService.findAllZones();
   }
+
+  @Get('main-types')
+  findAllMainTypes() {
+    return this.dashboardService.findAllMainTypes();
+  }
 }

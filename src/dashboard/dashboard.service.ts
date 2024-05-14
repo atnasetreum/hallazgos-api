@@ -19,7 +19,7 @@ export class DashboardService {
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
-  async findAllStatus() {
+  async findManufacturingPlantsWithEvidences() {
     const user = this.request['user'] as User;
 
     const manufacturingPlantsIds = user.manufacturingPlants.map(
@@ -33,10 +33,17 @@ export class DashboardService {
           isActive: true,
           evidences: MoreThan(0),
         },
-        relations: ['evidences'],
+        relations: ['evidences', 'evidences.zone', 'evidences.mainType'],
         loadEagerRelations: true,
       },
     );
+
+    return manufacturingPlantsWithEvidences;
+  }
+
+  async findAllStatus() {
+    const manufacturingPlantsWithEvidences =
+      await this.findManufacturingPlantsWithEvidences();
 
     const evidencesTotal = manufacturingPlantsWithEvidences.reduce(
       (acc, project) => acc + project.evidences.length,
@@ -88,24 +95,8 @@ export class DashboardService {
   }
 
   async findAllZones() {
-    const user = this.request['user'] as User;
-
-    const manufacturingPlantsIds = user.manufacturingPlants.map(
-      (manufacturingPlant) => manufacturingPlant.id,
-    );
-
-    const manufacturingPlantsWithEvidences = await this.manufacturingPlant.find(
-      {
-        where: {
-          id: In(manufacturingPlantsIds),
-          isActive: true,
-          evidences: MoreThan(0),
-        },
-        relations: ['evidences', 'evidences.zone'],
-        loadEagerRelations: true,
-      },
-    );
-
+    const manufacturingPlantsWithEvidences =
+      await this.findManufacturingPlantsWithEvidences();
     const evidencesTotal = manufacturingPlantsWithEvidences.reduce(
       (acc, project) => acc + project.evidences.length,
       0,
@@ -157,6 +148,60 @@ export class DashboardService {
     return {
       statusData,
       statusSeries,
+    };
+  }
+
+  async findAllMainTypes() {
+    const manufacturingPlantsWithEvidences =
+      await this.findManufacturingPlantsWithEvidences();
+
+    return {
+      series: [
+        {
+          name: 'Plantas',
+          colorByPoint: true,
+          data: manufacturingPlantsWithEvidences.map((manufacturingPlant) => ({
+            name: manufacturingPlant.name,
+            y: 63.06,
+            drilldown: manufacturingPlant.name,
+          })),
+        },
+      ],
+      drilldown: {
+        breadcrumbs: {
+          position: {
+            align: 'right',
+          },
+        },
+
+        series: manufacturingPlantsWithEvidences.map((project) => {
+          const evidencesArray = project.evidences.map((item) => ({
+            ...item,
+            mainTypeName: item.mainType.name,
+          }));
+
+          const clientsGroupStatus = groupBy(evidencesArray, 'mainTypeName');
+
+          const data = [];
+
+          for (const key in clientsGroupStatus) {
+            const clients = clientsGroupStatus[key];
+            const porcentaje = Number(
+              (clients.length / project.evidences.length) * 100,
+            );
+            data.push([
+              `${key} (${clients.length})`,
+              Number(porcentaje.toFixed(2)),
+            ]);
+          }
+
+          return {
+            name: `${project.name}`,
+            id: project.name,
+            data,
+          };
+        }),
+      },
     };
   }
 }
