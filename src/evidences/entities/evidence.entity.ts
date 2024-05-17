@@ -27,48 +27,69 @@ export class Evidence {
   id: number;
 
   @Column()
+  @Field(() => String)
   imgEvidence: string;
 
   @Column({ default: '' })
+  @Field(() => String, {
+    defaultValue: '',
+  })
   imgSolution: string;
 
-  @Column({ type: 'timestamptz', default: null })
+  @Column({ default: null })
+  @Field(() => Date, {
+    defaultValue: null,
+    nullable: true,
+  })
   solutionDate: Date;
 
   @Column()
+  @Field(() => String)
   status: string;
 
   @Column({ default: true })
+  @Field(() => Boolean, {
+    defaultValue: true,
+  })
   isActive: boolean;
 
-  @CreateDateColumn({ type: 'timestamptz', default: null })
+  @CreateDateColumn()
+  @Field(() => Date)
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz', default: null })
+  @UpdateDateColumn()
+  @Field(() => Date)
   updatedAt: Date;
 
   @ManyToOne(
     () => ManufacturingPlant,
     (manufacturingPlant) => manufacturingPlant.evidences,
   )
+  @Field(() => ManufacturingPlant)
   manufacturingPlant: ManufacturingPlant;
 
   @ManyToOne(() => MainType, (mainType) => mainType.evidences)
+  @Field(() => MainType)
   mainType: MainType;
 
   @ManyToOne(() => SecondaryType, (secondaryType) => secondaryType.evidences)
+  @Field(() => SecondaryType)
   secondaryType: SecondaryType;
 
   @ManyToOne(() => Zone, (zone) => zone.evidences)
+  @Field(() => Zone)
   zone: Zone;
 
   @ManyToOne(() => User, (user) => user.evidences)
+  @Field(() => User)
   user: User;
 
   @ManyToMany(() => User)
   @JoinTable()
+  @Field(() => [User])
   supervisors: User[];
 
   @OneToMany(() => Comment, (comment) => comment.evidence)
+  @Field(() => [Comment])
   comments: Comment[];
 }

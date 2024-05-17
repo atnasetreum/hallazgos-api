@@ -1,3 +1,5 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+
 import {
   Entity,
   Column,
@@ -17,47 +19,60 @@ import { Evidence } from 'evidences/entities/evidence.entity';
 import { Comment } from 'evidences/entities/comments.entity';
 
 @Entity()
+@ObjectType()
 export class User {
   @PrimaryGeneratedColumn()
+  @Field(() => ID)
   id: number;
 
   @Column()
+  @Field(() => String)
   name: string;
 
   @Column({ unique: true })
+  @Field(() => String)
   email: string;
 
   @Column({ select: false })
+  @Field(() => String)
   password: string;
 
   @Column()
+  @Field(() => String)
   role: string;
 
   @Column({ default: true })
+  @Field(() => Boolean)
   isActive: boolean;
 
   @CreateDateColumn()
+  @Field(() => Date)
   createdAt: Date;
 
   @UpdateDateColumn()
+  @Field(() => Date)
   updatedAt: Date;
 
   @ManyToMany(() => ManufacturingPlant)
   @JoinTable({
     name: 'user_manufacturing_plants',
   })
+  @Field(() => [ManufacturingPlant])
   manufacturingPlants: ManufacturingPlant[];
 
   @ManyToMany(() => Zone)
   @JoinTable({
     name: 'user_zones',
   })
+  @Field(() => [Zone])
   zones: Zone[];
 
   @OneToMany(() => Evidence, (evidence) => evidence.user)
+  @Field(() => [Evidence])
   evidences: Evidence[];
 
   @OneToMany(() => Comment, (evidence) => evidence.user)
+  @Field(() => [Comment])
   comments: Comment[];
 
   /*@ManyToOne(() => Evidence, (evidence) => evidence.supervisors)

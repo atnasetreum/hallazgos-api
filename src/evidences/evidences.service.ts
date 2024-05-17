@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Request } from 'express';
-import { In, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, In, Repository } from 'typeorm';
 
 import {
   CommentEvidenceDto,
@@ -27,6 +27,7 @@ import { User } from 'users/entities/user.entity';
 import { STATUS_CANCEL, STATUS_CLOSE, STATUS_OPEN } from '@shared/constants';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Comment } from './entities/comments.entity';
+import { ParamsArgs } from './inputs/args';
 
 @Injectable()
 export class EvidencesService {
@@ -243,11 +244,58 @@ export class EvidencesService {
         'comments',
       ],
       order: {
-        createdAt: 'DESC',
+        id: 'DESC',
       },
     });
 
     return evidences;
+  }
+
+  async findAllGraphql(paramsArgs: ParamsArgs): Promise<{
+    data: Evidence[];
+    count: number;
+  }> {
+    const { searchParam, limit, page } = paramsArgs;
+
+    let where: FindOptionsWhere<Evidence>[] = [
+      {
+        isActive: true,
+      },
+    ];
+
+    if (searchParam) {
+      where = [{ status: ILike(`%${searchParam}%`) }];
+    }
+
+    const numRows = await this.evidenceRepository.count({
+      where,
+    });
+
+    const limitNumber = Number(limit);
+
+    const numPerPage = limitNumber;
+    // const numPages = Math.ceil(numRows / numPerPage);
+    const skip = (Number(page) - 1) * numPerPage;
+
+    const evidences = await this.evidenceRepository.find({
+      where,
+      ...(limitNumber === -1 ? {} : { take: limitNumber }),
+      ...(limitNumber === -1 ? {} : { skip }),
+      relations: [
+        'manufacturingPlant',
+        'mainType',
+        'secondaryType',
+        'zone',
+        'user',
+        'supervisors',
+        'comments',
+      ],
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    return { data: evidences, count: numRows };
   }
 
   async findOne(id: number) {

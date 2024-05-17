@@ -1,21 +1,19 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
 
 import { Evidence } from './entities/evidence.entity';
+import { EvidencesService } from './evidences.service';
+import { AggregationsEvidenceType } from './types';
+import { ParamsArgs } from './inputs/args';
 
 @Resolver(Evidence)
 export class EvidencesResolver {
-  //constructor(private readonly evidencesService: EvidencesService) {}
+  constructor(private readonly evidencesService: EvidencesService) {}
 
-  /*@Query(() => AggregationsEvidenceType, { name: 'evidences' })
+  @Query(() => AggregationsEvidenceType, { name: 'evidences' })
   findAll(@Args() paramsArgs: ParamsArgs): Promise<{
     data: Evidence[];
     count: number;
   }> {
-    return this.evidencesService.findAll(paramsArgs);
-  }*/
-
-  @Query(() => String, { name: 'evidences' })
-  findAll() {
-    return 'hola mundo';
+    return this.evidencesService.findAllGraphql(paramsArgs);
   }
 }
