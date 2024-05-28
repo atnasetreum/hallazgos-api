@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Request } from 'express';
-import { FindOptionsWhere, ILike, In, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Repository } from 'typeorm';
 
 import {
   CommentEvidenceDto,
@@ -255,17 +255,24 @@ export class EvidencesService {
     data: Evidence[];
     count: number;
   }> {
-    const { searchParam, limit, page } = paramsArgs;
+    const {
+      manufacturingPlantId,
+      mainTypeId,
+      secondaryTypeId,
+      zoneId,
+      limit,
+      page,
+    } = paramsArgs;
 
-    let where: FindOptionsWhere<Evidence>[] = [
-      {
-        isActive: true,
-      },
-    ];
-
-    if (searchParam) {
-      where = [{ status: ILike(`%${searchParam}%`) }];
-    }
+    const where: FindOptionsWhere<Evidence> = {
+      isActive: true,
+      ...(manufacturingPlantId && {
+        manufacturingPlant: { id: manufacturingPlantId },
+      }),
+      ...(mainTypeId && { mainType: { id: mainTypeId } }),
+      ...(secondaryTypeId && { secondaryType: { id: secondaryTypeId } }),
+      ...(zoneId && { zone: { id: zoneId } }),
+    };
 
     const numRows = await this.evidenceRepository.count({
       where,

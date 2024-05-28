@@ -95,5 +95,5 @@ type AggregationsEvidenceType {
 }
 
 type Query {
-  evidences(page: Int!, limit: Int!, searchParam: String): AggregationsEvidenceType!
+  evidences(page: Int!, limit: Int!, manufacturingPlantId: Float, mainTypeId: Float, secondaryTypeId: Float, zoneId: Float): AggregationsEvidenceType!
 }
