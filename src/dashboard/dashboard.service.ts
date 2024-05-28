@@ -162,7 +162,7 @@ export class DashboardService {
           colorByPoint: true,
           data: manufacturingPlantsWithEvidences.map((manufacturingPlant) => ({
             name: manufacturingPlant.name,
-            y: 63.06,
+            y: manufacturingPlant.evidences.length,
             drilldown: manufacturingPlant.name,
           })),
         },
