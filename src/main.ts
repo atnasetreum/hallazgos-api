@@ -5,6 +5,7 @@ import * as cookieParser from 'cookie-parser';
 
 //import { GlobalExceptionFilter } from '@shared/filters';
 import { AppModule } from './app.module';
+import { ClusterService } from 'cluster.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -36,4 +37,5 @@ async function bootstrap() {
     `[APP-SERVICE] Running on port: [${process.env.PORT}], environment: [${process.env.NODE_ENV}]`,
   );
 }
-bootstrap();
+//bootstrap();
+ClusterService.clusterize(bootstrap);
