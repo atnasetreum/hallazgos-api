@@ -155,6 +155,11 @@ export class DashboardService {
     const manufacturingPlantsWithEvidences =
       await this.findManufacturingPlantsWithEvidences();
 
+    const totalEvidences = manufacturingPlantsWithEvidences.reduce(
+      (acc, project) => acc + project.evidences.length,
+      0,
+    );
+
     return {
       series: [
         {
@@ -162,7 +167,11 @@ export class DashboardService {
           colorByPoint: true,
           data: manufacturingPlantsWithEvidences.map((manufacturingPlant) => ({
             name: manufacturingPlant.name,
-            y: manufacturingPlant.evidences.length,
+            y: Number(
+              Number(
+                (manufacturingPlant.evidences.length / totalEvidences) * 100,
+              ).toFixed(2),
+            ),
             drilldown: manufacturingPlant.name,
           })),
         },
