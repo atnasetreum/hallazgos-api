@@ -165,15 +165,19 @@ export class DashboardService {
         {
           name: 'Plantas',
           colorByPoint: true,
-          data: manufacturingPlantsWithEvidences.map((manufacturingPlant) => ({
-            name: manufacturingPlant.name,
-            y: Number(
-              Number(
-                (manufacturingPlant.evidences.length / totalEvidences) * 100,
-              ).toFixed(2),
-            ),
-            drilldown: manufacturingPlant.name,
-          })),
+          data: manufacturingPlantsWithEvidences.map((manufacturingPlant) => {
+            const sizeCurrent = manufacturingPlant.evidences.length;
+
+            const fullName = `${manufacturingPlant.name} (${sizeCurrent})`;
+
+            return {
+              name: fullName,
+              y: Number(
+                Number((sizeCurrent / totalEvidences) * 100).toFixed(2),
+              ),
+              drilldown: fullName,
+            };
+          }),
         },
       ],
       drilldown: {
@@ -204,9 +208,11 @@ export class DashboardService {
             ]);
           }
 
+          const fullName = `${project.name} (${project.evidences.length})`;
+
           return {
             name: `${project.name}`,
-            id: project.name,
+            id: fullName,
             data,
           };
         }),
