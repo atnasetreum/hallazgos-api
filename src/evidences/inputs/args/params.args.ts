@@ -1,6 +1,6 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 
-import { IsNumber, IsOptional, IsPositive } from 'class-validator';
+import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 
 @ArgsType()
 export class ParamsArgs {
@@ -31,4 +31,9 @@ export class ParamsArgs {
   @IsPositive()
   @Field(() => Number, { nullable: true })
   zoneId?: number;
+
+  @IsOptional()
+  @IsString()
+  @Field(() => String, { nullable: true })
+  status?: string;
 }

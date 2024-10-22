@@ -205,7 +205,7 @@ export class EvidencesService {
   async findAll(queryEvidenceDto: QueryEvidenceDto) {
     const { manufacturingPlants } = this.request['user'] as User;
 
-    const { manufacturingPlantId, mainTypeId, secondaryType, zone } =
+    const { manufacturingPlantId, mainTypeId, secondaryType, zone, status } =
       queryEvidenceDto;
 
     const manufacturingPlantsIds = manufacturingPlantId
@@ -233,6 +233,7 @@ export class EvidencesService {
           isActive: true,
           ...(zone && { id: zone }),
         },
+        ...(status && { status }),
       },
       relations: [
         'manufacturingPlant',
@@ -262,6 +263,7 @@ export class EvidencesService {
       zoneId,
       limit,
       page,
+      status,
     } = paramsArgs;
 
     const where: FindOptionsWhere<Evidence> = {
@@ -272,6 +274,7 @@ export class EvidencesService {
       ...(mainTypeId && { mainType: { id: mainTypeId } }),
       ...(secondaryTypeId && { secondaryType: { id: secondaryTypeId } }),
       ...(zoneId && { zone: { id: zoneId } }),
+      ...(status && { status }),
     };
 
     const numRows = await this.evidenceRepository.count({

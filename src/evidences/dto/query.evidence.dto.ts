@@ -1,4 +1,4 @@
-import { IsOptional, IsPositive } from 'class-validator';
+import { IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class QueryEvidenceDto {
   @IsOptional()
@@ -16,4 +16,8 @@ export class QueryEvidenceDto {
   @IsOptional()
   @IsPositive()
   zone: number;
+
+  @IsOptional()
+  @IsString()
+  status: string;
 }
