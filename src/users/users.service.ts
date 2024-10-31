@@ -91,6 +91,25 @@ export class UsersService {
       });
     }
 
+    if (plantId === 3) {
+      return this.userRepository.find({
+        where: {
+          isActive: true,
+          manufacturingPlants: {
+            id: plantId,
+          },
+          email: In([
+            'strujillo@hadamexico.com',
+            'Dspaggiari@hadamexico.com',
+            'Aholguin@hada.com.co',
+            'Cvelasquez@hada.com.co',
+            'sst@hadamexico.com',
+            'Btorres@hadainternational.com',
+          ]),
+        },
+      });
+    }
+
     return this.userRepository.find({
       where: {
         isActive: true,
