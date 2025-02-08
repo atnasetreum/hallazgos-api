@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 
 import { DashboardService } from './dashboard.service';
 
@@ -19,5 +19,10 @@ export class DashboardController {
   @Get('main-types')
   findAllMainTypes() {
     return this.dashboardService.findAllMainTypes();
+  }
+
+  @Get('evidences-by-month')
+  findAllEvidencesByMonth(@Query('year') year: number) {
+    return this.dashboardService.findAllEvidencesByMonth(year);
   }
 }

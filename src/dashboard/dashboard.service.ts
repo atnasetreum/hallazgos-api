@@ -19,12 +19,16 @@ export class DashboardService {
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
-  async findManufacturingPlantsWithEvidences() {
+  findManufacturingPlantsIdsCurrentUser() {
     const user = this.request['user'] as User;
 
-    const manufacturingPlantsIds = user.manufacturingPlants.map(
+    return user.manufacturingPlants.map(
       (manufacturingPlant) => manufacturingPlant.id,
     );
+  }
+
+  async findManufacturingPlantsWithEvidences() {
+    const manufacturingPlantsIds = this.findManufacturingPlantsIdsCurrentUser();
 
     const manufacturingPlantsWithEvidences = await this.manufacturingPlant.find(
       {
@@ -217,6 +221,95 @@ export class DashboardService {
           };
         }),
       },
+    };
+  }
+
+  async findAllEvidencesByMonth(year: number) {
+    const manager = this.manufacturingPlant.manager;
+
+    const manufacturingPlantsIds = this.findManufacturingPlantsIdsCurrentUser();
+
+    const whereDefault = `
+      evidence."isActive" = TRUE 
+      AND evidence.status != 'Cancelado' 
+      AND date_part( 'year', evidence."createdAt" ) = ${year ?? "date_part('year', CURRENT_DATE)"}  
+      AND evidence."manufacturingPlantId" in (${manufacturingPlantsIds.join(
+        ',',
+      )})
+    `;
+
+    const categories = await manager.query(`
+      SELECT
+        to_char( evidence."createdAt", 'Mon' ) AS mon 
+      FROM
+        evidence 
+      WHERE
+        ${whereDefault}
+      GROUP BY
+        mon 
+      ORDER BY
+        MIN ( evidence."createdAt" )
+      ASC
+    `);
+
+    const manufacturingByMonth = [];
+
+    for (const category of categories) {
+      const data = await manager.query(`
+        SELECT EXTRACT
+          ( YEAR FROM evidence."createdAt" ) AS yyyy,
+          to_char( evidence."createdAt", 'Mon' ) AS mon,
+          manufacturing_plant."name",
+          COUNT ( * ) AS total 
+        FROM
+          evidence
+          INNER JOIN manufacturing_plant ON manufacturing_plant."id" = evidence."manufacturingPlantId" 
+        WHERE
+          ${whereDefault}
+          AND to_char( evidence."createdAt", 'Mon' ) = '${category.mon}'
+        GROUP BY
+          1,
+          2,
+          evidence."manufacturingPlantId",
+          manufacturing_plant."name" 
+        ORDER BY
+          MIN ( evidence."createdAt" ) ASC
+      `);
+
+      manufacturingByMonth.push(data);
+    }
+
+    const manufacturingPlants = [
+      ...new Set(
+        manufacturingByMonth.reduce((acc, item) => {
+          const plants = item.map((item) => item.name);
+          return [...acc, ...plants];
+        }, []),
+      ),
+    ];
+
+    const categoriesFormatted = categories.map((item) => item.mon);
+
+    return {
+      series: manufacturingPlants.map((plant) => {
+        return {
+          name: plant,
+          data: categoriesFormatted.map((mon) => {
+            const data = manufacturingByMonth.filter((item) => {
+              return item.some((e) => e.mon === mon && e.name === plant);
+            });
+
+            if (data.length === 0) {
+              return 0;
+            }
+
+            const currentData = data[0].find((item) => item.name === plant);
+
+            return Number(currentData.total);
+          }),
+        };
+      }),
+      categories: categoriesFormatted,
     };
   }
 }
