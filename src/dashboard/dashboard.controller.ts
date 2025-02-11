@@ -25,4 +25,9 @@ export class DashboardController {
   findAllEvidencesByMonth(@Query('year') year: number) {
     return this.dashboardService.findAllEvidencesByMonth(year);
   }
+
+  @Get('top-users-by-plant')
+  findTopUsersByPlant() {
+    return this.dashboardService.findTopUsersByPlant();
+  }
 }

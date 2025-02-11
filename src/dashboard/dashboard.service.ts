@@ -312,4 +312,53 @@ export class DashboardService {
       categories: categoriesFormatted,
     };
   }
+
+  async findTopUsersByPlant() {
+    const manager = this.manufacturingPlant.manager;
+
+    const manufacturingPlantsIds = this.findManufacturingPlantsIdsCurrentUser();
+
+    const result = await manager.query(` 
+      SELECT
+        evidence."userId",
+        "user"."name" AS username,
+        evidence."manufacturingPlantId",
+        manufacturing_plant."name" AS manufacturingplantname,
+        COUNT ( * ) AS total 
+      FROM
+        evidence
+        INNER JOIN "user" ON "user"."id" = evidence."userId" 
+        AND "user"."isActive" =
+        TRUE INNER JOIN manufacturing_plant ON manufacturing_plant."id" = evidence."manufacturingPlantId" 
+        AND manufacturing_plant."isActive" = TRUE 
+      WHERE
+        evidence."isActive" = TRUE 
+        AND manufacturing_plant."id" IN ( ${manufacturingPlantsIds.join(',')} ) 
+      GROUP BY
+        evidence."userId",
+        "user"."name",
+        evidence."manufacturingPlantId",
+        manufacturing_plant."name" 
+      ORDER BY
+        manufacturingplantname ASC,
+        total DESC
+    `);
+
+    const manufacturingPlants = [
+      ...new Set(result.map((item) => item.manufacturingplantname)),
+    ];
+
+    return {
+      data: manufacturingPlants.map((plant) => {
+        const data = result.filter(
+          (item) => item.manufacturingplantname === plant,
+        );
+
+        return {
+          name: plant,
+          data,
+        };
+      }),
+    };
+  }
 }
