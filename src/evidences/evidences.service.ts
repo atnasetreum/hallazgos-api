@@ -57,7 +57,7 @@ export class EvidencesService {
 
     const { originalname: imgEvidence } = file;
 
-    const { manufacturingPlantId, typeHallazgo, type, zone } =
+    const { manufacturingPlantId, typeHallazgo, type, zone, supervisor } =
       createEvidenceDto;
 
     const manufacturingPlant =
@@ -71,10 +71,11 @@ export class EvidencesService {
 
     const user = await this.usersService.findOne(userId);
 
-    const supervisors = await this.usersService.findSupervisor(
-      manufacturingPlant.id,
-      zone,
-    );
+    const supervisors = await this.usersService.findSupervisor({
+      manufacturingPlantId: manufacturingPlant.id,
+      zoneId: zone,
+      supervisorId: supervisor,
+    });
 
     if (!supervisors.length)
       throw new BadRequestException(

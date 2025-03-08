@@ -142,27 +142,66 @@ export class UsersService {
     return user;
   }
 
-  async findSupervisor(
-    manufacturingPlantId: number,
-    zoneId: number,
-  ): Promise<User[]> {
+  async findSupervisor({
+    manufacturingPlantId,
+    zoneId,
+    supervisorId,
+  }: {
+    manufacturingPlantId: number;
+    zoneId: number;
+    supervisorId: number;
+  }): Promise<User[]> {
+    const whereDefault = {
+      isActive: true,
+      role: ROLE_SUPERVISOR,
+      manufacturingPlants: {
+        id: manufacturingPlantId,
+      },
+      zones: {
+        id: zoneId,
+      },
+      email: Not(
+        In([
+          'eduardo-266@hotmail.com',
+          'eduardo-supervisor@hotmail.com',
+          'eduardo-general@hotmail.com',
+        ]),
+      ),
+    };
+
+    if (supervisorId) {
+      return this.userRepository.find({
+        where: {
+          ...whereDefault,
+          id: supervisorId,
+        },
+      });
+    }
+
+    return this.userRepository.find({
+      where: whereDefault,
+    });
+  }
+
+  async getSupervisors(): Promise<User[]> {
+    const { manufacturingPlants } = this.request['user'] as User;
+
+    const manufacturingPlantsIds = manufacturingPlants.map(
+      (manufacturingPlant) => manufacturingPlant.id,
+    );
+
     return this.userRepository.find({
       where: {
         isActive: true,
         role: ROLE_SUPERVISOR,
         manufacturingPlants: {
-          id: manufacturingPlantId,
+          id: In(manufacturingPlantsIds),
         },
-        zones: {
-          id: zoneId,
-        },
-        email: Not(
-          In([
-            'eduardo-266@hotmail.com',
-            'eduardo-supervisor@hotmail.com',
-            'eduardo-general@hotmail.com',
-          ]),
-        ),
+        email: Not(In(['eduardo-supervisor@hotmail.com'])),
+      },
+      relations: ['manufacturingPlants', 'zones'],
+      order: {
+        name: 'ASC',
       },
     });
   }

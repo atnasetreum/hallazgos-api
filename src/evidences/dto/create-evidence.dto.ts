@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
 
 export class CreateEvidenceDto {
   @IsNotEmpty()
@@ -16,4 +16,8 @@ export class CreateEvidenceDto {
   @IsNotEmpty()
   @IsPositive()
   zone: number;
+
+  @IsOptional()
+  @IsPositive()
+  supervisor: number;
 }

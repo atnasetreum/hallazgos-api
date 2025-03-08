@@ -31,6 +31,11 @@ export class UsersController {
     return this.usersService.getInformationCurrentUser();
   }
 
+  @Get('/supervisors')
+  getSupervisors() {
+    return this.usersService.getSupervisors();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
