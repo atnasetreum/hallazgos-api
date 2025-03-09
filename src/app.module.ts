@@ -26,6 +26,7 @@ import { SecondaryTypesModule } from './secondary-types/secondary-types.module';
 import { MailModule } from './mail/mail.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtService } from 'auth/jwt.service';
+import { TypeManagesModule } from './type-manages/type-manages.module';
 
 @Module({
   imports: [
@@ -101,6 +102,7 @@ import { JwtService } from 'auth/jwt.service';
     SecondaryTypesModule,
     MailModule,
     DashboardModule,
+    TypeManagesModule,
   ],
   controllers: [],
   providers: [JwtService],

@@ -18,6 +18,7 @@ import { SecondaryType } from 'secondary-types/entities/secondary-type.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { User } from 'users/entities/user.entity';
 import { Comment } from './comments.entity';
+import { TypeManage } from 'type-manages/entities/type-manage.entity';
 
 @Entity()
 @ObjectType()
@@ -79,6 +80,12 @@ export class Evidence {
   @ManyToOne(() => Zone, (zone) => zone.evidences)
   @Field(() => Zone)
   zone: Zone;
+
+  @ManyToOne(() => TypeManage, (typeManage) => typeManage.evidences)
+  @Field(() => TypeManage, {
+    nullable: true,
+  })
+  typeManage?: TypeManage;
 
   @ManyToOne(() => User, (user) => user.evidences)
   @Field(() => User)

@@ -33,6 +33,11 @@ export class ParamsArgs {
   zoneId?: number;
 
   @IsOptional()
+  @IsPositive()
+  @Field(() => Number, { nullable: true })
+  typeManageId?: number;
+
+  @IsOptional()
   @IsString()
   @Field(() => String, { nullable: true })
   status?: string;

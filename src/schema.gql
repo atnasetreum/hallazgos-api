@@ -43,6 +43,15 @@ type Comment {
   user: User!
 }
 
+type TypeManage {
+  id: ID!
+  name: String!
+  isActive: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  evidences: [Evidence!]!
+}
+
 type Evidence {
   id: ID!
   imgEvidence: String!
@@ -56,6 +65,7 @@ type Evidence {
   mainType: MainType!
   secondaryType: SecondaryType!
   zone: Zone!
+  typeManage: TypeManage
   user: User!
   supervisors: [User!]!
   comments: [Comment!]!
@@ -95,5 +105,5 @@ type AggregationsEvidenceType {
 }
 
 type Query {
-  evidences(page: Int!, limit: Int!, manufacturingPlantId: Float, mainTypeId: Float, secondaryTypeId: Float, zoneId: Float, status: String): AggregationsEvidenceType!
+  evidences(page: Int!, limit: Int!, manufacturingPlantId: Float, mainTypeId: Float, secondaryTypeId: Float, zoneId: Float, typeManageId: Float, status: String): AggregationsEvidenceType!
 }

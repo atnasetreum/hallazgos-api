@@ -28,9 +28,21 @@ import { STATUS_CANCEL, STATUS_CLOSE, STATUS_OPEN } from '@shared/constants';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Comment } from './entities/comments.entity';
 import { ParamsArgs } from './inputs/args';
+import { TypeManagesService } from 'type-manages/type-manages.service';
 
 @Injectable()
 export class EvidencesService {
+  private readonly relations = [
+    'manufacturingPlant',
+    'mainType',
+    'secondaryType',
+    'zone',
+    'user',
+    'supervisors',
+    'comments',
+    'typeManage',
+  ];
+
   constructor(
     @InjectRepository(Evidence)
     private readonly evidenceRepository: Repository<Evidence>,
@@ -43,6 +55,7 @@ export class EvidencesService {
     private readonly zonesService: ZonesService,
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
+    private readonly typeManagesService: TypeManagesService,
   ) {}
 
   async create(
@@ -57,8 +70,16 @@ export class EvidencesService {
 
     const { originalname: imgEvidence } = file;
 
-    const { manufacturingPlantId, typeHallazgo, type, zone, supervisor } =
-      createEvidenceDto;
+    const {
+      manufacturingPlantId,
+      typeHallazgo,
+      type,
+      zone,
+      supervisor,
+      typeManage,
+    } = createEvidenceDto;
+
+    const typeManageRow = await this.typeManagesService.findOne(typeManage);
 
     const manufacturingPlant =
       await this.manufacturingPlantsService.findOne(manufacturingPlantId);
@@ -89,6 +110,7 @@ export class EvidencesService {
         mainType,
         secondaryType,
         zone: zoneRow,
+        typeManage: typeManageRow,
         user,
         supervisors,
         status: STATUS_OPEN,
@@ -236,15 +258,7 @@ export class EvidencesService {
         },
         ...(status && { status }),
       },
-      relations: [
-        'manufacturingPlant',
-        'mainType',
-        'secondaryType',
-        'zone',
-        'user',
-        'supervisors',
-        'comments',
-      ],
+      relations: this.relations,
       order: {
         id: 'DESC',
       },
@@ -262,6 +276,7 @@ export class EvidencesService {
       mainTypeId,
       secondaryTypeId,
       zoneId,
+      typeManageId,
       limit,
       page,
       status,
@@ -275,6 +290,7 @@ export class EvidencesService {
       ...(mainTypeId && { mainType: { id: mainTypeId } }),
       ...(secondaryTypeId && { secondaryType: { id: secondaryTypeId } }),
       ...(zoneId && { zone: { id: zoneId } }),
+      ...(typeManageId && { typeManage: { id: typeManageId } }),
       ...(status && { status }),
     };
 
@@ -292,15 +308,7 @@ export class EvidencesService {
       where,
       ...(limitNumber === -1 ? {} : { take: limitNumber }),
       ...(limitNumber === -1 ? {} : { skip }),
-      relations: [
-        'manufacturingPlant',
-        'mainType',
-        'secondaryType',
-        'zone',
-        'user',
-        'supervisors',
-        'comments',
-      ],
+      relations: this.relations,
       order: {
         id: 'DESC',
       },
@@ -314,15 +322,7 @@ export class EvidencesService {
       where: {
         id,
       },
-      relations: [
-        'manufacturingPlant',
-        'mainType',
-        'secondaryType',
-        'zone',
-        'user',
-        'supervisors',
-        'comments',
-      ],
+      relations: this.relations,
     });
 
     if (!evidence)

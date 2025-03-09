@@ -11,6 +11,7 @@ import { ZonesModule } from 'zones/zones.module';
 import { UsersModule } from 'users/users.module';
 import { Comment } from './entities/comments.entity';
 import { EvidencesResolver } from './evidences.resolver';
+import { TypeManagesModule } from 'type-manages/type-manages.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EvidencesResolver } from './evidences.resolver';
     SecondaryTypesModule,
     ZonesModule,
     UsersModule,
+    TypeManagesModule,
   ],
   controllers: [EvidencesController],
   providers: [EvidencesService, EvidencesResolver],
