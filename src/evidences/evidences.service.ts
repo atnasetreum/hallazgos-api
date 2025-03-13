@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Request } from 'express';
-import { FindOptionsWhere, In, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Not, Repository } from 'typeorm';
 
 import {
   CommentEvidenceDto,
@@ -24,7 +24,13 @@ import { Evidence } from './entities/evidence.entity';
 import { UsersService } from 'users/users.service';
 import { MailService } from 'mail/mail.service';
 import { User } from 'users/entities/user.entity';
-import { STATUS_CANCEL, STATUS_CLOSE, STATUS_OPEN } from '@shared/constants';
+import {
+  ENV_DEVELOPMENT,
+  ROLE_SUPERVISOR,
+  STATUS_CANCEL,
+  STATUS_CLOSE,
+  STATUS_OPEN,
+} from '@shared/constants';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Comment } from './entities/comments.entity';
 import { ParamsArgs } from './inputs/args';
@@ -56,7 +62,79 @@ export class EvidencesService {
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
     private readonly typeManagesService: TypeManagesService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
+
+  async findUsersResponsibleZone(
+    typeResponsible: string,
+    manufacturingPlantId: number,
+    zoneId: number,
+  ) {
+    if (!typeResponsible) {
+      return [];
+    }
+
+    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+      return this.userRepository.find({
+        where: {
+          email: 'eduardo-supervisor@hotmail.com',
+          isActive: true,
+          role: ROLE_SUPERVISOR,
+          manufacturingPlants: {
+            id: manufacturingPlantId,
+          },
+        },
+      });
+    }
+
+    const usersResponsible = await this.userRepository.find({
+      where: {
+        typeResponsible,
+        isActive: true,
+        role: ROLE_SUPERVISOR,
+        manufacturingPlantNamesMaintenanceSecurity: {
+          id: manufacturingPlantId,
+        },
+        email: Not(
+          In([
+            'eduardo-266@hotmail.com',
+            'eduardo-supervisor@hotmail.com',
+            'eduardo-general@hotmail.com',
+          ]),
+        ),
+      },
+      relations: [
+        'manufacturingPlantNamesMaintenanceSecurity',
+        'zonesMaintenanceSecurity',
+      ],
+    });
+
+    if (!usersResponsible.length) {
+      return [];
+    }
+
+    const zonesMaintenanceSecurity = usersResponsible
+      .map((user) => user.zonesMaintenanceSecurity)
+      .flat()
+      .filter(
+        (zone) =>
+          zone.isActive && zone.manufacturingPlant.id === manufacturingPlantId,
+      );
+
+    if (!zonesMaintenanceSecurity.length) {
+      return [];
+    }
+
+    if (zonesMaintenanceSecurity.length) {
+      const zonesIds = zonesMaintenanceSecurity.map((zone) => zone.id);
+      if (!zonesIds.includes(zoneId)) {
+        return [];
+      }
+    }
+
+    return usersResponsible;
+  }
 
   async create(
     createEvidenceDto: CreateEvidenceDto,
@@ -119,36 +197,30 @@ export class EvidencesService {
       }),
     );
 
+    const usersResponsible = await this.findUsersResponsibleZone(
+      secondaryType.typeResponsible,
+      manufacturingPlantId,
+      zone,
+    );
+
+    const typeEmail = 'create';
+
+    if (usersResponsible.length) {
+      await this.sendEmailUsers(usersResponsible, evidenceCurrent, typeEmail);
+    }
+
     await this.notifyByEmail({
       manufacturingPlant,
       evidenceCurrent,
-      type: 'create',
+      type: typeEmail,
     });
 
     return 'ok';
   }
 
-  async notifyByEmail({
-    manufacturingPlant,
-    evidenceCurrent,
-    type,
-  }: {
-    manufacturingPlant: ManufacturingPlant;
-    evidenceCurrent: Evidence;
-    type: string;
-  }) {
-    const plantUsers = await this.usersService.findAllByPlant(
-      manufacturingPlant.id,
-    );
-
-    if (!plantUsers.length) {
-      throw new BadRequestException(
-        `No se ha encontrado usuarios asignados para la planta ${manufacturingPlant.name}`,
-      );
-    }
-
-    for (let i = 0; i < plantUsers.length; i++) {
-      const userToSendEmail = plantUsers[i];
+  async sendEmailUsers(users: User[], evidenceCurrent: Evidence, type: string) {
+    for (let i = 0, size = users.length; i < size; i++) {
+      const userToSendEmail = users[i];
 
       switch (type) {
         case 'create':
@@ -171,6 +243,28 @@ export class EvidencesService {
           break;
       }
     }
+  }
+
+  async notifyByEmail({
+    manufacturingPlant,
+    evidenceCurrent,
+    type,
+  }: {
+    manufacturingPlant: ManufacturingPlant;
+    evidenceCurrent: Evidence;
+    type: string;
+  }) {
+    const plantUsers = await this.usersService.findAllByPlant(
+      manufacturingPlant.id,
+    );
+
+    if (!plantUsers.length) {
+      throw new BadRequestException(
+        `No se ha encontrado usuarios asignados para la planta ${manufacturingPlant.name}`,
+      );
+    }
+
+    await this.sendEmailUsers(plantUsers, evidenceCurrent, type);
   }
 
   async saveSolution(id: number, file: Express.Multer.File) {

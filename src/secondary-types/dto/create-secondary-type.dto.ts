@@ -8,4 +8,8 @@ export class CreateSecondaryTypeDto {
   @IsNotEmpty()
   @IsPositive()
   mainTypeId: number;
+
+  @IsNotEmpty()
+  @IsString()
+  typeResponsible: string;
 }

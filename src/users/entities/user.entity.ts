@@ -41,6 +41,10 @@ export class User {
   @Field(() => String)
   role: string;
 
+  @Column('text', { nullable: true, default: '' })
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  typeResponsible: string;
+
   @Column({ default: true })
   @Field(() => Boolean)
   isActive: boolean;
@@ -74,6 +78,20 @@ export class User {
   @OneToMany(() => Comment, (evidence) => evidence.user)
   @Field(() => [Comment])
   comments: Comment[];
+
+  @ManyToMany(() => ManufacturingPlant)
+  @JoinTable({
+    name: 'user_manufacturing_plants_maintenance_security',
+  })
+  @Field(() => [ManufacturingPlant])
+  manufacturingPlantNamesMaintenanceSecurity: ManufacturingPlant[];
+
+  @ManyToMany(() => Zone)
+  @JoinTable({
+    name: 'user_zones_maintenance_security',
+  })
+  @Field(() => [Zone])
+  zonesMaintenanceSecurity: Zone[];
 
   /*@ManyToOne(() => Evidence, (evidence) => evidence.supervisors)
   assignedEvidence: Evidence;*/

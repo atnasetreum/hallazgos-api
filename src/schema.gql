@@ -5,6 +5,7 @@
 type SecondaryType {
   id: ID!
   name: String!
+  typeResponsible: String
   isActive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -90,6 +91,7 @@ type User {
   email: String!
   password: String!
   role: String!
+  typeResponsible: String
   isActive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -97,6 +99,8 @@ type User {
   zones: [Zone!]!
   evidences: [Evidence!]!
   comments: [Comment!]!
+  manufacturingPlantNamesMaintenanceSecurity: [ManufacturingPlant!]!
+  zonesMaintenanceSecurity: [Zone!]!
 }
 
 type AggregationsEvidenceType {

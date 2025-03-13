@@ -23,17 +23,48 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { name, email, password, rule, manufacturingPlantNames, zoneNames } =
-      createUserDto;
+    const {
+      name,
+      email,
+      password,
+      rule,
+      manufacturingPlantNames,
+      zoneNames,
+      typeResponsible,
+      manufacturingPlantNamesMaintenanceSecurity,
+      zonesMaintenanceSecurity,
+    } = createUserDto;
 
     const manufacturingPlants =
       await this.manufacturingPlantsService.findAllByNames(
         manufacturingPlantNames,
       );
 
+    let manufacturingPlantNamesMaintenanceSecurityEntities = [];
+
+    if (manufacturingPlantNamesMaintenanceSecurity.length) {
+      manufacturingPlantNamesMaintenanceSecurityEntities =
+        await this.manufacturingPlantsService.findAllByNames(
+          manufacturingPlantNamesMaintenanceSecurity,
+        );
+    }
+
+    console.log({
+      manufacturingPlantNamesMaintenanceSecurityEntities,
+      manufacturingPlantNamesMaintenanceSecurity,
+    });
+
     let zones = [];
+    let zonesMaintenanceSecurityEntities = [];
 
     if (rule === ROLE_SUPERVISOR) {
+      if (zonesMaintenanceSecurity.length) {
+        zonesMaintenanceSecurityEntities =
+          await this.zonesService.findAllByManufacturingPlantNames(
+            zonesMaintenanceSecurity,
+          );
+      }
+
       zones =
         await this.zonesService.findAllByManufacturingPlantNames(zoneNames);
     }
@@ -46,6 +77,14 @@ export class UsersService {
         role: rule,
         manufacturingPlants,
         zones,
+        typeResponsible,
+        ...(manufacturingPlantNamesMaintenanceSecurityEntities.length && {
+          manufacturingPlantNamesMaintenanceSecurity:
+            manufacturingPlantNamesMaintenanceSecurityEntities,
+        }),
+        ...(zonesMaintenanceSecurityEntities.length && {
+          zonesMaintenanceSecurity: zonesMaintenanceSecurityEntities,
+        }),
       }),
     );
 
@@ -65,7 +104,14 @@ export class UsersService {
         ...(rule && { role: rule }),
         ...(zoneId && { zones: { id: In([zoneId]) }, role: ROLE_SUPERVISOR }),
       },
-      relations: ['manufacturingPlants', 'zones', 'zones.manufacturingPlant'],
+      relations: [
+        'manufacturingPlants',
+        'zones',
+        'zones.manufacturingPlant',
+        'manufacturingPlantNamesMaintenanceSecurity',
+        'zonesMaintenanceSecurity',
+        'zonesMaintenanceSecurity.manufacturingPlant',
+      ],
       order: {
         id: 'DESC',
         manufacturingPlants: {
@@ -133,7 +179,14 @@ export class UsersService {
         id,
         isActive: true,
       },
-      relations: ['manufacturingPlants', 'zones', 'zones.manufacturingPlant'],
+      relations: [
+        'manufacturingPlants',
+        'zones',
+        'zones.manufacturingPlant',
+        'manufacturingPlantNamesMaintenanceSecurity',
+        'zonesMaintenanceSecurity',
+        'zonesMaintenanceSecurity.manufacturingPlant',
+      ],
     });
 
     if (!user)

@@ -24,6 +24,10 @@ export class SecondaryType {
   @Field(() => String)
   name: string;
 
+  @Column('text', { nullable: true, default: '' })
+  @Field(() => String, { nullable: true, defaultValue: '' })
+  typeResponsible: string;
+
   @Column({ default: true })
   @Field(() => Boolean, {
     defaultValue: true,
