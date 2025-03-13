@@ -49,11 +49,6 @@ export class UsersService {
         );
     }
 
-    console.log({
-      manufacturingPlantNamesMaintenanceSecurityEntities,
-      manufacturingPlantNamesMaintenanceSecurity,
-    });
-
     let zones = [];
     let zonesMaintenanceSecurityEntities = [];
 
