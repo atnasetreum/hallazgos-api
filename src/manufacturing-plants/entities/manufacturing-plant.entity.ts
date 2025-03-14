@@ -11,6 +11,7 @@ import {
 
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Zone } from 'zones/entities/zone.entity';
+import { Processes } from 'processes/entities/processes.entity';
 @Entity()
 @ObjectType()
 export class ManufacturingPlant {
@@ -55,4 +56,8 @@ export class ManufacturingPlant {
   @OneToMany(() => Zone, (zone) => zone.manufacturingPlant)
   @Field(() => [Zone])
   zones: Zone[];
+
+  @OneToMany(() => Processes, (processes) => processes.manufacturingPlant)
+  @Field(() => [Processes])
+  processes: Processes[];
 }

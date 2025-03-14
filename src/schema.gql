@@ -5,7 +5,6 @@
 type SecondaryType {
   id: ID!
   name: String!
-  typeResponsible: String
   isActive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -44,15 +43,6 @@ type Comment {
   user: User!
 }
 
-type TypeManage {
-  id: ID!
-  name: String!
-  isActive: Boolean!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  evidences: [Evidence!]!
-}
-
 type Evidence {
   id: ID!
   imgEvidence: String!
@@ -66,10 +56,15 @@ type Evidence {
   mainType: MainType!
   secondaryType: SecondaryType!
   zone: Zone!
-  typeManage: TypeManage
   user: User!
   supervisors: [User!]!
   comments: [Comment!]!
+}
+
+type Processes {
+  id: ID!
+  name: String!
+  isActive: Boolean!
 }
 
 type ManufacturingPlant {
@@ -83,6 +78,7 @@ type ManufacturingPlant {
   updatedAt: DateTime!
   evidences: [Evidence!]!
   zones: [Zone!]!
+  processes: [Processes!]!
 }
 
 type User {
@@ -91,7 +87,6 @@ type User {
   email: String!
   password: String!
   role: String!
-  typeResponsible: String
   isActive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -99,8 +94,6 @@ type User {
   zones: [Zone!]!
   evidences: [Evidence!]!
   comments: [Comment!]!
-  manufacturingPlantNamesMaintenanceSecurity: [ManufacturingPlant!]!
-  zonesMaintenanceSecurity: [Zone!]!
 }
 
 type AggregationsEvidenceType {

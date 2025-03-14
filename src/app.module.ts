@@ -26,7 +26,6 @@ import { SecondaryTypesModule } from './secondary-types/secondary-types.module';
 import { MailModule } from './mail/mail.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtService } from 'auth/jwt.service';
-import { TypeManagesModule } from './type-manages/type-manages.module';
 import { ProcessesModule } from 'processes/processes.module';
 
 @Module({
@@ -103,7 +102,6 @@ import { ProcessesModule } from 'processes/processes.module';
     SecondaryTypesModule,
     MailModule,
     DashboardModule,
-    TypeManagesModule,
     ProcessesModule,
   ],
   controllers: [],

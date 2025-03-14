@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Request } from 'express';
-import { FindOptionsWhere, In, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Repository } from 'typeorm';
 
 import {
   CommentEvidenceDto,
@@ -34,7 +34,6 @@ import {
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Comment } from './entities/comments.entity';
 import { ParamsArgs } from './inputs/args';
-import { TypeManagesService } from 'type-manages/type-manages.service';
 
 @Injectable()
 export class EvidencesService {
@@ -61,20 +60,11 @@ export class EvidencesService {
     private readonly zonesService: ZonesService,
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
-    private readonly typeManagesService: TypeManagesService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findUsersResponsibleZone(
-    typeResponsible: string,
-    manufacturingPlantId: number,
-    zoneId: number,
-  ) {
-    if (!typeResponsible) {
-      return [];
-    }
-
+  async findUsersResponsibleZone() {
     if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
       return this.userRepository.find({
         where: {
@@ -82,58 +72,13 @@ export class EvidencesService {
           isActive: true,
           role: ROLE_SUPERVISOR,
           manufacturingPlants: {
-            id: manufacturingPlantId,
+            id: 1,
           },
         },
       });
     }
 
-    const usersResponsible = await this.userRepository.find({
-      where: {
-        typeResponsible,
-        isActive: true,
-        role: ROLE_SUPERVISOR,
-        manufacturingPlantNamesMaintenanceSecurity: {
-          id: manufacturingPlantId,
-        },
-        email: Not(
-          In([
-            'eduardo-266@hotmail.com',
-            'eduardo-supervisor@hotmail.com',
-            'eduardo-general@hotmail.com',
-          ]),
-        ),
-      },
-      relations: [
-        'manufacturingPlantNamesMaintenanceSecurity',
-        'zonesMaintenanceSecurity',
-      ],
-    });
-
-    if (!usersResponsible.length) {
-      return [];
-    }
-
-    const zonesMaintenanceSecurity = usersResponsible
-      .map((user) => user.zonesMaintenanceSecurity)
-      .flat()
-      .filter(
-        (zone) =>
-          zone.isActive && zone.manufacturingPlant.id === manufacturingPlantId,
-      );
-
-    if (!zonesMaintenanceSecurity.length) {
-      return [];
-    }
-
-    if (zonesMaintenanceSecurity.length) {
-      const zonesIds = zonesMaintenanceSecurity.map((zone) => zone.id);
-      if (!zonesIds.includes(zoneId)) {
-        return [];
-      }
-    }
-
-    return usersResponsible;
+    return [];
   }
 
   async create(
@@ -148,16 +93,8 @@ export class EvidencesService {
 
     const { originalname: imgEvidence } = file;
 
-    const {
-      manufacturingPlantId,
-      typeHallazgo,
-      type,
-      zone,
-      supervisor,
-      typeManage,
-    } = createEvidenceDto;
-
-    const typeManageRow = await this.typeManagesService.findOne(typeManage);
+    const { manufacturingPlantId, typeHallazgo, type, zone, supervisor } =
+      createEvidenceDto;
 
     const manufacturingPlant =
       await this.manufacturingPlantsService.findOne(manufacturingPlantId);
@@ -188,7 +125,6 @@ export class EvidencesService {
         mainType,
         secondaryType,
         zone: zoneRow,
-        typeManage: typeManageRow,
         user,
         supervisors,
         status: STATUS_OPEN,
@@ -197,11 +133,7 @@ export class EvidencesService {
       }),
     );
 
-    const usersResponsible = await this.findUsersResponsibleZone(
-      secondaryType.typeResponsible,
-      manufacturingPlantId,
-      zone,
-    );
+    const usersResponsible = await this.findUsersResponsibleZone();
 
     const typeEmail = 'create';
 

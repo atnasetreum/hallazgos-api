@@ -17,10 +17,6 @@ export class CreateEvidenceDto {
   @IsPositive()
   zone: number;
 
-  @IsNotEmpty()
-  @IsPositive()
-  typeManage: number;
-
   @IsOptional()
   @IsPositive()
   supervisor: number;

@@ -33,19 +33,4 @@ export class CreateUserDto {
   @IsArray()
   @IsString({ each: true })
   zoneNames: string[];
-
-  @IsOptional()
-  @IsString()
-  typeResponsible: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  @ArrayMinSize(1)
-  manufacturingPlantNamesMaintenanceSecurity: string[];
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  zonesMaintenanceSecurity: string[];
 }
