@@ -18,6 +18,7 @@ import { SecondaryType } from 'secondary-types/entities/secondary-type.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { User } from 'users/entities/user.entity';
 import { Comment } from './comments.entity';
+import { Processes } from 'processes/entities/processes.entity';
 
 @Entity()
 @ObjectType()
@@ -79,6 +80,12 @@ export class Evidence {
   @ManyToOne(() => Zone, (zone) => zone.evidences)
   @Field(() => Zone)
   zone: Zone;
+
+  @ManyToOne(() => Processes, (process) => process.evidences)
+  @Field(() => Processes, {
+    nullable: true,
+  })
+  process?: Processes;
 
   @ManyToOne(() => User, (user) => user.evidences)
   @Field(() => User)

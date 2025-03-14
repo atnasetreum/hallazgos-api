@@ -43,7 +43,7 @@ export class Processes {
   //@Field(() => [Evidence])
   evidences: Evidence[];
 
-  @ManyToOne(() => User, (user) => user.zones)
+  @ManyToOne(() => User, (user) => user.processes)
   //@Field(() => User)
   user: User;
 

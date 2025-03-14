@@ -89,7 +89,7 @@ export class ProcessesService {
   async findAllByManufacturingPlantNames(
     names: string[],
   ): Promise<Processes[]> {
-    const Processes = [];
+    const processes = [];
 
     for (let i = 0; i < names.length; i++) {
       const [manufacturingPlantName, processesName] = names[i].split(' - ');
@@ -105,11 +105,11 @@ export class ProcessesService {
       });
 
       if (process) {
-        Processes.push(process);
+        processes.push(process);
       }
     }
 
-    return Processes;
+    return processes;
   }
 
   async update(

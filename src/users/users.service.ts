@@ -11,6 +11,7 @@ import { User } from './entities/user.entity';
 import { ENV_DEVELOPMENT, ROLE_SUPERVISOR } from '@shared/constants';
 import { ManufacturingPlantsService } from 'manufacturing-plants/manufacturing-plants.service';
 import { ZonesService } from 'zones/zones.service';
+import { ProcessesService } from 'processes/processes.service';
 
 @Injectable()
 export class UsersService {
@@ -20,11 +21,19 @@ export class UsersService {
     @Inject(REQUEST) private readonly request: Request,
     private readonly manufacturingPlantsService: ManufacturingPlantsService,
     private readonly zonesService: ZonesService,
+    private readonly processesService: ProcessesService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { name, email, password, rule, manufacturingPlantNames, zoneNames } =
-      createUserDto;
+    const {
+      name,
+      email,
+      password,
+      rule,
+      manufacturingPlantNames,
+      zoneNames,
+      processNames,
+    } = createUserDto;
 
     const manufacturingPlants =
       await this.manufacturingPlantsService.findAllByNames(
@@ -34,6 +43,11 @@ export class UsersService {
     const zones =
       await this.zonesService.findAllByManufacturingPlantNames(zoneNames);
 
+    const processes =
+      await this.processesService.findAllByManufacturingPlantNames(
+        processNames,
+      );
+
     const user = await this.userRepository.save(
       this.userRepository.create({
         name,
@@ -42,6 +56,7 @@ export class UsersService {
         role: rule,
         manufacturingPlants,
         zones,
+        processes,
       }),
     );
 
@@ -61,7 +76,13 @@ export class UsersService {
         ...(rule && { role: rule }),
         ...(zoneId && { zones: { id: In([zoneId]) }, role: ROLE_SUPERVISOR }),
       },
-      relations: ['manufacturingPlants', 'zones', 'zones.manufacturingPlant'],
+      relations: [
+        'manufacturingPlants',
+        'zones',
+        'zones.manufacturingPlant',
+        'processes',
+        'processes.manufacturingPlant',
+      ],
       order: {
         id: 'DESC',
         manufacturingPlants: {
@@ -129,7 +150,13 @@ export class UsersService {
         id,
         isActive: true,
       },
-      relations: ['manufacturingPlants', 'zones', 'zones.manufacturingPlant'],
+      relations: [
+        'manufacturingPlants',
+        'zones',
+        'zones.manufacturingPlant',
+        'processes',
+        'processes.manufacturingPlant',
+      ],
     });
 
     if (!user)
@@ -195,7 +222,7 @@ export class UsersService {
         },
         email: Not(In(['eduardo-supervisor@hotmail.com'])),
       },
-      relations: ['manufacturingPlants', 'zones'],
+      relations: ['manufacturingPlants', 'zones', 'processes'],
       order: {
         name: 'ASC',
       },
@@ -213,7 +240,7 @@ export class UsersService {
           isActive: true,
         },
       },
-      relations: ['manufacturingPlants', 'zones'],
+      relations: ['manufacturingPlants', 'zones', 'processes'],
     });
 
     if (!user)
@@ -225,8 +252,15 @@ export class UsersService {
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findOne(id);
 
-    const { name, email, password, rule, manufacturingPlantNames, zoneNames } =
-      updateUserDto;
+    const {
+      name,
+      email,
+      password,
+      rule,
+      manufacturingPlantNames,
+      zoneNames,
+      processNames,
+    } = updateUserDto;
 
     const manufacturingPlants =
       await this.manufacturingPlantsService.findAllByNames(
@@ -234,10 +268,16 @@ export class UsersService {
       );
 
     let zones = [];
+    let processes = [];
 
     if (rule === ROLE_SUPERVISOR) {
       zones =
         await this.zonesService.findAllByManufacturingPlantNames(zoneNames);
+
+      processes =
+        await this.processesService.findAllByManufacturingPlantNames(
+          processNames,
+        );
     }
 
     user.name = name;
@@ -247,6 +287,7 @@ export class UsersService {
     }
     user.role = rule;
     user.zones = zones;
+    user.processes = processes;
     user.manufacturingPlants = manufacturingPlants;
 
     return this.userRepository.save({ ...user });

@@ -34,6 +34,7 @@ import {
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Comment } from './entities/comments.entity';
 import { ParamsArgs } from './inputs/args';
+import { ProcessesService } from 'processes/processes.service';
 
 @Injectable()
 export class EvidencesService {
@@ -45,7 +46,7 @@ export class EvidencesService {
     'user',
     'supervisors',
     'comments',
-    'typeManage',
+    'process',
   ];
 
   constructor(
@@ -58,6 +59,7 @@ export class EvidencesService {
     private readonly mainTypesService: MainTypesService,
     private readonly secondaryTypesService: SecondaryTypesService,
     private readonly zonesService: ZonesService,
+    private readonly processesService: ProcessesService,
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
     @InjectRepository(User)
@@ -93,8 +95,14 @@ export class EvidencesService {
 
     const { originalname: imgEvidence } = file;
 
-    const { manufacturingPlantId, typeHallazgo, type, zone, supervisor } =
-      createEvidenceDto;
+    const {
+      manufacturingPlantId,
+      typeHallazgo,
+      type,
+      zone,
+      supervisor,
+      process,
+    } = createEvidenceDto;
 
     const manufacturingPlant =
       await this.manufacturingPlantsService.findOne(manufacturingPlantId);
@@ -104,6 +112,8 @@ export class EvidencesService {
     const secondaryType = await this.secondaryTypesService.findOne(type);
 
     const zoneRow = await this.zonesService.findOne(zone);
+
+    const processRow = await this.processesService.findOne(process);
 
     const user = await this.usersService.findOne(userId);
 
@@ -125,6 +135,7 @@ export class EvidencesService {
         mainType,
         secondaryType,
         zone: zoneRow,
+        process: processRow,
         user,
         supervisors,
         status: STATUS_OPEN,
@@ -302,7 +313,7 @@ export class EvidencesService {
       mainTypeId,
       secondaryTypeId,
       zoneId,
-      typeManageId,
+      processId,
       limit,
       page,
       status,
@@ -316,7 +327,7 @@ export class EvidencesService {
       ...(mainTypeId && { mainType: { id: mainTypeId } }),
       ...(secondaryTypeId && { secondaryType: { id: secondaryTypeId } }),
       ...(zoneId && { zone: { id: zoneId } }),
-      ...(typeManageId && { typeManage: { id: typeManageId } }),
+      ...(processId && { process: { id: processId } }),
       ...(status && { status }),
     };
 

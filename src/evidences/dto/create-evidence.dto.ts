@@ -20,4 +20,8 @@ export class CreateEvidenceDto {
   @IsOptional()
   @IsPositive()
   supervisor: number;
+
+  @IsNotEmpty()
+  @IsPositive()
+  process: number;
 }

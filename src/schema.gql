@@ -43,6 +43,12 @@ type Comment {
   user: User!
 }
 
+type Processes {
+  id: ID!
+  name: String!
+  isActive: Boolean!
+}
+
 type Evidence {
   id: ID!
   imgEvidence: String!
@@ -56,15 +62,10 @@ type Evidence {
   mainType: MainType!
   secondaryType: SecondaryType!
   zone: Zone!
+  process: Processes
   user: User!
   supervisors: [User!]!
   comments: [Comment!]!
-}
-
-type Processes {
-  id: ID!
-  name: String!
-  isActive: Boolean!
 }
 
 type ManufacturingPlant {
@@ -92,6 +93,7 @@ type User {
   updatedAt: DateTime!
   manufacturingPlants: [ManufacturingPlant!]!
   zones: [Zone!]!
+  processes: [Processes!]!
   evidences: [Evidence!]!
   comments: [Comment!]!
 }
@@ -102,5 +104,5 @@ type AggregationsEvidenceType {
 }
 
 type Query {
-  evidences(page: Int!, limit: Int!, manufacturingPlantId: Float, mainTypeId: Float, secondaryTypeId: Float, zoneId: Float, typeManageId: Float, status: String): AggregationsEvidenceType!
+  evidences(page: Int!, limit: Int!, manufacturingPlantId: Float, mainTypeId: Float, secondaryTypeId: Float, zoneId: Float, processId: Float, status: String): AggregationsEvidenceType!
 }

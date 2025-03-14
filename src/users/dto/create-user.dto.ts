@@ -33,4 +33,9 @@ export class CreateUserDto {
   @IsArray()
   @IsString({ each: true })
   zoneNames: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  processNames: string[];
 }

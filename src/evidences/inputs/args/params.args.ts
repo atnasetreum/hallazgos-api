@@ -35,7 +35,7 @@ export class ParamsArgs {
   @IsOptional()
   @IsPositive()
   @Field(() => Number, { nullable: true })
-  typeManageId?: number;
+  processId?: number;
 
   @IsOptional()
   @IsString()

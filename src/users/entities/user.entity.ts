@@ -17,6 +17,7 @@ import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-
 import { Zone } from 'zones/entities/zone.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Comment } from 'evidences/entities/comments.entity';
+import { Processes } from 'processes/entities/processes.entity';
 
 @Entity()
 @ObjectType()
@@ -66,6 +67,13 @@ export class User {
   })
   @Field(() => [Zone])
   zones: Zone[];
+
+  @ManyToMany(() => Processes)
+  @JoinTable({
+    name: 'user_processes',
+  })
+  @Field(() => [Processes])
+  processes: Processes[];
 
   @OneToMany(() => Evidence, (evidence) => evidence.user)
   @Field(() => [Evidence])
