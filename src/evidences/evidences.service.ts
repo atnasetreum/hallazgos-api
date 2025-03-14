@@ -24,13 +24,7 @@ import { Evidence } from './entities/evidence.entity';
 import { UsersService } from 'users/users.service';
 import { MailService } from 'mail/mail.service';
 import { User } from 'users/entities/user.entity';
-import {
-  ENV_DEVELOPMENT,
-  ROLE_SUPERVISOR,
-  STATUS_CANCEL,
-  STATUS_CLOSE,
-  STATUS_OPEN,
-} from '@shared/constants';
+import { STATUS_CANCEL, STATUS_CLOSE, STATUS_OPEN } from '@shared/constants';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Comment } from './entities/comments.entity';
 import { ParamsArgs } from './inputs/args';
@@ -45,6 +39,7 @@ export class EvidencesService {
     'zone',
     'user',
     'supervisors',
+    'responsibles',
     'comments',
     'process',
   ];
@@ -62,26 +57,7 @@ export class EvidencesService {
     private readonly processesService: ProcessesService,
     private readonly usersService: UsersService,
     private readonly mailService: MailService,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
   ) {}
-
-  async findUsersResponsibleZone() {
-    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
-      return this.userRepository.find({
-        where: {
-          email: 'eduardo-supervisor@hotmail.com',
-          isActive: true,
-          role: ROLE_SUPERVISOR,
-          manufacturingPlants: {
-            id: 1,
-          },
-        },
-      });
-    }
-
-    return [];
-  }
 
   async create(
     createEvidenceDto: CreateEvidenceDto,
@@ -128,6 +104,12 @@ export class EvidencesService {
         `No se ha encontrado algun supervisor asignador para la planta ${manufacturingPlant.name}, zona ${zoneRow.name}`,
       );
 
+    const responsibles = await this.usersService.findProcesses({
+      manufacturingPlantId: manufacturingPlant.id,
+      processId: process,
+      supervisorId: supervisor,
+    });
+
     const evidenceCurrent = await this.evidenceRepository.save(
       this.evidenceRepository.create({
         imgEvidence,
@@ -138,18 +120,17 @@ export class EvidencesService {
         process: processRow,
         user,
         supervisors,
+        responsibles,
         status: STATUS_OPEN,
         createdAt: new Date(),
         updatedAt: new Date(),
       }),
     );
 
-    const usersResponsible = await this.findUsersResponsibleZone();
-
     const typeEmail = 'create';
 
-    if (usersResponsible.length) {
-      await this.sendEmailUsers(usersResponsible, evidenceCurrent, typeEmail);
+    if (responsibles.length) {
+      await this.sendEmailUsers(responsibles, evidenceCurrent, typeEmail);
     }
 
     await this.notifyByEmail({

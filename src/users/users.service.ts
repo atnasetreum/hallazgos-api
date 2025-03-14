@@ -206,6 +206,47 @@ export class UsersService {
     });
   }
 
+  async findProcesses({
+    manufacturingPlantId,
+    processId,
+    supervisorId,
+  }: {
+    manufacturingPlantId: number;
+    processId: number;
+    supervisorId: number;
+  }): Promise<User[]> {
+    const whereDefault = {
+      isActive: true,
+      role: ROLE_SUPERVISOR,
+      manufacturingPlants: {
+        id: manufacturingPlantId,
+      },
+      processes: {
+        id: processId,
+      },
+      email: Not(
+        In([
+          'eduardo-266@hotmail.com',
+          'eduardo-supervisor@hotmail.com',
+          'eduardo-general@hotmail.com',
+        ]),
+      ),
+    };
+
+    if (supervisorId) {
+      return this.userRepository.find({
+        where: {
+          ...whereDefault,
+          id: supervisorId,
+        },
+      });
+    }
+
+    return this.userRepository.find({
+      where: whereDefault,
+    });
+  }
+
   async getSupervisors(): Promise<User[]> {
     const { manufacturingPlants } = this.request['user'] as User;
 

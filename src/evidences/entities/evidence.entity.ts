@@ -96,6 +96,11 @@ export class Evidence {
   @Field(() => [User])
   supervisors: User[];
 
+  @ManyToMany(() => User)
+  @JoinTable()
+  @Field(() => [User])
+  responsibles: User[];
+
   @OneToMany(() => Comment, (comment) => comment.evidence)
   @Field(() => [Comment])
   comments: Comment[];

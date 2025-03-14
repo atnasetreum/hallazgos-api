@@ -65,6 +65,7 @@ type Evidence {
   process: Processes
   user: User!
   supervisors: [User!]!
+  responsibles: [User!]!
   comments: [Comment!]!
 }
 
