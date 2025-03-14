@@ -1,13 +1,16 @@
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
 
 import * as cookieParser from 'cookie-parser';
 
 //import { GlobalExceptionFilter } from '@shared/filters';
-import { AppModule } from './app.module';
 import { ClusterService } from 'cluster.service';
+import { AppModule } from './app.module';
+import { ENV_DEVELOPMENT } from '@shared/constants';
 
 async function bootstrap() {
+  const logger = new Logger('APP-SERVICE');
+
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: `${process.env.WHITE_LIST_DOMAINS}`.split(','),
@@ -33,9 +36,13 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT);
 
-  console.log(
-    `[APP-SERVICE] Running on port: [${process.env.PORT}], environment: [${process.env.NODE_ENV}]`,
+  logger.debug(
+    `Running on port: [${process.env.PORT}], environment: [${process.env.NODE_ENV}]`,
   );
 }
-//bootstrap();
-ClusterService.clusterize(bootstrap);
+
+if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+  bootstrap();
+} else {
+  ClusterService.clusterize(bootstrap);
+}

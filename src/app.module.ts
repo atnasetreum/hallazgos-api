@@ -27,6 +27,7 @@ import { MailModule } from './mail/mail.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtService } from 'auth/jwt.service';
 import { TypeManagesModule } from './type-manages/type-manages.module';
+import { ProcessesModule } from 'processes/processes.module';
 
 @Module({
   imports: [
@@ -103,6 +104,7 @@ import { TypeManagesModule } from './type-manages/type-manages.module';
     MailModule,
     DashboardModule,
     TypeManagesModule,
+    ProcessesModule,
   ],
   controllers: [],
   providers: [JwtService],
