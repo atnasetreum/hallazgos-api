@@ -34,11 +34,7 @@ export class MailService {
         'MAIL_USER',
       )}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
-      template:
-        evidenceCurrent.mainType.name.toLocaleLowerCase() ===
-        'comportamiento inseguro'
-          ? './create-description'
-          : './create',
+      template: './create',
       context: {
         id: evidenceCurrent.id,
         manufacturingPlant: evidenceCurrent.manufacturingPlant.name,
@@ -99,11 +95,7 @@ export class MailService {
         'MAIL_USER',
       )}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
-      template:
-        evidenceCurrent.mainType.name.toLocaleLowerCase() ===
-        'comportamiento inseguro'
-          ? './solution-description'
-          : './solution',
+      template: './solution',
       context: {
         id: evidenceCurrent.id,
         manufacturingPlant: evidenceCurrent.manufacturingPlant.name,
@@ -150,18 +142,35 @@ export class MailService {
         secondaryType: evidenceCurrent.secondaryType.name,
         zone: evidenceCurrent.zone.name,
         userWhoCreated: evidenceCurrent.user.name,
+        descripcion: evidenceCurrent.description,
         createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
         supervisor: evidenceCurrent.supervisors
           .map((supervisor) => supervisor.name)
           .join(' / '),
       },
-      attachments: [
-        {
-          filename: imgEvidence,
-          path: pathImage + imgEvidence,
-          cid: 'imgEvidence',
-        },
-      ],
+      ...(imgEvidence && {
+        attachments: [
+          {
+            filename: imgEvidence,
+            path: pathImage + imgEvidence,
+            cid: 'imgEvidence',
+          },
+        ],
+      }),
+    });
+  }
+
+  async sendForgotPassword(email: string, token: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      from: `"Hada app (restablecimiento de contraseña)" <${this.configService.get(
+        'MAIL_USER',
+      )}>`,
+      subject: 'Restablecimiento de contraseña',
+      template: './forgot-password',
+      context: {
+        token,
+      },
     });
   }
 }

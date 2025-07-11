@@ -17,6 +17,7 @@ import { ENV_PRODUCTION } from '@shared/constants';
 import { User } from 'users/entities/user.entity';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from './jwt.service';
+import { MailService } from 'mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -29,6 +30,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @Inject(REQUEST) private readonly request: Request,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {
     this.environment = this.configService.get<string>('environment');
     this.nameCookie = 'token';
@@ -89,6 +91,24 @@ export class AuthService {
     });
 
     return serialized;
+  }
+
+  async forgotPassword(email: string): Promise<{
+    message: string;
+  }> {
+    const user = await this.userRepository.findOne({
+      where: { email, isActive: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`Usuario con email ${email} no encontrado`);
+    }
+    // Aquí se implementaría la lógica para enviar un correo de restablecimiento de contraseña
+    // Por ejemplo, generar un token de restablecimiento y enviarlo por correo electrónico
+    const token = this.jwtService.create(user.id, true);
+    await this.mailService.sendForgotPassword(email, token);
+
+    return { message: 'Correo de restablecimiento de contraseña enviado.' };
   }
 
   checkToken(): {

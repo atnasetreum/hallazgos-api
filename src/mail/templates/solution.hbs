@@ -15,6 +15,21 @@
   {{zone}}
 </p>
 
+{{#if descripcion}}
+  <p>
+    <strong>Descripción del comportamiento inseguro:</strong>
+    {{descripcion}}
+  </p>
+
+{{/if}}
+
+{{#if descripcionSolucion}}
+  <p>
+    <strong>Descripción de la solución del comportamiento inseguro:</strong>
+    {{descripcionSolucion}}
+  </p>
+{{/if}}
+
 <p>
   <strong>Creado por:</strong>
   {{userWhoCreated}}

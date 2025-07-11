@@ -19,9 +19,9 @@ export class JwtService {
     this.secretKey = this.configService.get<string>('jwt.secretKey');
   }
 
-  create(userId: number): string {
+  create(userId: number, isForgotPassword = false): string {
     const token = jwt.sign({ userId }, this.secretKey, {
-      expiresIn: expiresIn(),
+      expiresIn: isForgotPassword ? '2m' : expiresIn(),
     });
     return token;
   }

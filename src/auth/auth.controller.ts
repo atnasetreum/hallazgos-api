@@ -18,6 +18,11 @@ export class AuthController {
     return response.json({ message: 'Inicio de sesión correctamente.' });
   }
 
+  @Post('/forgot-password')
+  async forgotPassword(@Body('email') email: string) {
+    return this.authService.forgotPassword(email);
+  }
+
   @Post('/logout')
   async logout(@Res() response: Response) {
     const token = await this.authService.logout();
