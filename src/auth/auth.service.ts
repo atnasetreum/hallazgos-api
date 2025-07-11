@@ -152,12 +152,13 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException(`Usuario con email ${email} no encontrado`);
     }
-    // Aquí se implementaría la lógica para enviar un correo de restablecimiento de contraseña
-    // Por ejemplo, generar un token de restablecimiento y enviarlo por correo electrónico
     const token = this.jwtService.create(user.id, true);
     await this.mailService.sendForgotPassword(email, token);
 
-    return { message: 'Correo de restablecimiento de contraseña enviado.' };
+    return {
+      message:
+        'Se ha enviado un correo para restablecer su contraseña, por favor revise su bandeja de entrada.',
+    };
   }
 
   checkToken(): {
