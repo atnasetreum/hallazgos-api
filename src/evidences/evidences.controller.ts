@@ -66,8 +66,9 @@ export class EvidencesController {
   saveSolution(
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: string,
+    @Body('descriptionSolution') descriptionSolution: string,
   ) {
-    return this.evidencesService.saveSolution(+id, file);
+    return this.evidencesService.saveSolution(+id, file, descriptionSolution);
   }
 
   @Post('/add/comment/:id')

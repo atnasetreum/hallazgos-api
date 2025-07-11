@@ -63,13 +63,13 @@ export class EvidencesService {
     createEvidenceDto: CreateEvidenceDto,
     file: Express.Multer.File,
   ) {
-    if (!file) {
-      throw new BadRequestException('No se ha enviado ningún archivo');
-    }
-
     const { id: userId } = this.request['user'] as User;
 
-    const { originalname: imgEvidence } = file;
+    let imgEvidence = '';
+
+    if (file) {
+      imgEvidence = file.filename;
+    }
 
     const {
       manufacturingPlantId,
@@ -78,6 +78,7 @@ export class EvidencesService {
       zone,
       supervisor,
       process,
+      description,
     } = createEvidenceDto;
 
     const manufacturingPlant =
@@ -124,6 +125,7 @@ export class EvidencesService {
         status: STATUS_OPEN,
         createdAt: new Date(),
         updatedAt: new Date(),
+        description: description || '',
       }),
     );
 
@@ -191,17 +193,16 @@ export class EvidencesService {
     await this.sendEmailUsers(plantUsers, evidenceCurrent, type);
   }
 
-  async saveSolution(id: number, file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('No se ha enviado ningún archivo');
-    }
-
+  async saveSolution(
+    id: number,
+    file: Express.Multer.File,
+    descriptionSolution: string,
+  ) {
     const evidence = await this.findOne(id);
 
-    const { originalname: imgSolution } = file;
-
-    evidence.imgSolution = imgSolution;
+    evidence.imgSolution = file?.originalname || '';
     evidence.solutionDate = new Date();
+    evidence.descriptionSolution = descriptionSolution || '';
     evidence.status = STATUS_CLOSE;
 
     const evidenceSolution = await this.evidenceRepository.save(evidence);

@@ -54,6 +54,8 @@ type Evidence {
   imgEvidence: String!
   imgSolution: String!
   solutionDate: DateTime
+  description: String
+  descriptionSolution: String
   status: String!
   isActive: Boolean!
   createdAt: DateTime!

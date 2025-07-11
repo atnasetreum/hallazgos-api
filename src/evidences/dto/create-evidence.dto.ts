@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsPositive } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreateEvidenceDto {
   @IsNotEmpty()
@@ -24,4 +24,8 @@ export class CreateEvidenceDto {
   @IsNotEmpty()
   @IsPositive()
   process: number;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
 }

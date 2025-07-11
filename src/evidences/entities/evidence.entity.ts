@@ -44,6 +44,20 @@ export class Evidence {
   })
   solutionDate: Date;
 
+  @Column({ default: '' })
+  @Field(() => String, {
+    defaultValue: '',
+    nullable: true,
+  })
+  description: string;
+
+  @Column({ default: '' })
+  @Field(() => String, {
+    defaultValue: '',
+    nullable: true,
+  })
+  descriptionSolution: string;
+
   @Column()
   @Field(() => String)
   status: string;

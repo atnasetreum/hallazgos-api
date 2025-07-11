@@ -34,26 +34,33 @@ export class MailService {
         'MAIL_USER',
       )}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
-      template: './create',
+      template:
+        evidenceCurrent.mainType.name.toLocaleLowerCase() ===
+        'comportamiento inseguro'
+          ? './create-description'
+          : './create',
       context: {
         id: evidenceCurrent.id,
         manufacturingPlant: evidenceCurrent.manufacturingPlant.name,
         mainType: evidenceCurrent.mainType.name,
         secondaryType: evidenceCurrent.secondaryType.name,
         zone: evidenceCurrent.zone.name,
+        descripcion: evidenceCurrent.description,
         userWhoCreated: evidenceCurrent.user.name,
         createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
         supervisor: evidenceCurrent.supervisors
           .map((supervisor) => supervisor.name)
           .join(' / '),
       },
-      attachments: [
-        {
-          filename: imgEvidence,
-          path: pathImage + imgEvidence,
-          cid: 'imgEvidence',
-        },
-      ],
+      ...(imgEvidence && {
+        attachments: [
+          {
+            filename: imgEvidence,
+            path: pathImage + imgEvidence,
+            cid: 'imgEvidence',
+          },
+        ],
+      }),
     });
   }
 
@@ -67,19 +74,44 @@ export class MailService {
     const { imgEvidence, manufacturingPlant, mainType, imgSolution } =
       evidenceCurrent;
 
+    const attachments = [];
+
+    if (imgEvidence) {
+      attachments.push({
+        filename: imgEvidence,
+        path: pathImage + imgEvidence,
+        cid: 'imgEvidence',
+      });
+    }
+
+    if (imgSolution) {
+      attachments.push({
+        filename: imgSolution,
+        path:
+          __dirname + '../../../public/static/images/evidences/' + imgSolution,
+        cid: 'imgSolution',
+      });
+    }
+
     await this.mailerService.sendMail({
       to: user.email,
       from: `"Hada app (hallazgo solucionado)" <${this.configService.get(
         'MAIL_USER',
       )}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
-      template: './solution',
+      template:
+        evidenceCurrent.mainType.name.toLocaleLowerCase() ===
+        'comportamiento inseguro'
+          ? './solution-description'
+          : './solution',
       context: {
         id: evidenceCurrent.id,
         manufacturingPlant: evidenceCurrent.manufacturingPlant.name,
         mainType: evidenceCurrent.mainType.name,
         secondaryType: evidenceCurrent.secondaryType.name,
         zone: evidenceCurrent.zone.name,
+        descripcion: evidenceCurrent.description,
+        descripcionSolucion: evidenceCurrent.descriptionSolution,
         userWhoCreated: evidenceCurrent.user.name,
         createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
         supervisor: evidenceCurrent.supervisors
@@ -91,22 +123,7 @@ export class MailService {
           evidenceCurrent.solutionDate,
         ),
       },
-      attachments: [
-        {
-          filename: imgEvidence,
-          path: pathImage + imgEvidence,
-          cid: 'imgEvidence',
-        },
-
-        {
-          filename: imgSolution,
-          path:
-            __dirname +
-            '../../../public/static/images/evidences/' +
-            imgSolution,
-          cid: 'imgSolution',
-        },
-      ],
+      attachments,
     });
   }
 
