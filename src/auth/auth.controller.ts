@@ -18,6 +18,18 @@ export class AuthController {
     return response.json({ message: 'Inicio de sesión correctamente.' });
   }
 
+  @Post('/login-restore-password')
+  async loginRestorePassword(
+    @Body() loginAuthDto: LoginAuthDto,
+    @Res() response: Response,
+  ) {
+    const token = await this.authService.loginRestorePassword(loginAuthDto);
+
+    response.setHeader('Set-Cookie', token);
+
+    return response.json({ message: 'Inicio de sesión correctamente.' });
+  }
+
   @Post('/forgot-password')
   async forgotPassword(@Body('email') email: string) {
     return this.authService.forgotPassword(email);
@@ -35,5 +47,10 @@ export class AuthController {
   @Post('/check-token')
   checkToken() {
     return this.authService.checkToken();
+  }
+
+  @Post('/check-token-restore-password')
+  checkTokenRestorePassword(@Body('token') token: string) {
+    return this.authService.checkTokenRestorePassword(token);
   }
 }

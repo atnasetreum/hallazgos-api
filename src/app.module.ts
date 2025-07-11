@@ -114,8 +114,13 @@ export class AppModule implements NestModule {
       .apply(JwtMiddleware)
       .exclude(
         { path: 'auth/check-token', method: RequestMethod.POST },
+        {
+          path: 'auth/check-token-restore-password',
+          method: RequestMethod.POST,
+        },
         { path: 'auth/login', method: RequestMethod.POST },
-        //{ path: 'auth/forgot-password', method: RequestMethod.POST },
+        { path: 'auth/login-restore-password', method: RequestMethod.POST },
+        { path: 'auth/forgot-password', method: RequestMethod.POST },
       )
       .forRoutes('*');
   }

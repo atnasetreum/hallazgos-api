@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
+import * as argon2 from 'argon2';
 import {
   Entity,
   Column,
@@ -11,13 +12,12 @@ import {
   JoinTable,
   OneToMany,
 } from 'typeorm';
-import * as argon2 from 'argon2';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
-import { Zone } from 'zones/entities/zone.entity';
+import { Processes } from 'processes/entities/processes.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Comment } from 'evidences/entities/comments.entity';
-import { Processes } from 'processes/entities/processes.entity';
+import { Zone } from 'zones/entities/zone.entity';
 
 @Entity()
 @ObjectType()

@@ -14,10 +14,16 @@ const pathImage =
 
 @Injectable()
 export class MailService {
+  private MAIL_USER_APP: string = '';
+  private FRONTEND_URL: string = '';
+
   constructor(
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    this.MAIL_USER_APP = this.configService.get<string>('email.user');
+    this.FRONTEND_URL = this.configService.get<string>('frontendUrl');
+  }
 
   async sendCreate({
     user,
@@ -30,9 +36,7 @@ export class MailService {
 
     await this.mailerService.sendMail({
       to: user.email,
-      from: `"Hada app (hallazgo nuevo)" <${this.configService.get(
-        'MAIL_USER',
-      )}>`,
+      from: `"Hada app (hallazgo creado)" <${this.MAIL_USER_APP}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
       template: './create',
       context: {
@@ -91,9 +95,7 @@ export class MailService {
 
     await this.mailerService.sendMail({
       to: user.email,
-      from: `"Hada app (hallazgo solucionado)" <${this.configService.get(
-        'MAIL_USER',
-      )}>`,
+      from: `"Hada app (hallazgo solucionado)" <${this.MAIL_USER_APP}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
       template: './solution',
       context: {
@@ -130,9 +132,7 @@ export class MailService {
 
     await this.mailerService.sendMail({
       to: user.email,
-      from: `"Hada app (hallazgo cancelado)" <${this.configService.get(
-        'MAIL_USER',
-      )}>`,
+      from: `"Hada app (hallazgo cancelado)" <${this.MAIL_USER_APP}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
       template: './cancel',
       context: {
@@ -163,13 +163,12 @@ export class MailService {
   async sendForgotPassword(email: string, token: string) {
     await this.mailerService.sendMail({
       to: email,
-      from: `"Hada app (restablecimiento de contraseña)" <${this.configService.get(
-        'MAIL_USER',
-      )}>`,
+      from: `"Hada app (restablecimiento de contraseña)" <${this.MAIL_USER_APP}>`,
       subject: 'Restablecimiento de contraseña',
       template: './forgot-password',
       context: {
         token,
+        resetLink: `${this.FRONTEND_URL}?token=${token}`,
       },
     });
   }

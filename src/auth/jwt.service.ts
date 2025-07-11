@@ -21,7 +21,7 @@ export class JwtService {
 
   create(userId: number, isForgotPassword = false): string {
     const token = jwt.sign({ userId }, this.secretKey, {
-      expiresIn: isForgotPassword ? '2m' : expiresIn(),
+      expiresIn: isForgotPassword ? '5m' : expiresIn(),
     });
     return token;
   }

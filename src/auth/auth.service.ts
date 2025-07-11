@@ -82,6 +82,55 @@ export class AuthService {
     return serialized;
   }
 
+  async loginRestorePassword(loginAuthDto: LoginAuthDto): Promise<string> {
+    const { email, password } = loginAuthDto;
+
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+        isActive: true,
+      },
+      relations: ['manufacturingPlants'],
+      select: {
+        id: true,
+        password: true,
+      },
+    });
+
+    if (!user)
+      throw new NotFoundException(`Usuario con email ${email} no encontrado`);
+
+    if (!user.manufacturingPlants.length)
+      throw new UnauthorizedException('Usuario no tiene plantas asignadas');
+
+    await this.userRepository.update(user.id, {
+      password: await argon2.hash(password),
+    });
+
+    const userUpdated = await this.userRepository.findOne({
+      where: {
+        id: user.id,
+      },
+      select: {
+        id: true,
+        password: true,
+      },
+    });
+
+    if (!(await argon2.verify(userUpdated.password, password))) {
+      throw new UnauthorizedException('Credenciales no válidas');
+    }
+
+    const token = this.jwtService.create(user.id);
+
+    const serialized = serialize(this.nameCookie, token, {
+      ...this.optsSerialize,
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+    });
+
+    return serialized;
+  }
+
   async logout(): Promise<string> {
     const token = this.request['user'].token as string;
 
@@ -118,6 +167,17 @@ export class AuthService {
     try {
       this.jwtService.verify(token);
       return { message: 'Token válido.' };
+    } catch (error) {
+      throw new UnauthorizedException('Token no válido');
+    }
+  }
+
+  checkTokenRestorePassword(token: string): {
+    message: string;
+  } {
+    try {
+      this.jwtService.verify(token);
+      return { message: 'Token de restablecimiento de contraseña válido.' };
     } catch (error) {
       throw new UnauthorizedException('Token no válido');
     }
