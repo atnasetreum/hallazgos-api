@@ -361,4 +361,53 @@ export class DashboardService {
       }),
     };
   }
+
+  async findOpenVsClosed() {
+    const manager = this.manufacturingPlant.manager;
+
+    const manufacturingPlantsIds = this.findManufacturingPlantsIdsCurrentUser();
+
+    const result = await manager.query(`
+      SELECT
+        COUNT ( CASE WHEN evidence."status" = 'Abierto' THEN 1 END ) AS open,
+        COUNT ( CASE WHEN evidence."status" = 'Cerrado' THEN 1 END ) AS closed,
+        manufacturing_plant."name" AS manufacturingplantname
+      FROM
+        evidence
+        INNER JOIN manufacturing_plant ON manufacturing_plant."id" = evidence."manufacturingPlantId"
+      WHERE
+        evidence."isActive" = TRUE
+        AND manufacturing_plant."id" IN ( ${manufacturingPlantsIds.join(',')} )
+      GROUP BY
+        manufacturing_plant."name"
+    `);
+
+    const categories = result.map((item) => item.manufacturingplantname);
+
+    return {
+      categories,
+      series: [
+        {
+          name: 'Abiertos',
+          data: categories.map((category) => {
+            const item = result.find(
+              (item) => item.manufacturingplantname === category,
+            );
+            return item ? Number(item.open) : 0;
+          }),
+          color: '#FF7599',
+        },
+        {
+          name: 'Cerrados',
+          data: categories.map((category) => {
+            const item = result.find(
+              (item) => item.manufacturingplantname === category,
+            );
+            return item ? Number(item.closed) : 0;
+          }),
+          color: '#71BF44',
+        },
+      ],
+    };
+  }
 }

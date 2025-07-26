@@ -30,4 +30,9 @@ export class DashboardController {
   findTopUsersByPlant() {
     return this.dashboardService.findTopUsersByPlant();
   }
+
+  @Get('open-vs-closed')
+  findOpenVsClosed() {
+    return this.dashboardService.findOpenVsClosed();
+  }
 }
