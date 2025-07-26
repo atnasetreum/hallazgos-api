@@ -254,6 +254,21 @@ export class DashboardService {
 
     const manufacturingByMonth = [];
 
+    const months = {
+      Jan: 'Ene',
+      Feb: 'Feb',
+      Mar: 'Mar',
+      Apr: 'Abr',
+      May: 'May',
+      Jun: 'Jun',
+      Jul: 'Jul',
+      Aug: 'Ago',
+      Sep: 'Sep',
+      Oct: 'Oct',
+      Nov: 'Nov',
+      Dec: 'Dic',
+    };
+
     for (const category of categories) {
       const data = await manager.query(`
         SELECT EXTRACT
@@ -276,7 +291,14 @@ export class DashboardService {
           MIN ( evidence."createdAt" ) ASC
       `);
 
-      manufacturingByMonth.push(data);
+      manufacturingByMonth.push(
+        data[0]
+          ? data.map((item) => ({
+              ...item,
+              mon: months[item.mon] || item.mon,
+            }))
+          : [],
+      );
     }
 
     const manufacturingPlants = [
@@ -288,7 +310,9 @@ export class DashboardService {
       ),
     ];
 
-    const categoriesFormatted = categories.map((item) => item.mon);
+    const categoriesFormatted = categories.map((item) => {
+      return months[item.mon] || item.mon;
+    });
 
     return {
       series: manufacturingPlants.map((plant) => {
