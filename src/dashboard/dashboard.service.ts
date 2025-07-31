@@ -279,6 +279,7 @@ export class DashboardService {
         FROM
           evidence
           INNER JOIN manufacturing_plant ON manufacturing_plant."id" = evidence."manufacturingPlantId" 
+          AND manufacturing_plant."isActive" = true
         WHERE
           ${whereDefault}
           AND to_char( evidence."createdAt", 'Mon' ) = '${category.mon}'
@@ -352,8 +353,8 @@ export class DashboardService {
       FROM
         evidence
         INNER JOIN "user" ON "user"."id" = evidence."userId" 
-        AND "user"."isActive" =
-        TRUE INNER JOIN manufacturing_plant ON manufacturing_plant."id" = evidence."manufacturingPlantId" 
+        AND "user"."isActive" = TRUE 
+        INNER JOIN manufacturing_plant ON manufacturing_plant."id" = evidence."manufacturingPlantId" 
         AND manufacturing_plant."isActive" = TRUE 
       WHERE
         evidence."isActive" = TRUE 
@@ -398,7 +399,8 @@ export class DashboardService {
         manufacturing_plant."name" AS manufacturingplantname
       FROM
         evidence
-        INNER JOIN manufacturing_plant ON manufacturing_plant."id" = evidence."manufacturingPlantId"
+        INNER JOIN manufacturing_plant ON manufacturing_plant."id" = evidence."manufacturingPlantId" 
+        AND manufacturing_plant."isActive" = true
       WHERE
         evidence."isActive" = TRUE
         AND manufacturing_plant."id" IN ( ${manufacturingPlantsIds.join(',')} )

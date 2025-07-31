@@ -303,9 +303,13 @@ export class EvidencesService {
 
     const where: FindOptionsWhere<Evidence> = {
       isActive: true,
-      ...(manufacturingPlantId && {
-        manufacturingPlant: { id: manufacturingPlantId },
-      }),
+      ...(manufacturingPlantId
+        ? {
+            manufacturingPlant: { id: manufacturingPlantId, isActive: true },
+          }
+        : {
+            manufacturingPlant: { isActive: true },
+          }),
       ...(mainTypeId && { mainType: { id: mainTypeId } }),
       ...(secondaryTypeId && { secondaryType: { id: secondaryTypeId } }),
       ...(zoneId && { zone: { id: zoneId } }),

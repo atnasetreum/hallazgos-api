@@ -55,9 +55,16 @@ export class ZonesService {
       where: {
         isActive: true,
         ...(name && { name: ILike(`%${name}%`) }),
-        ...(manufacturingPlantIds.length && {
-          manufacturingPlant: { id: In(manufacturingPlantIds) },
-        }),
+        ...(manufacturingPlantIds.length
+          ? {
+              manufacturingPlant: {
+                id: In(manufacturingPlantIds),
+                isActive: true,
+              },
+            }
+          : {
+              manufacturingPlant: { isActive: true },
+            }),
       },
       relations: ['manufacturingPlant'],
       order: {
@@ -71,6 +78,7 @@ export class ZonesService {
       where: {
         id,
         ...(isActive && { isActive }),
+        manufacturingPlant: { isActive: true },
       },
       relations: ['manufacturingPlant'],
     });
