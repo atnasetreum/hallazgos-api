@@ -94,10 +94,10 @@ export class ZonesService {
     const zones = [];
 
     for (let i = 0; i < names.length; i++) {
-      const [manufacturingPlantName, zoneName] = names[i].split(' - ');
+      const [manufacturingPlantName, ...rest] = names[i].split(' - ');
       const zone = await this.zoneRepository.findOne({
         where: {
-          name: zoneName,
+          name: rest.join(' - '),
           isActive: true,
           manufacturingPlant: {
             name: manufacturingPlantName,

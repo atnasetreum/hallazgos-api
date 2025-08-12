@@ -149,6 +149,7 @@ export class UsersService {
       where: {
         id,
         isActive: true,
+        manufacturingPlants: { isActive: true },
       },
       relations: [
         'manufacturingPlants',
