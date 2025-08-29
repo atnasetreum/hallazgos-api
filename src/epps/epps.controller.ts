@@ -81,7 +81,7 @@ export class EppsController {
           sheet.cell(`B${currentIdx}`).value(equipment.equipment.name);
           sheet
             .cell(`C${currentIdx}`)
-            .value(formatDateToYYYYMMDD(equipment.deliveryDate));
+            .value(formatDateToYYYYMMDD(equipment.deliveryDate.toISOString()));
           sheet.cell(`E${currentIdx}`).value(equipment.observations);
         }
 
