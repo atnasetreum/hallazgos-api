@@ -4,9 +4,9 @@ import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 
 //import { GlobalExceptionFilter } from '@shared/filters';
-import { ClusterService } from 'cluster.service';
+//import { ClusterService } from 'cluster.service';
 import { AppModule } from './app.module';
-import { ENV_DEVELOPMENT } from '@shared/constants';
+//import { ENV_DEVELOPMENT } from '@shared/constants';
 
 async function bootstrap() {
   const logger = new Logger('APP-SERVICE');
@@ -41,8 +41,10 @@ async function bootstrap() {
   );
 }
 
-if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+bootstrap();
+
+/* if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
   bootstrap();
 } else {
   ClusterService.clusterize(bootstrap);
-}
+} */
