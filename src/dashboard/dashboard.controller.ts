@@ -26,6 +26,11 @@ export class DashboardController {
     return this.dashboardService.findAllEvidencesByMonth(year);
   }
 
+  @Get('accidents-by-month')
+  findAllAccidentsByMonth(@Query('year') year: number) {
+    return this.dashboardService.findAllAccidentsByMonth(year);
+  }
+
   @Get('top-users-by-plant')
   findTopUsersByPlant() {
     return this.dashboardService.findTopUsersByPlant();
@@ -34,5 +39,10 @@ export class DashboardController {
   @Get('open-vs-closed')
   findOpenVsClosed() {
     return this.dashboardService.findOpenVsClosed();
+  }
+
+  @Get('accidents-rate')
+  findAccidentsRate() {
+    return this.dashboardService.findAccidentsRate();
   }
 }

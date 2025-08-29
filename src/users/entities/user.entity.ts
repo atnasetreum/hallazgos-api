@@ -18,6 +18,7 @@ import { Processes } from 'processes/entities/processes.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Comment } from 'evidences/entities/comments.entity';
 import { Zone } from 'zones/entities/zone.entity';
+import { Epp } from 'epps/entities/epp.entity';
 
 @Entity()
 @ObjectType()
@@ -85,6 +86,9 @@ export class User {
 
   /*@ManyToOne(() => Evidence, (evidence) => evidence.supervisors)
   assignedEvidence: Evidence;*/
+
+  @OneToMany(() => Epp, (epp) => epp.createBy)
+  epps: Epp[];
 
   @BeforeInsert()
   async hashPassword() {

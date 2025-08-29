@@ -27,6 +27,9 @@ import { MailModule } from './mail/mail.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtService } from 'auth/jwt.service';
 import { ProcessesModule } from 'processes/processes.module';
+import { EppsModule } from './epps/epps.module';
+import { EmployeesModule } from './employees/employees.module';
+import { EquipmentsModule } from './equipments/equipments.module';
 
 @Module({
   imports: [
@@ -103,6 +106,9 @@ import { ProcessesModule } from 'processes/processes.module';
     MailModule,
     DashboardModule,
     ProcessesModule,
+    EppsModule,
+    EmployeesModule,
+    EquipmentsModule,
   ],
   controllers: [],
   providers: [JwtService],

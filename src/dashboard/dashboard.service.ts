@@ -2,11 +2,12 @@ import { REQUEST } from '@nestjs/core';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Request } from 'express';
 import { In, MoreThan, Repository } from 'typeorm';
+import { Request } from 'express';
 
-import { User } from 'users/entities/user.entity';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
+import { AccidentRate } from './entities/accident-rate.entity';
+import { User } from 'users/entities/user.entity';
 import { groupBy } from '@shared/utils';
 
 import 'moment/locale/es';
@@ -16,6 +17,8 @@ export class DashboardService {
   constructor(
     @InjectRepository(ManufacturingPlant)
     private readonly manufacturingPlant: Repository<ManufacturingPlant>,
+    @InjectRepository(AccidentRate)
+    private readonly accidentRate: Repository<AccidentRate>,
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
@@ -338,6 +341,57 @@ export class DashboardService {
     };
   }
 
+  async findAllAccidentsByMonth(year: number) {
+    const manager = this.manufacturingPlant.manager;
+
+    const where = ` 1 = 1
+      -- date_part( 'year', ar.capture_date ) = ${year ?? "date_part('year', CURRENT_DATE)"}
+    `;
+
+    const response = await manager.query(`
+      SELECT
+        date_part( 'month', ar.capture_date ) AS mes,
+        date_part( 'year', ar.capture_date ) AS anio,
+        CAST(SUM(ar.number_of_employees) AS float) AS numberOfEmployees,
+        CAST(SUM(ar.number_of_accidents) AS float) AS accidentes
+      FROM
+        accident_rate AS ar
+      WHERE
+        ${where}
+      GROUP BY
+        date_part( 'year', ar.capture_date ), date_part( 'month', ar.capture_date )
+      ORDER BY
+        date_part( 'month', ar.capture_date ) DESC
+    `);
+
+    return response;
+
+    /*  const monthsLarge = {
+      1: 'Enero',
+      2: 'Febrero',
+      3: 'Marzo',
+      4: 'Abril',
+      5: 'Mayo',
+      6: 'Junio',
+      7: 'Julio',
+      8: 'Agosto',
+      9: 'Septiembre',
+      10: 'Octubre',
+      11: 'Noviembre',
+      12: 'Diciembre',
+    };
+
+    return response.map((item) => {
+      const nombreMes = monthsLarge[item.mes];
+      return {
+        numeroDenumberOfEmployees: item.numberOfEmployees,
+        numeroDeAccidentes: item.accidentes,
+        nombreMes,
+        numeroDeMes: item.mes,
+      };
+    }); */
+  }
+
   async findTopUsersByPlant() {
     const manager = this.manufacturingPlant.manager;
 
@@ -434,6 +488,16 @@ export class DashboardService {
           color: '#71BF44',
         },
       ],
+    };
+  }
+
+  async findAccidentsRate() {
+    //const manager = this.manufacturingPlant.manager;
+
+    this.accidentRate;
+
+    return {
+      hola: 'mundo',
     };
   }
 }

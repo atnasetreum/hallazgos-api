@@ -10,6 +10,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  Index,
 } from 'typeorm';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
@@ -42,6 +43,7 @@ export class Evidence {
     defaultValue: null,
     nullable: true,
   })
+  @Index()
   solutionDate: Date;
 
   @Column({ default: '' })
@@ -60,6 +62,7 @@ export class Evidence {
 
   @Column()
   @Field(() => String)
+  @Index()
   status: string;
 
   @Column({ default: true })
@@ -81,28 +84,34 @@ export class Evidence {
     (manufacturingPlant) => manufacturingPlant.evidences,
   )
   @Field(() => ManufacturingPlant)
+  @Index()
   manufacturingPlant: ManufacturingPlant;
 
   @ManyToOne(() => MainType, (mainType) => mainType.evidences)
   @Field(() => MainType)
+  @Index()
   mainType: MainType;
 
   @ManyToOne(() => SecondaryType, (secondaryType) => secondaryType.evidences)
   @Field(() => SecondaryType)
+  @Index()
   secondaryType: SecondaryType;
 
   @ManyToOne(() => Zone, (zone) => zone.evidences)
   @Field(() => Zone)
+  @Index()
   zone: Zone;
 
   @ManyToOne(() => Processes, (process) => process.evidences)
   @Field(() => Processes, {
     nullable: true,
   })
+  @Index()
   process?: Processes;
 
   @ManyToOne(() => User, (user) => user.evidences)
   @Field(() => User)
+  @Index()
   user: User;
 
   @ManyToMany(() => User)

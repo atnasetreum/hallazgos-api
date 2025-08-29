@@ -28,7 +28,7 @@ export class JwtMiddleware implements NestMiddleware {
     try {
       const decoded = this.jwtService.verify(token);
       const user = await this.usersService.findOne(decoded.userId);
-      req['user'] = { ...user, token };
+      req['user'] = { ...user };
       next();
     } catch (error) {
       throw new UnauthorizedException('Credenciales no válidas');
