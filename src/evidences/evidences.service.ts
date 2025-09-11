@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Request } from 'express';
 import { FindOptionsWhere, In, Repository } from 'typeorm';
+import { Request, Response } from 'express';
 
 import {
   CommentEvidenceDto,
@@ -29,6 +29,7 @@ import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-
 import { Comment } from './entities/comments.entity';
 import { ParamsArgs } from './inputs/args';
 import { ProcessesService } from 'processes/processes.service';
+import * as XlsxPopulate from 'xlsx-populate';
 
 @Injectable()
 export class EvidencesService {
@@ -244,6 +245,111 @@ export class EvidencesService {
     return this.findOne(id);
   }
 
+  async downloadFile(
+    queryEvidenceDto: QueryEvidenceDto,
+    res: Response,
+  ): Promise<void> {
+    const datos = await await this.findAll(queryEvidenceDto);
+
+    const workbook = await XlsxPopulate.fromBlankAsync();
+    const sheet = workbook.sheet(0);
+    sheet.name('Hallazgos');
+
+    const headers = [
+      { key: 'id', header: 'ID', isNumber: true },
+      { key: 'status', header: 'Estatus' },
+      { key: 'isActive', header: 'Activo', isNumber: true },
+      { key: 'manufacturingPlant', header: 'Planta', isRelations: true },
+      { key: 'mainType', header: 'Evento', isRelations: true },
+      { key: 'secondaryType', header: 'Tipo de evento', isRelations: true },
+      { key: 'zone', header: 'Zona', isRelations: true },
+      { key: 'user', header: 'Usuario que creo', isRelations: true },
+      { key: 'createdAt', header: 'Fecha de creacion', isDate: true },
+      { key: 'solutionDate', header: 'Fecha de solución', isDate: true },
+      { key: 'supervisors', header: 'Supervisores', isMultiRelations: true },
+      { key: 'responsibles', header: 'Responsables', isMultiRelations: true },
+      { key: 'process', header: 'Proceso', isRelations: true },
+    ];
+
+    headers.forEach(({ header: key }, i) => {
+      sheet
+        .cell(1, i + 1)
+        .value(key)
+        .style({
+          //bold: true,
+          fill: '71BF44',
+          //border: true,
+          horizontalAlignment: 'right',
+          //color: 'FFFFFF',
+        });
+    });
+
+    function formatearFecha(fecha = new Date()) {
+      const pad = (n) => n.toString().padStart(2, '0');
+
+      const año = fecha.getFullYear();
+      const mes = pad(fecha.getMonth() + 1); // getMonth() es 0-indexado
+      const día = pad(fecha.getDate());
+      const hora = pad(fecha.getHours());
+      const minutos = pad(fecha.getMinutes());
+      const segundos = pad(fecha.getSeconds());
+
+      return `${año}-${mes}-${día} ${hora}:${minutos}:${segundos}`;
+    }
+
+    datos.forEach((obj, rowIndex) => {
+      headers.forEach(
+        (
+          {
+            key,
+            isRelations = false,
+            isNumber = false,
+            isDate = false,
+            isMultiRelations = false,
+          },
+          colIndex,
+        ) => {
+          let value = obj[key] || '';
+
+          if (isRelations) {
+            value = obj[key]?.name || '';
+          }
+
+          if (key === 'isActive') {
+            value = obj[key] ? 1 : 0;
+          }
+
+          if (isDate && value) {
+            value = formatearFecha(value);
+          }
+
+          if (isMultiRelations) {
+            value = obj[key].map((item) => item?.name || '').join(', ');
+          }
+
+          //console.log(obj);
+
+          sheet
+            .cell(rowIndex + 2, colIndex + 1)
+            .value(isNumber ? value : `${value}`)
+            .style({
+              horizontalAlignment: 'right',
+            });
+        },
+      );
+    });
+
+    headers.forEach((_, i) => sheet.column(i + 1).width(20));
+
+    const buffer = await workbook.outputAsync();
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=Hallazgos.xlsx');
+    res.send(buffer);
+  }
+
   async findAll(queryEvidenceDto: QueryEvidenceDto) {
     const { manufacturingPlants } = this.request['user'] as User;
 
@@ -259,22 +365,20 @@ export class EvidencesService {
 
     const evidences = await this.evidenceRepository.find({
       where: {
-        manufacturingPlant: {
-          isActive: true,
-          id: In(manufacturingPlantsIds),
-        },
-        mainType: {
-          isActive: true,
-          ...(mainTypeId && { id: mainTypeId }),
-        },
-        secondaryType: {
-          isActive: true,
-          ...(secondaryType && { id: secondaryType }),
-        },
-        zone: {
-          isActive: true,
-          ...(zone && { id: zone }),
-        },
+        isActive: true,
+        ...(manufacturingPlantId
+          ? {
+              manufacturingPlant: { id: manufacturingPlantId, isActive: true },
+            }
+          : {
+              manufacturingPlant: {
+                id: In(manufacturingPlantsIds),
+                isActive: true,
+              },
+            }),
+        ...(mainTypeId && { mainType: { id: mainTypeId } }),
+        ...(secondaryType && { secondaryType: { id: secondaryType } }),
+        ...(zone && { zone: { id: zone } }),
         ...(status && { status }),
       },
       relations: this.relations,
@@ -286,7 +390,10 @@ export class EvidencesService {
     return evidences;
   }
 
-  async findAllGraphql(paramsArgs: ParamsArgs): Promise<{
+  async findAllGraphql(
+    paramsArgs: ParamsArgs,
+    userId: number,
+  ): Promise<{
     data: Evidence[];
     count: number;
   }> {
@@ -301,6 +408,17 @@ export class EvidencesService {
       status,
     } = paramsArgs;
 
+    const user = await this.usersService.findOne(userId);
+
+    const { manufacturingPlants } = user;
+
+    const manufacturingPlantsIds = manufacturingPlantId
+      ? [manufacturingPlantId]
+      : manufacturingPlants.map((manufacturingPlant) => manufacturingPlant.id);
+
+    if (!manufacturingPlantsIds.length)
+      throw new BadRequestException('No se ha encontrado plantas asignadas');
+
     const where: FindOptionsWhere<Evidence> = {
       isActive: true,
       ...(manufacturingPlantId
@@ -308,7 +426,10 @@ export class EvidencesService {
             manufacturingPlant: { id: manufacturingPlantId, isActive: true },
           }
         : {
-            manufacturingPlant: { isActive: true },
+            manufacturingPlant: {
+              id: In(manufacturingPlantsIds),
+              isActive: true,
+            },
           }),
       ...(mainTypeId && { mainType: { id: mainTypeId } }),
       ...(secondaryTypeId && { secondaryType: { id: secondaryTypeId } }),

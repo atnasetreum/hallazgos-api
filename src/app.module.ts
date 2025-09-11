@@ -53,7 +53,10 @@ import { EquipmentsModule } from './equipments/equipments.module';
       driver: ApolloDriver,
       imports: [ConfigModule, AuthModule],
       inject: [ConfigService, JwtService],
-      useFactory: (configService: ConfigService, jwtService: JwtService) => ({
+      useFactory: async (
+        configService: ConfigService,
+        jwtService: JwtService,
+      ) => ({
         playground: false,
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         plugins: [ApolloServerPluginLandingPageLocalDefault()],
@@ -84,10 +87,10 @@ import { EquipmentsModule } from './equipments/equipments.module';
           }
 
           try {
-            const user = await jwtService.verify(token);
-            req['user'] = { ...user };
-            return { request: req };
+            const { userId } = await jwtService.verify(token);
+            return { user: { userId } };
           } catch (error) {
+            console.log(error.message);
             throw Error('Credenciales no válidas');
           }
         },

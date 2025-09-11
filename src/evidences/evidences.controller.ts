@@ -9,10 +9,12 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { diskStorage } from 'multer';
+import { Response } from 'express';
 
 import { EvidencesService } from './evidences.service';
 import {
@@ -76,14 +78,17 @@ export class EvidencesController {
     return this.evidencesService.addComment(+id, comment);
   }
 
-  @Get()
-  findAll(@Query() queryEvidenceDto: QueryEvidenceDto) {
-    return this.evidencesService.findAll(queryEvidenceDto);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.evidencesService.findOne(+id);
+  }
+
+  @Get('download/file')
+  async downloadFile(
+    @Query() queryEvidenceDto: QueryEvidenceDto,
+    @Res() res: Response,
+  ) {
+    return this.evidencesService.downloadFile(queryEvidenceDto, res);
   }
 
   @Patch(':id')
