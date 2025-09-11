@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import * as moment from 'moment';
 import 'moment/locale/es';
 
@@ -38,3 +41,18 @@ export const formatDateToYYYYMMDD = (dateString: string) => {
   const date = dateString.split('T')[0].split('-');
   return `${date[0]}-${date[1]}-${date[2]}`;
 };
+
+export function uploadStaticImage(img: string): string {
+  if (!img) {
+    return null;
+  }
+
+  const routeImg = path.join(process.cwd(), 'public', 'static', 'images', img);
+
+  if (!fs.existsSync(routeImg)) {
+    return null;
+  }
+
+  const buffer = fs.readFileSync(routeImg);
+  return buffer.toString('base64');
+}

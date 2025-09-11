@@ -1,35 +1,42 @@
+import { InjectRepository } from '@nestjs/typeorm';
+import { REQUEST } from '@nestjs/core';
 import {
   BadRequestException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 
 import { FindOptionsWhere, In, Repository } from 'typeorm';
+import { StyleDictionary, TDocumentDefinitions } from 'pdfmake/interfaces';
+import * as XlsxPopulate from 'xlsx-populate';
 import { Request, Response } from 'express';
 
+import { ManufacturingPlantsService } from 'manufacturing-plants/manufacturing-plants.service';
+import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
+import { SecondaryTypesService } from 'secondary-types/secondary-types.service';
+import { STATUS_CANCEL, STATUS_CLOSE, STATUS_OPEN } from '@shared/constants';
+import { MainTypesService } from 'main-types/main-types.service';
+import { ProcessesService } from 'processes/processes.service';
+import { Evidence } from './entities/evidence.entity';
+import { Comment } from './entities/comments.entity';
+import { ZonesService } from 'zones/zones.service';
+import { UsersService } from 'users/users.service';
+import { User } from 'users/entities/user.entity';
+import { MailService } from 'mail/mail.service';
+import { ParamsArgs } from './inputs/args';
 import {
   CommentEvidenceDto,
   CreateEvidenceDto,
   QueryEvidenceDto,
   UpdateEvidenceDto,
 } from './dto';
-import { REQUEST } from '@nestjs/core';
-import { ManufacturingPlantsService } from 'manufacturing-plants/manufacturing-plants.service';
-import { MainTypesService } from 'main-types/main-types.service';
-import { SecondaryTypesService } from 'secondary-types/secondary-types.service';
-import { ZonesService } from 'zones/zones.service';
-import { Evidence } from './entities/evidence.entity';
-import { UsersService } from 'users/users.service';
-import { MailService } from 'mail/mail.service';
-import { User } from 'users/entities/user.entity';
-import { STATUS_CANCEL, STATUS_CLOSE, STATUS_OPEN } from '@shared/constants';
-import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
-import { Comment } from './entities/comments.entity';
-import { ParamsArgs } from './inputs/args';
-import { ProcessesService } from 'processes/processes.service';
-import * as XlsxPopulate from 'xlsx-populate';
+import { uploadStaticImage, stringToDateWithTime } from '@shared/utils';
+
+const pdfMake = require('pdfmake/build/pdfmake');
+const pdfFonts = require('pdfmake/build/vfs_fonts');
+
+pdfMake.vfs = pdfFonts.vfs;
 
 @Injectable()
 export class EvidencesService {
@@ -246,108 +253,220 @@ export class EvidencesService {
   }
 
   async downloadFile(
+    type: string,
     queryEvidenceDto: QueryEvidenceDto,
     res: Response,
   ): Promise<void> {
-    const datos = await await this.findAll(queryEvidenceDto);
+    const datos = await this.findAll(queryEvidenceDto);
 
-    const workbook = await XlsxPopulate.fromBlankAsync();
-    const sheet = workbook.sheet(0);
-    sheet.name('Hallazgos');
+    if (type === 'xlsx') {
+      const workbook = await XlsxPopulate.fromBlankAsync();
+      const sheet = workbook.sheet(0);
+      sheet.name('Hallazgos');
 
-    const headers = [
-      { key: 'id', header: 'ID', isNumber: true },
-      { key: 'status', header: 'Estatus' },
-      { key: 'isActive', header: 'Activo', isNumber: true },
-      { key: 'manufacturingPlant', header: 'Planta', isRelations: true },
-      { key: 'mainType', header: 'Evento', isRelations: true },
-      { key: 'secondaryType', header: 'Tipo de evento', isRelations: true },
-      { key: 'zone', header: 'Zona', isRelations: true },
-      { key: 'user', header: 'Usuario que creo', isRelations: true },
-      { key: 'createdAt', header: 'Fecha de creacion', isDate: true },
-      { key: 'solutionDate', header: 'Fecha de solución', isDate: true },
-      { key: 'supervisors', header: 'Supervisores', isMultiRelations: true },
-      { key: 'responsibles', header: 'Responsables', isMultiRelations: true },
-      { key: 'process', header: 'Proceso', isRelations: true },
-    ];
+      const headers = [
+        { key: 'id', header: 'ID', isNumber: true },
+        { key: 'status', header: 'Estatus' },
+        { key: 'isActive', header: 'Activo', isNumber: true },
+        { key: 'manufacturingPlant', header: 'Planta', isRelations: true },
+        { key: 'mainType', header: 'Evento', isRelations: true },
+        { key: 'secondaryType', header: 'Tipo de evento', isRelations: true },
+        { key: 'zone', header: 'Zona', isRelations: true },
+        { key: 'user', header: 'Usuario que creo', isRelations: true },
+        { key: 'createdAt', header: 'Fecha de creacion', isDate: true },
+        { key: 'solutionDate', header: 'Fecha de solución', isDate: true },
+        { key: 'supervisors', header: 'Supervisores', isMultiRelations: true },
+        { key: 'responsibles', header: 'Responsables', isMultiRelations: true },
+        { key: 'process', header: 'Proceso', isRelations: true },
+      ];
 
-    headers.forEach(({ header: key }, i) => {
-      sheet
-        .cell(1, i + 1)
-        .value(key)
-        .style({
-          //bold: true,
-          fill: '71BF44',
-          //border: true,
-          horizontalAlignment: 'right',
-          //color: 'FFFFFF',
-        });
-    });
+      headers.forEach(({ header: key }, i) => {
+        sheet
+          .cell(1, i + 1)
+          .value(key)
+          .style({
+            //bold: true,
+            fill: '71BF44',
+            //border: true,
+            horizontalAlignment: 'right',
+            //color: 'FFFFFF',
+          });
+      });
 
-    function formatearFecha(fecha = new Date()) {
-      const pad = (n) => n.toString().padStart(2, '0');
+      function formatearFecha(fecha = new Date()) {
+        const pad = (n) => n.toString().padStart(2, '0');
 
-      const año = fecha.getFullYear();
-      const mes = pad(fecha.getMonth() + 1); // getMonth() es 0-indexado
-      const día = pad(fecha.getDate());
-      const hora = pad(fecha.getHours());
-      const minutos = pad(fecha.getMinutes());
-      const segundos = pad(fecha.getSeconds());
+        const año = fecha.getFullYear();
+        const mes = pad(fecha.getMonth() + 1); // getMonth() es 0-indexado
+        const día = pad(fecha.getDate());
+        const hora = pad(fecha.getHours());
+        const minutos = pad(fecha.getMinutes());
+        const segundos = pad(fecha.getSeconds());
 
-      return `${año}-${mes}-${día} ${hora}:${minutos}:${segundos}`;
+        return `${año}-${mes}-${día} ${hora}:${minutos}:${segundos}`;
+      }
+
+      datos.forEach((obj, rowIndex) => {
+        headers.forEach(
+          (
+            {
+              key,
+              isRelations = false,
+              isNumber = false,
+              isDate = false,
+              isMultiRelations = false,
+            },
+            colIndex,
+          ) => {
+            let value = obj[key] || '';
+
+            if (isRelations) {
+              value = obj[key]?.name || '';
+            }
+
+            if (key === 'isActive') {
+              value = obj[key] ? 1 : 0;
+            }
+
+            if (isDate && value) {
+              value = formatearFecha(value);
+            }
+
+            if (isMultiRelations) {
+              value = obj[key].map((item) => item?.name || '').join(', ');
+            }
+
+            //console.log(obj);
+
+            sheet
+              .cell(rowIndex + 2, colIndex + 1)
+              .value(isNumber ? value : `${value}`)
+              .style({
+                horizontalAlignment: 'right',
+              });
+          },
+        );
+      });
+
+      headers.forEach((_, i) => sheet.column(i + 1).width(20));
+
+      const buffer = await workbook.outputAsync();
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename=Hallazgos.xlsx',
+      );
+      res.send(buffer);
     }
 
-    datos.forEach((obj, rowIndex) => {
-      headers.forEach(
-        (
-          {
-            key,
-            isRelations = false,
-            isNumber = false,
-            isDate = false,
-            isMultiRelations = false,
-          },
-          colIndex,
-        ) => {
-          let value = obj[key] || '';
-
-          if (isRelations) {
-            value = obj[key]?.name || '';
-          }
-
-          if (key === 'isActive') {
-            value = obj[key] ? 1 : 0;
-          }
-
-          if (isDate && value) {
-            value = formatearFecha(value);
-          }
-
-          if (isMultiRelations) {
-            value = obj[key].map((item) => item?.name || '').join(', ');
-          }
-
-          //console.log(obj);
-
-          sheet
-            .cell(rowIndex + 2, colIndex + 1)
-            .value(isNumber ? value : `${value}`)
-            .style({
-              horizontalAlignment: 'right',
-            });
+    if (type === 'pdf') {
+      const styles: StyleDictionary = {
+        header: {
+          fontSize: 22,
+          bold: true,
+          alignment: 'center',
+          margin: [0, 60, 0, 20],
         },
-      );
-    });
+        body: {
+          alignment: 'justify',
+          margin: [0, 0, 0, 70],
+        },
+        signature: {
+          //fontSize: 14,
+          bold: true,
+          // alignment: 'left',
+          background: '#66BB6A',
+        },
+        footer: {
+          fontSize: 10,
+          italics: true,
+          alignment: 'center',
+          margin: [0, 0, 0, 20],
+        },
+      };
 
-    headers.forEach((_, i) => sheet.column(i + 1).width(20));
+      const headers = [
+        'ID',
+        'Grupo',
+        'Tipo de hallazgo',
+        'Zona',
+        'Proceso',
+        'Creado por',
+        'Estatus',
+        'Fecha de creación',
+        'Imagen de hallazgo',
+        'Imagen de solución',
+      ];
 
-    const buffer = await workbook.outputAsync();
-    res.setHeader(
-      'Content-Type',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    );
-    res.setHeader('Content-Disposition', 'attachment; filename=Hallazgos.xlsx');
-    res.send(buffer);
+      const dataPdf = [];
+
+      const notFoundImage = uploadStaticImage('image-not-found.png');
+
+      for (const evidence of datos) {
+        const imgSolution =
+          uploadStaticImage(
+            evidence.imgSolution ? `/evidences/${evidence.imgSolution}` : '',
+          ) || notFoundImage;
+        const imgEvidence =
+          uploadStaticImage(
+            evidence.imgEvidence ? `/evidences/${evidence.imgEvidence}` : '',
+          ) || notFoundImage;
+
+        dataPdf.push([
+          evidence.id,
+          evidence.mainType.name,
+          evidence.secondaryType.name,
+          evidence.zone.name,
+          evidence.process?.name || '',
+          evidence.user.name,
+          {
+            text: evidence.status,
+            style: evidence.status === 'Cerrado' ? 'signature' : '',
+          },
+          stringToDateWithTime(evidence.createdAt),
+          {
+            image: `data:image/png;base64,${imgEvidence}`,
+            width: 50,
+            height: 50,
+          },
+          {
+            image: `data:image/png;base64,${imgSolution}`,
+            width: 50,
+            height: 50,
+          },
+        ]);
+      }
+
+      const docDefinition: TDocumentDefinitions = {
+        styles,
+        //pageMargins: [40, 110, 40, 60],
+        pageOrientation: 'landscape',
+        content: [
+          {
+            layout: 'lightHorizontalLines',
+            table: {
+              headerRows: 1,
+              widths: dataPdf[0].map(() => 'auto'),
+              body: [[...headers], ...dataPdf],
+            },
+          },
+        ],
+      };
+
+      const pdfDoc = pdfMake.createPdf(docDefinition);
+
+      pdfDoc.getBase64((dataPdf64) => {
+        res.writeHead(200, {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': 'attachment;filename="Hallazgos.pdf"',
+          'Content-Length': Buffer.byteLength(dataPdf64, 'base64'),
+        });
+        res.end(Buffer.from(dataPdf64, 'base64'));
+      });
+    }
   }
 
   async findAll(queryEvidenceDto: QueryEvidenceDto) {

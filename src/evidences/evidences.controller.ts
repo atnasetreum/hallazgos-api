@@ -83,12 +83,13 @@ export class EvidencesController {
     return this.evidencesService.findOne(+id);
   }
 
-  @Get('download/file')
+  @Get('download/:type')
   async downloadFile(
+    @Param('type') type: string,
     @Query() queryEvidenceDto: QueryEvidenceDto,
     @Res() res: Response,
   ) {
-    return this.evidencesService.downloadFile(queryEvidenceDto, res);
+    return this.evidencesService.downloadFile(type, queryEvidenceDto, res);
   }
 
   @Patch(':id')
