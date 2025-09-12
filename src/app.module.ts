@@ -30,6 +30,22 @@ import { ProcessesModule } from 'processes/processes.module';
 import { EppsModule } from './epps/epps.module';
 import { EmployeesModule } from './employees/employees.module';
 import { EquipmentsModule } from './equipments/equipments.module';
+import { AreasModule } from './areas/areas.module';
+import { TypesOfEventsModule } from './types-of-events/types-of-events.module';
+import { GenresModule } from './genres/genres.module';
+import { CieDiagnosesModule } from './cie-diagnoses/cie-diagnoses.module';
+import { AccidentPositionsModule } from './accident-positions/accident-positions.module';
+import { BodyPartsModule } from './body-parts/body-parts.module';
+import { AtAgentsModule } from './at-agents/at-agents.module';
+import { TypeOfInjuriesModule } from './type-of-injuries/type-of-injuries.module';
+import { AtMechanismsModule } from './at-mechanisms/at-mechanisms.module';
+import { WorkingDaysModule } from './working-days/working-days.module';
+import { TypeOfLinksModule } from './type-of-links/type-of-links.module';
+import { MachinesModule } from './machines/machines.module';
+import { AssociatedTasksModule } from './associated-tasks/associated-tasks.module';
+import { RiskFactorsModule } from './risk-factors/risk-factors.module';
+import { NatureOfEventsModule } from './nature-of-events/nature-of-events.module';
+import { AccidentsModule } from './accidents/accidents.module';
 
 @Module({
   imports: [
@@ -112,6 +128,22 @@ import { EquipmentsModule } from './equipments/equipments.module';
     EppsModule,
     EmployeesModule,
     EquipmentsModule,
+    AreasModule,
+    TypesOfEventsModule,
+    GenresModule,
+    CieDiagnosesModule,
+    AccidentPositionsModule,
+    BodyPartsModule,
+    AtAgentsModule,
+    TypeOfInjuriesModule,
+    AtMechanismsModule,
+    WorkingDaysModule,
+    TypeOfLinksModule,
+    MachinesModule,
+    AssociatedTasksModule,
+    RiskFactorsModule,
+    NatureOfEventsModule,
+    AccidentsModule,
   ],
   controllers: [],
   providers: [JwtService],
