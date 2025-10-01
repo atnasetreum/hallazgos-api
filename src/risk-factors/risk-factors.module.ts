@@ -9,5 +9,6 @@ import { RiskFactor } from './entities/risk-factor.entity';
   imports: [TypeOrmModule.forFeature([RiskFactor])],
   controllers: [RiskFactorsController],
   providers: [RiskFactorsService],
+  exports: [TypeOrmModule, RiskFactorsService],
 })
 export class RiskFactorsModule {}

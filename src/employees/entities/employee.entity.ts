@@ -39,6 +39,16 @@ export class Employee {
   })
   birthdate: Date;
 
+  @Column({
+    nullable: true,
+    type: 'date',
+    transformer: {
+      from: (value: string) => value ?? null,
+      to: (value: Date) => (value ? value.toISOString().slice(0, 10) : null),
+    },
+  })
+  dateOfAdmission: Date;
+
   @Column({ default: true })
   isActive: boolean;
 

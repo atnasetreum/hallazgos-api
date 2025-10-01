@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import { Ciael } from 'ciaels/entities/ciael.entity';
 
 @Entity({ name: 'type_of_links' })
 export class TypeOfLink {
@@ -24,4 +27,7 @@ export class TypeOfLink {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Ciael, (ciael) => ciael.typeOfLink)
+  ciaels: Ciael[];
 }

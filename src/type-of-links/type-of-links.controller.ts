@@ -20,6 +20,11 @@ export class TypeOfLinksController {
     return this.typeOfLinksService.create(createTypeOfLinkDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.typeOfLinksService.seed();
+  }
+
   @Get()
   findAll() {
     return this.typeOfLinksService.findAll();

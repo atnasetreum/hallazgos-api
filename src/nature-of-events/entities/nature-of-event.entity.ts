@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import { Ciael } from 'ciaels/entities/ciael.entity';
 
 @Entity({ name: 'nature_of_events' })
 export class NatureOfEvent {
@@ -24,4 +27,7 @@ export class NatureOfEvent {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Ciael, (ciael) => ciael.natureOfEvent)
+  ciaels: Ciael[];
 }

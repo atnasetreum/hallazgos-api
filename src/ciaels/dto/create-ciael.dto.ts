@@ -1,7 +1,16 @@
-import { IsDate, IsOptional, IsPositive, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateCiaelDto {
+  @IsPositive()
+  manufacturingPlantId: number;
+
   @IsPositive()
   typeOfEventId: number;
 
@@ -23,6 +32,9 @@ export class CreateCiaelDto {
   daysOfDisability?: number;
 
   @IsPositive()
+  accidentPositionId: number;
+
+  @IsPositive()
   zoneId: number;
 
   @IsPositive()
@@ -36,4 +48,47 @@ export class CreateCiaelDto {
 
   @IsPositive()
   atMechanismId: number;
+
+  @IsPositive()
+  workingDayId: number;
+
+  @IsOptional()
+  @IsPositive()
+  timeWorked: number;
+
+  @IsBoolean()
+  usualWork: boolean;
+
+  @IsPositive()
+  typeOfLinkId: number;
+
+  @IsBoolean()
+  isDeath: boolean;
+
+  @IsOptional()
+  @IsPositive()
+  machineId?: number;
+
+  @IsOptional()
+  @IsString()
+  machineName?: string;
+
+  @IsBoolean()
+  isInside: boolean;
+
+  @IsPositive()
+  associatedTaskId: number;
+
+  @IsPositive()
+  areaLeaderId: number;
+
+  @IsPositive()
+  riskFactorId: number;
+
+  @IsPositive()
+  natureOfEventsId: number;
+
+  @IsOptional()
+  @IsPositive()
+  managerId?: number;
 }

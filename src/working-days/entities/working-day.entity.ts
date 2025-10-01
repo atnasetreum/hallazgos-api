@@ -4,7 +4,10 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import { Ciael } from 'ciaels/entities/ciael.entity';
 
 @Entity({ name: 'working_days' })
 export class WorkingDay {
@@ -24,4 +27,7 @@ export class WorkingDay {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Ciael, (ciael) => ciael.workingDay)
+  ciaels: Ciael[];
 }

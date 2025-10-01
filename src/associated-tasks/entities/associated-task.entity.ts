@@ -4,7 +4,12 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  OneToMany,
 } from 'typeorm';
+
+import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
+import { Ciael } from 'ciaels/entities/ciael.entity';
 
 @Entity({ name: 'associated_tasks' })
 export class AssociatedTask {
@@ -24,4 +29,13 @@ export class AssociatedTask {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToMany(
+    () => ManufacturingPlant,
+    (manufacturingPlant) => manufacturingPlant.associatedTasks,
+  )
+  manufacturingPlants: ManufacturingPlant[];
+
+  @OneToMany(() => Ciael, (ciael) => ciael.associatedTask)
+  ciaels: Ciael[];
 }

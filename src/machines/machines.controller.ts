@@ -20,6 +20,11 @@ export class MachinesController {
     return this.machinesService.create(createMachineDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.machinesService.seed();
+  }
+
   @Get()
   findAll() {
     return this.machinesService.findAll();

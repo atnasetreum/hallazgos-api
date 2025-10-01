@@ -22,6 +22,11 @@ export class AssociatedTasksController {
     return this.associatedTasksService.create(createAssociatedTaskDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.associatedTasksService.seed();
+  }
+
   @Get()
   findAll() {
     return this.associatedTasksService.findAll();

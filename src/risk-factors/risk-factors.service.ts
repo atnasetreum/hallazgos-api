@@ -1,9 +1,37 @@
+import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 
+import { Repository } from 'typeorm';
+
 import { CreateRiskFactorDto, UpdateRiskFactorDto } from './dto';
+import { RiskFactor } from './entities/risk-factor.entity';
 
 @Injectable()
 export class RiskFactorsService {
+  constructor(
+    @InjectRepository(RiskFactor)
+    private readonly riskFactorRepository: Repository<RiskFactor>,
+  ) {}
+
+  seed() {
+    const data = [
+      'Biomecánico',
+      'Condiciones de seguridad (locativo)',
+      'Condiciones de seguridad',
+      'Físico',
+      'Locativo',
+      'Mecánico',
+      'Químico',
+    ];
+
+    data.forEach(async (name) => {
+      const riskFactor = this.riskFactorRepository.create({ name });
+      await this.riskFactorRepository.save(riskFactor);
+    });
+
+    return 'Seeding risk factors...';
+  }
+
   create(createRiskFactorDto: CreateRiskFactorDto) {
     return createRiskFactorDto;
   }

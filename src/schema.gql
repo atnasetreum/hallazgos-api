@@ -27,12 +27,6 @@ type MainType {
   evidences: [Evidence!]!
 }
 
-type Zone {
-  id: ID!
-  name: String!
-  isActive: Boolean!
-}
-
 type Comment {
   id: ID!
   comment: String!
@@ -41,6 +35,12 @@ type Comment {
   updatedAt: DateTime!
   evidence: Evidence!
   user: User!
+}
+
+type Processes {
+  id: ID!
+  name: String!
+  isActive: Boolean!
 }
 
 type Evidence {
@@ -65,7 +65,7 @@ type Evidence {
   comments: [Comment!]!
 }
 
-type Processes {
+type Zone {
   id: ID!
   name: String!
   isActive: Boolean!

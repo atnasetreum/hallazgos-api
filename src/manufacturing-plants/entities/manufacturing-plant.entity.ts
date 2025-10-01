@@ -12,9 +12,13 @@ import {
   JoinTable,
 } from 'typeorm';
 
+import { AccidentPosition } from 'accident-positions/entities/accident-position.entity';
+import { AssociatedTask } from 'associated-tasks/entities/associated-task.entity';
 import { Processes } from 'processes/entities/processes.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Country } from 'countries/entities/country.entity';
+import { Machine } from 'machines/entities/machine.entity';
+import { Ciael } from 'ciaels/entities/ciael.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { Employee } from 'employees/entities';
 @Entity()
@@ -74,4 +78,28 @@ export class ManufacturingPlant {
     name: 'employees_manufacturing_plants',
   })
   employees: Employee[];
+
+  @ManyToMany(
+    () => AccidentPosition,
+    (accidentPosition) => accidentPosition.manufacturingPlants,
+  )
+  @JoinTable({
+    name: 'accident_positions_manufacturing_plants',
+  })
+  accidentPositions: AccidentPosition[];
+
+  @OneToMany(() => Machine, (machine) => machine.manufacturingPlant)
+  machines: Machine[];
+
+  @OneToMany(() => Ciael, (ciael) => ciael.manufacturingPlant)
+  ciaels: Ciael[];
+
+  @ManyToMany(
+    () => AssociatedTask,
+    (associatedTask) => associatedTask.manufacturingPlants,
+  )
+  @JoinTable({
+    name: 'associated_tasks_manufacturing_plants',
+  })
+  associatedTasks: AssociatedTask[];
 }

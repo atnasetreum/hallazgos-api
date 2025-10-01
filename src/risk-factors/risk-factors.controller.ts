@@ -20,6 +20,11 @@ export class RiskFactorsController {
     return this.riskFactorsService.create(createRiskFactorDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.riskFactorsService.seed();
+  }
+
   @Get()
   findAll() {
     return this.riskFactorsService.findAll();

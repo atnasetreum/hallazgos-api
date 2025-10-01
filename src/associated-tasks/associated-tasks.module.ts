@@ -9,5 +9,6 @@ import { AssociatedTask } from './entities/associated-task.entity';
   imports: [TypeOrmModule.forFeature([AssociatedTask])],
   controllers: [AssociatedTasksController],
   providers: [AssociatedTasksService],
+  exports: [TypeOrmModule, AssociatedTasksService],
 })
 export class AssociatedTasksModule {}

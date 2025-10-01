@@ -9,5 +9,6 @@ import { NatureOfEvent } from './entities/nature-of-event.entity';
   imports: [TypeOrmModule.forFeature([NatureOfEvent])],
   controllers: [NatureOfEventsController],
   providers: [NatureOfEventsService],
+  exports: [TypeOrmModule, NatureOfEventsService],
 })
 export class NatureOfEventsModule {}

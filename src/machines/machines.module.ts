@@ -9,5 +9,6 @@ import { Machine } from './entities/machine.entity';
   imports: [TypeOrmModule.forFeature([Machine])],
   controllers: [MachinesController],
   providers: [MachinesService],
+  exports: [TypeOrmModule, MachinesService],
 })
 export class MachinesModule {}

@@ -9,5 +9,6 @@ import { WorkingDay } from './entities/working-day.entity';
   imports: [TypeOrmModule.forFeature([WorkingDay])],
   controllers: [WorkingDaysController],
   providers: [WorkingDaysService],
+  exports: [TypeOrmModule, WorkingDaysService],
 })
 export class WorkingDaysModule {}

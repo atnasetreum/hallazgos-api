@@ -94,6 +94,12 @@ export class User {
   @OneToMany(() => Ciael, (ciael) => ciael.createdBy)
   ciaels: Ciael[];
 
+  @OneToMany(() => Ciael, (ciael) => ciael.areaLeader)
+  ciaelsAreaLeader: Ciael[];
+
+  @OneToMany(() => Ciael, (ciael) => ciael.areaLeader)
+  ciaelsAreaManager: Ciael[];
+
   @BeforeInsert()
   async hashPassword() {
     this.password = await argon2.hash(this.password);

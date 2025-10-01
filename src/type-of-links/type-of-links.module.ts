@@ -9,5 +9,6 @@ import { TypeOfLink } from './entities/type-of-link.entity';
   imports: [TypeOrmModule.forFeature([TypeOfLink])],
   controllers: [TypeOfLinksController],
   providers: [TypeOfLinksService],
+  exports: [TypeOrmModule, TypeOfLinksService],
 })
 export class TypeOfLinksModule {}
