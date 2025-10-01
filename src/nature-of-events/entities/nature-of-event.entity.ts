@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'nature-of-events' })
+@Entity({ name: 'nature_of_events' })
 export class NatureOfEvent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({ default: true })

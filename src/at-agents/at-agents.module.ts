@@ -9,5 +9,6 @@ import { AtAgent } from './entities/at-agent.entity';
   imports: [TypeOrmModule.forFeature([AtAgent])],
   controllers: [AtAgentsController],
   providers: [AtAgentsService],
+  exports: [TypeOrmModule, AtAgentsService],
 })
 export class AtAgentsModule {}

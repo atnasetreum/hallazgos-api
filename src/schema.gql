@@ -43,12 +43,6 @@ type Comment {
   user: User!
 }
 
-type Processes {
-  id: ID!
-  name: String!
-  isActive: Boolean!
-}
-
 type Evidence {
   id: ID!
   imgEvidence: String!
@@ -69,6 +63,12 @@ type Evidence {
   supervisors: [User!]!
   responsibles: [User!]!
   comments: [Comment!]!
+}
+
+type Processes {
+  id: ID!
+  name: String!
+  isActive: Boolean!
 }
 
 type ManufacturingPlant {

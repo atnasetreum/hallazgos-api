@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'accident-positions' })
+@Entity({ name: 'accident_positions' })
 export class AccidentPosition {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({ default: true })

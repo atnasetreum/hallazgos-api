@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'risk-factors' })
+@Entity({ name: 'risk_factors' })
 export class RiskFactor {
   @PrimaryGeneratedColumn()
   id: number;

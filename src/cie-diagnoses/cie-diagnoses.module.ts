@@ -9,5 +9,6 @@ import { CieDiagnosis } from './entities/cie-diagnosis.entity';
   imports: [TypeOrmModule.forFeature([CieDiagnosis])],
   controllers: [CieDiagnosesController],
   providers: [CieDiagnosesService],
+  exports: [TypeOrmModule, CieDiagnosesService],
 })
 export class CieDiagnosesModule {}

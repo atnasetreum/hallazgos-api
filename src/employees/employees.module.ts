@@ -11,5 +11,6 @@ import { EmployeesService } from './employees.service';
   ],
   controllers: [EmployeesController],
   providers: [EmployeesService],
+  exports: [TypeOrmModule, EmployeesService],
 })
 export class EmployeesModule {}

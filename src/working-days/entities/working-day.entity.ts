@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'working-days' })
+@Entity({ name: 'working_days' })
 export class WorkingDay {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({ default: true })

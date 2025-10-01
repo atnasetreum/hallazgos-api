@@ -4,14 +4,19 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
-@Entity({ name: 'body-parts' })
+import { Ciael } from 'ciaels/entities/ciael.entity';
+
+@Entity({ name: 'body_parts' })
 export class BodyPart {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({ default: true })
@@ -22,4 +27,7 @@ export class BodyPart {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Ciael, (ciael) => ciael.bodyPart)
+  ciaels: Ciael[];
 }

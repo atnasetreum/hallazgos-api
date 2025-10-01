@@ -20,6 +20,11 @@ export class TypesOfEventsController {
     return this.typesOfEventsService.create(createTypesOfEventDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.typesOfEventsService.seed();
+  }
+
   @Get()
   findAll() {
     return this.typesOfEventsService.findAll();

@@ -7,11 +7,16 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
-import { Evidence } from 'evidences/entities/evidence.entity';
-import { Zone } from 'zones/entities/zone.entity';
 import { Processes } from 'processes/entities/processes.entity';
+import { Evidence } from 'evidences/entities/evidence.entity';
+import { Country } from 'countries/entities/country.entity';
+import { Zone } from 'zones/entities/zone.entity';
+import { Employee } from 'employees/entities';
 @Entity()
 @ObjectType()
 export class ManufacturingPlant {
@@ -60,4 +65,13 @@ export class ManufacturingPlant {
   @OneToMany(() => Processes, (processes) => processes.manufacturingPlant)
   @Field(() => [Processes])
   processes: Processes[];
+
+  @ManyToOne(() => Country, (country) => country.manufacturingPlants)
+  country: Country;
+
+  @ManyToMany(() => Employee, (employee) => employee.manufacturingPlants)
+  @JoinTable({
+    name: 'employees_manufacturing_plants',
+  })
+  employees: Employee[];
 }

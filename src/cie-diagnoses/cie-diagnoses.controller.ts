@@ -20,6 +20,11 @@ export class CieDiagnosesController {
     return this.cieDiagnosesService.create(createCieDiagnosisDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.cieDiagnosesService.seed();
+  }
+
   @Get()
   findAll() {
     return this.cieDiagnosesService.findAll();

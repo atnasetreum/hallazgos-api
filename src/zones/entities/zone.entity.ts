@@ -11,9 +11,11 @@ import {
   Index,
 } from 'typeorm';
 
-import { Evidence } from 'evidences/entities/evidence.entity';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
+import { Evidence } from 'evidences/entities/evidence.entity';
+import { Ciael } from 'ciaels/entities/ciael.entity';
 import { User } from 'users/entities/user.entity';
+import { Area } from 'areas/entities/area.entity';
 
 @Entity({ name: 'zones' })
 @Index(['name', 'manufacturingPlant'], { unique: true })
@@ -53,4 +55,10 @@ export class Zone {
   )
   //@Field(() => ManufacturingPlant)
   manufacturingPlant: ManufacturingPlant;
+
+  @ManyToOne(() => Area, (area) => area.zones)
+  area: Area;
+
+  @OneToMany(() => Ciael, (ciael) => ciael.zone)
+  ciaels: Ciael[];
 }

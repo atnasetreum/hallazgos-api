@@ -20,6 +20,11 @@ export class TypeOfInjuriesController {
     return this.typeOfInjuriesService.create(createTypeOfInjuryDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.typeOfInjuriesService.seed();
+  }
+
   @Get()
   findAll() {
     return this.typeOfInjuriesService.findAll();

@@ -20,6 +20,11 @@ export class AtAgentsController {
     return this.atAgentsService.create(createAtAgentDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.atAgentsService.seed();
+  }
+
   @Get()
   findAll() {
     return this.atAgentsService.findAll();

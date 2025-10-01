@@ -6,12 +6,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({ name: 'associated-tasks' })
+@Entity({ name: 'associated_tasks' })
 export class AssociatedTask {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({ default: true })

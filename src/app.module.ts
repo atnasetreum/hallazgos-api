@@ -46,6 +46,8 @@ import { AssociatedTasksModule } from './associated-tasks/associated-tasks.modul
 import { RiskFactorsModule } from './risk-factors/risk-factors.module';
 import { NatureOfEventsModule } from './nature-of-events/nature-of-events.module';
 import { AccidentsModule } from './accidents/accidents.module';
+import { CountriesModule } from './countries/countries.module';
+import { CiaelsModule } from './ciaels/ciaels.module';
 
 @Module({
   imports: [
@@ -144,6 +146,8 @@ import { AccidentsModule } from './accidents/accidents.module';
     RiskFactorsModule,
     NatureOfEventsModule,
     AccidentsModule,
+    CountriesModule,
+    CiaelsModule,
   ],
   controllers: [],
   providers: [JwtService],

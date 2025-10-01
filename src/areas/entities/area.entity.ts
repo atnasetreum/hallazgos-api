@@ -4,14 +4,19 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import { Zone } from 'zones/entities/zone.entity';
 
 @Entity({ name: 'areas' })
 export class Area {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({ default: true })
@@ -22,4 +27,7 @@ export class Area {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Zone, (zone) => zone.area)
+  zones: Zone[];
 }

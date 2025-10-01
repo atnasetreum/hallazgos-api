@@ -17,6 +17,7 @@ import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-
 import { Processes } from 'processes/entities/processes.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Comment } from 'evidences/entities/comments.entity';
+import { Ciael } from 'ciaels/entities/ciael.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { Epp } from 'epps/entities/epp.entity';
 
@@ -89,6 +90,9 @@ export class User {
 
   @OneToMany(() => Epp, (epp) => epp.createBy)
   epps: Epp[];
+
+  @OneToMany(() => Ciael, (ciael) => ciael.createdBy)
+  ciaels: Ciael[];
 
   @BeforeInsert()
   async hashPassword() {

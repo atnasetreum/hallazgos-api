@@ -7,10 +7,10 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import { Ciael } from 'ciaels/entities/ciael.entity';
+import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 
-@Entity({ name: 'type_of_injuries' })
-export class TypeOfInjury {
+@Entity({ name: 'countries' })
+export class Country {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,6 +28,9 @@ export class TypeOfInjury {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Ciael, (ciael) => ciael.typeOfInjury)
-  ciaels: Ciael[];
+  @OneToMany(
+    () => ManufacturingPlant,
+    (manufacturingPlant) => manufacturingPlant.country,
+  )
+  manufacturingPlants: ManufacturingPlant[];
 }

@@ -9,5 +9,6 @@ import { AtMechanism } from './entities/at-mechanism.entity';
   imports: [TypeOrmModule.forFeature([AtMechanism])],
   controllers: [AtMechanismsController],
   providers: [AtMechanismsService],
+  exports: [TypeOrmModule, AtMechanismsService],
 })
 export class AtMechanismsModule {}

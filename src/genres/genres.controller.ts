@@ -20,6 +20,11 @@ export class GenresController {
     return this.genresService.create(createGenreDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.genresService.seed();
+  }
+
   @Get()
   findAll() {
     return this.genresService.findAll();

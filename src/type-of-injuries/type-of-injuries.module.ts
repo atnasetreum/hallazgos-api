@@ -9,5 +9,6 @@ import { TypeOfInjury } from './entities/type-of-injury.entity';
   imports: [TypeOrmModule.forFeature([TypeOfInjury])],
   controllers: [TypeOfInjuriesController],
   providers: [TypeOfInjuriesService],
+  exports: [TypeOrmModule, TypeOfInjuriesService],
 })
 export class TypeOfInjuriesModule {}

@@ -4,14 +4,19 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
-@Entity({ name: 'at-agents' })
+import { Ciael } from 'ciaels/entities/ciael.entity';
+
+@Entity({ name: 'at_agents' })
 export class AtAgent {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({ default: true })
@@ -22,4 +27,7 @@ export class AtAgent {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Ciael, (ciael) => ciael.atAgent)
+  ciaels: Ciael[];
 }
