@@ -20,11 +20,6 @@ export class AreasController {
     return this.areasService.create(createAreaDto);
   }
 
-  @Post('seed')
-  seed() {
-    return this.areasService.seed();
-  }
-
   @Get()
   findAll() {
     return this.areasService.findAll();

@@ -13,19 +13,8 @@ export class WorkingDaysService {
     private readonly workingDayRepository: Repository<WorkingDay>,
   ) {}
 
-  seed() {
-    const data = ['Diurna', 'Nocturna', 'Mixta'];
-
-    data.forEach(async (name) => {
-      const event = this.workingDayRepository.create({ name });
-      await this.workingDayRepository.save(event);
-    });
-
-    return 'Seeding working days...';
-  }
-
   create(createWorkingDayDto: CreateWorkingDayDto) {
-    return createWorkingDayDto;
+    return this.workingDayRepository.save(createWorkingDayDto);
   }
 
   findAll() {

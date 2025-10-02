@@ -12,41 +12,8 @@ export class AccidentPositionsService {
     private readonly accidentPositionRepository: Repository<AccidentPosition>,
   ) {}
 
-  seed() {
-    const data = [
-      'Jefe de Servicios Generales',
-      'Operador Saponificación',
-      'Operador ayudante de mezclado',
-      'Operador de acabado',
-      'Operador de Empaque',
-      'OPERADOR DE EMPAQUE - NIVEL 1',
-      'Operador de Mantenimiento Mecanico',
-      'Operador de Secado',
-      'Operador de Secado N1',
-      'Operador general',
-      'Operador general de empaque',
-      'Operador logistico granel',
-      'Operario Ayudante de Secado',
-      'Operario de Acabado',
-      'Operario de mantenimiento electrico',
-      'Operario de Mantenimiento mecanico',
-      'Operario de puesta a punto',
-      'Operario general',
-      'OPERARIO LOCATIVO DE INFRAESTRUCTURA',
-      'Operario Mantenimiento Locativo',
-      'Operario Mantenimiento Mecanico',
-    ];
-
-    data.forEach(async (name) => {
-      const accidentPosition = this.accidentPositionRepository.create({ name });
-      await this.accidentPositionRepository.save(accidentPosition);
-    });
-
-    return 'Seeding accident positions...';
-  }
-
   create(createAccidentPositionDto: CreateAccidentPositionDto) {
-    return createAccidentPositionDto;
+    return this.accidentPositionRepository.save(createAccidentPositionDto);
   }
 
   findAll() {

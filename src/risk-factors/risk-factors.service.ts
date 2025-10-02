@@ -13,27 +13,8 @@ export class RiskFactorsService {
     private readonly riskFactorRepository: Repository<RiskFactor>,
   ) {}
 
-  seed() {
-    const data = [
-      'Biomecánico',
-      'Condiciones de seguridad (locativo)',
-      'Condiciones de seguridad',
-      'Físico',
-      'Locativo',
-      'Mecánico',
-      'Químico',
-    ];
-
-    data.forEach(async (name) => {
-      const riskFactor = this.riskFactorRepository.create({ name });
-      await this.riskFactorRepository.save(riskFactor);
-    });
-
-    return 'Seeding risk factors...';
-  }
-
   create(createRiskFactorDto: CreateRiskFactorDto) {
-    return createRiskFactorDto;
+    return this.riskFactorRepository.save(createRiskFactorDto);
   }
 
   findAll() {

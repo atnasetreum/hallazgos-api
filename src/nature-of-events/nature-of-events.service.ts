@@ -13,19 +13,8 @@ export class NatureOfEventsService {
     private readonly natureOfEventRepository: Repository<NatureOfEvent>,
   ) {}
 
-  seed() {
-    const data = ['Acto inseguro', 'Condición insegura'];
-
-    data.forEach(async (name) => {
-      const natureOfEvent = this.natureOfEventRepository.create({ name });
-      await this.natureOfEventRepository.save(natureOfEvent);
-    });
-
-    return 'Seeding nature of events...';
-  }
-
   create(createNatureOfEventDto: CreateNatureOfEventDto) {
-    return createNatureOfEventDto;
+    return this.natureOfEventRepository.save(createNatureOfEventDto);
   }
 
   findAll() {

@@ -20,6 +20,11 @@ export class CiaelsController {
     return this.ciaelsService.create(createCiaelDto);
   }
 
+  @Post('seed')
+  seed() {
+    return this.ciaelsService.seed();
+  }
+
   @Get()
   findAll() {
     return this.ciaelsService.findAll();

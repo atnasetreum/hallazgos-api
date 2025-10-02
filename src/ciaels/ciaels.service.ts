@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { REQUEST } from '@nestjs/core';
 
@@ -17,16 +17,21 @@ import { TypeOfLink } from 'type-of-links/entities/type-of-link.entity';
 import { WorkingDay } from 'working-days/entities/working-day.entity';
 import { RiskFactor } from 'risk-factors/entities/risk-factor.entity';
 import { BodyPart } from 'body-parts/entities/body-part.entity';
+import { AtAgent } from 'at-agents/entities/at-agent.entity';
+import { Country } from 'countries/entities/country.entity';
 import { Machine } from 'machines/entities/machine.entity';
 import { CreateCiaelDto, UpdateCiaelDto } from './dto';
 import { Zone } from 'zones/entities/zone.entity';
+import { Area } from 'areas/entities/area.entity';
 import { User } from 'users/entities/user.entity';
 import { Ciael } from './entities/ciael.entity';
 import { Employee } from 'employees/entities';
+import { Genre } from 'genres/entities/genre.entity';
 //import { calculateAge } from '@shared/utils';
 
 @Injectable()
 export class CiaelsService {
+  private readonly logger = new Logger(CiaelsService.name);
   private readonly relations = [
     'manufacturingPlant',
     'typeOfEvent',
@@ -92,6 +97,10 @@ export class CiaelsService {
     @Inject(REQUEST) private readonly request: Request,
     @InjectRepository(Ciael)
     private readonly ciaelRepository: Repository<Ciael>,
+    @InjectRepository(Area)
+    private readonly areaRepository: Repository<Area>,
+    @InjectRepository(AtAgent)
+    private readonly atAgentRepository: Repository<AtAgent>,
     @InjectRepository(ManufacturingPlant)
     private readonly manufacturingPlantRepository: Repository<ManufacturingPlant>,
     @InjectRepository(TypesOfEvent)
@@ -124,6 +133,10 @@ export class CiaelsService {
     private readonly riskFactorRepository: Repository<RiskFactor>,
     @InjectRepository(NatureOfEvent)
     private readonly natureOfEventRepository: Repository<NatureOfEvent>,
+    @InjectRepository(Country)
+    private readonly countryRepository: Repository<Country>,
+    @InjectRepository(Genre)
+    private readonly genreRepository: Repository<Genre>,
   ) {}
 
   async create(createCiaelDto: CreateCiaelDto) {
@@ -399,5 +412,326 @@ export class CiaelsService {
 
   remove(id: number) {
     return `This action removes a #${id} ciael`;
+  }
+
+  seedBodyParts() {
+    const data = [
+      'Cabeza',
+      'Cuello',
+      'Manos',
+      'Miembros inferiores',
+      'Miembros superiores',
+      'Ojos',
+      'Pies',
+      'Tronco (Incluye espalda, médula espinal, columna vertebral, pelvis)',
+    ];
+
+    this.logger.log('Seeding body parts...');
+    data.forEach(async (name) => {
+      const bodyPart = this.bodyPartRepository.create({ name });
+      await this.bodyPartRepository.save(bodyPart);
+    });
+    this.logger.log('Body parts seeded successfully.');
+  }
+
+  seedAccidentPositions() {
+    const data = [
+      'Jefe de Servicios Generales',
+      'Operador Saponificación',
+      'Operador ayudante de mezclado',
+      'Operador de acabado',
+      'Operador de Empaque',
+      'OPERADOR DE EMPAQUE - NIVEL 1',
+      'Operador de Mantenimiento Mecanico',
+      'Operador de Secado',
+      'Operador de Secado N1',
+      'Operador general',
+      'Operador general de empaque',
+      'Operador logistico granel',
+      'Operario Ayudante de Secado',
+      'Operario de Acabado',
+      'Operario de mantenimiento electrico',
+      'Operario de Mantenimiento mecanico',
+      'Operario de puesta a punto',
+      'Operario general',
+      'OPERARIO LOCATIVO DE INFRAESTRUCTURA',
+      'Operario Mantenimiento Locativo',
+      'Operario Mantenimiento Mecanico',
+    ];
+
+    this.logger.log('Seeding accident positions...');
+    data.forEach(async (name) => {
+      const accidentPosition = this.accidentPositionRepository.create({ name });
+      await this.accidentPositionRepository.save(accidentPosition);
+    });
+    this.logger.log('Accident positions seeded successfully.');
+  }
+
+  seedAreas() {
+    const data = [
+      'ADMINISTRATIVO',
+      'ECOFIRE',
+      'EMPAQUE MANUAL',
+      'LIQUIDOS',
+      'LOGISTICA BODEGA FASE 2',
+      'MANTENIMIENTO',
+      'MEZCLADO',
+      'PATIO TANQUE',
+      'SAPONIFICACION Y SECADO',
+      'SERVICIOS GENERALES',
+      'SOLIDOS',
+      'TALLER DE MANTENIMIENTO',
+    ];
+
+    this.logger.log('Seeding areas...');
+    data.forEach(async (name) => {
+      const area = this.areaRepository.create({ name });
+      await this.areaRepository.save(area);
+    });
+    this.logger.log('Areas seeded successfully.');
+  }
+
+  seedAssociatedTasks() {
+    const data = [
+      'Acabado',
+      'Ajuste e intervención de máquina',
+      'Alistamiento de insumos',
+      'Armado de corrugado',
+      'Armado de canasta con jabón',
+      'Cierre de compresora',
+      'Desmonte del cono de la compresora final',
+      'Dosificación de fragancia',
+      'Empaque de producto terminado',
+      'Empaque de base en sacos',
+      'Fabricación de empaque',
+      'Fabricación de velas',
+      'Fue reubicado en operador de acabado',
+      'Inspección de productos en área de logística',
+      'Limpieza de área',
+      'Limpieza de ciclón de atomizador S6000',
+      'Limpieza de tolva',
+      'Limpieza y despeje de equipos',
+      'Limpieza y despeje de área',
+      'Movimiento y traslado de estiba',
+      'Movimiento y traslado interno en planta',
+      'Perforación de platina',
+      'Prueba en área',
+      'Preparación saponificación',
+      'Reinado de base',
+      'Revisión y manipulación de jabón defectuoso',
+      'Sellado de paquetes de jabón',
+      'Tránsito de planta',
+      'Verificación de giro de bomba de soda cáustica',
+    ];
+    this.logger.log('Seeding associated tasks...');
+    data.forEach(async (name) => {
+      const associatedTask = this.associatedTaskRepository.create({ name });
+      await this.associatedTaskRepository.save(associatedTask);
+    });
+    this.logger.log('Associated tasks seeded successfully.');
+  }
+
+  seedAtAgents() {
+    const data = [
+      'Ambiente de trabajo (Incluye superficies de tránsito y de trabajo, muebles, tejados, en el exterior, interior o subterráneos)',
+      'Herramientas, implementos o utensilios',
+      'Máquinas y/o equipos',
+      'Materiales o sustancias',
+      'Medios de transporte',
+      'Otros agentes no clasificados',
+    ];
+    this.logger.log('Seeding at agents...');
+    data.forEach(async (name) => {
+      const atAgent = this.atAgentRepository.create({ name });
+      await this.atAgentRepository.save(atAgent);
+    });
+    this.logger.log('At agents seeded successfully.');
+  }
+
+  seedAtMechanisms() {
+    const data = [
+      'Atrapamientos',
+      'Caída de objetos',
+      'Caída de personas',
+      'Exposición o contacto con sustancias nocivas o radiaciones o salpicaduras',
+      'Exposición o contacto con temperatura extrema',
+      'Golpes con o contra objetos',
+      'Otro',
+      'Pisadas, choques o golpes',
+      'Sobreesfuerzo, esfuerzo excesivo o falso movimiento',
+    ];
+    this.logger.log('Seeding at mechanisms...');
+    data.forEach(async (name) => {
+      const atMechanism = this.atMechanismRepository.create({ name });
+      await this.atMechanismRepository.save(atMechanism);
+    });
+    this.logger.log('At mechanisms seeded successfully.');
+  }
+
+  seedCieDiagnoses() {
+    const data = [
+      'Atrapamiento',
+      'Cortes',
+      'Cuerpo extraño en ojo',
+      'Dolor de espalda (lumbago)',
+      'Golpes',
+      'Herida',
+      'Irritación ocular',
+      'Quemadura',
+      'Torcedura',
+    ];
+    this.logger.log('Seeding CIE Diagnoses...');
+    data.forEach(async (name) => {
+      const event = this.cieDiagnosisRepository.create({ name });
+      await this.cieDiagnosisRepository.save(event);
+    });
+    this.logger.log('CIE Diagnoses seeded successfully.');
+  }
+
+  seedCountries() {
+    const data = ['México', 'Colombia'];
+    this.logger.log('Seeding countries...');
+    data.forEach(async (name) => {
+      const event = this.countryRepository.create({ name });
+      await this.countryRepository.save(event);
+    });
+    this.logger.log('Countries seeded successfully.');
+  }
+
+  seedGenres() {
+    const data = ['Masculino', 'Femenino'];
+    this.logger.log('Seeding genres...');
+    data.forEach(async (name) => {
+      const event = this.genreRepository.create({ name });
+      await this.genreRepository.save(event);
+    });
+    this.logger.log('Genres seeded successfully.');
+  }
+
+  seedMachines() {
+    const data = [
+      'Banda Termoencogible',
+      'Barra paletizadora',
+      'Bomba de Soda caustica',
+      'Carro dosificador de Parafina',
+      'Ciclón S6000',
+      'Compresora Final línea 8',
+      'Compresora inicial LNA 14',
+      'Cono de la compresora final',
+      'Cosedora',
+      'Estibas de madera',
+      'Exacto',
+      'Levantamiento de carga de cajas',
+      'Llave 2 Pulgadas',
+      'Paper Línea 9',
+      'Perforadora Magnética',
+      'Selladora manual',
+      'Tolva compresora inicial',
+      'Tubería de transporte de aceite',
+      'Volumétrica 16 Boquillas',
+    ];
+    this.logger.log('Seeding machines...');
+    data.forEach(async (name) => {
+      const machine = this.machineRepository.create({ name });
+      await this.machineRepository.save(machine);
+    });
+    this.logger.log('Machines seeded successfully.');
+  }
+
+  seedNatureOfEvents() {
+    const data = ['Acto inseguro', 'Condición insegura'];
+    this.logger.log('Seeding nature of events...');
+    data.forEach(async (name) => {
+      const natureOfEvent = this.natureOfEventRepository.create({ name });
+      await this.natureOfEventRepository.save(natureOfEvent);
+    });
+    this.logger.log('Nature of events seeded successfully.');
+  }
+
+  seedRiskFactors() {
+    const data = [
+      'Biomecánico',
+      'Condiciones de seguridad (locativo)',
+      'Condiciones de seguridad',
+      'Físico',
+      'Locativo',
+      'Mecánico',
+      'Químico',
+    ];
+    this.logger.log('Seeding risk factors...');
+    data.forEach(async (name) => {
+      const riskFactor = this.riskFactorRepository.create({ name });
+      await this.riskFactorRepository.save(riskFactor);
+    });
+    this.logger.log('Risk factors seeded successfully.');
+  }
+
+  seedTypeOfInjuries() {
+    const data = [
+      'Conmoción o trauma interno',
+      'Golpe, contusión o aplastamiento',
+      'Herida',
+      'Irritación',
+      'Otro',
+      'Quemadura',
+      'Torcedura o esguince, desgarro muscular, hernia o laceración de tendón sin herida',
+      'Trauma superficial',
+    ];
+    this.logger.log('Seeding type of injuries...');
+    data.forEach(async (name) => {
+      const typeOfInjury = this.typeOfInjuryRepository.create({ name });
+      await this.typeOfInjuryRepository.save(typeOfInjury);
+    });
+    this.logger.log('Type of injuries seeded successfully.');
+  }
+
+  seedTypeOfLinks() {
+    const data = ['Directo', 'Temporal'];
+    this.logger.log('Seeding type of links...');
+    data.forEach(async (name) => {
+      const typeOfLink = this.typeOfLinkRepository.create({ name });
+      await this.typeOfLinkRepository.save(typeOfLink);
+    });
+    this.logger.log('Type of links seeded successfully.');
+  }
+
+  seedTypesOfEvents() {
+    const data = ['Accidente de trabajo', 'Incidente de trabajo'];
+    this.logger.log('Seeding types of events...');
+    data.forEach(async (name) => {
+      const event = this.typesOfEventRepository.create({ name });
+      await this.typesOfEventRepository.save(event);
+    });
+    this.logger.log('Types of events seeded successfully.');
+  }
+
+  seedWorkingDays() {
+    const data = ['Diurna', 'Nocturna', 'Mixta'];
+    this.logger.log('Seeding working days...');
+    data.forEach(async (name) => {
+      const event = this.workingDayRepository.create({ name });
+      await this.workingDayRepository.save(event);
+    });
+    this.logger.log('Working days seeded successfully.');
+  }
+
+  seed() {
+    this.seedBodyParts();
+    this.seedAccidentPositions();
+    this.seedAreas();
+    this.seedAssociatedTasks();
+    this.seedAtAgents();
+    this.seedAtMechanisms();
+    this.seedCieDiagnoses();
+    this.seedCountries();
+    this.seedGenres();
+    this.seedMachines();
+    this.seedNatureOfEvents();
+    this.seedRiskFactors();
+    this.seedTypeOfInjuries();
+    this.seedTypeOfLinks();
+    this.seedTypesOfEvents();
+    this.seedWorkingDays();
+    return 'Seeding...';
   }
 }

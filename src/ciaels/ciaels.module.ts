@@ -13,18 +13,23 @@ import { TypeOfLink } from 'type-of-links/entities/type-of-link.entity';
 import { WorkingDay } from 'working-days/entities/working-day.entity';
 import { RiskFactor } from 'risk-factors/entities/risk-factor.entity';
 import { BodyPart } from 'body-parts/entities/body-part.entity';
+import { AtAgent } from 'at-agents/entities/at-agent.entity';
+import { Country } from 'countries/entities/country.entity';
 import { Machine } from 'machines/entities/machine.entity';
 import { CiaelsController } from './ciaels.controller';
 import { User } from 'users/entities/user.entity';
 import { Zone } from 'zones/entities/zone.entity';
+import { Area } from 'areas/entities/area.entity';
 import { CiaelsService } from './ciaels.service';
 import { Ciael } from './entities/ciael.entity';
 import { Employee } from 'employees/entities';
+import { Genre } from 'genres/entities/genre.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Ciael,
+      Area,
       ManufacturingPlant,
       TypesOfEvent,
       Employee,
@@ -41,6 +46,9 @@ import { Employee } from 'employees/entities';
       User,
       RiskFactor,
       NatureOfEvent,
+      AtAgent,
+      Country,
+      Genre,
     ]),
   ],
   controllers: [CiaelsController],

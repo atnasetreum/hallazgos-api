@@ -20,11 +20,6 @@ export class CountriesController {
     return this.countriesService.create(createCountryDto);
   }
 
-  @Post('seed')
-  seed() {
-    return this.countriesService.seed();
-  }
-
   @Get()
   findAll() {
     return this.countriesService.findAll();

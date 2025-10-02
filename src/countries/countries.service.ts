@@ -13,19 +13,8 @@ export class CountriesService {
     private readonly countryRepository: Repository<Country>,
   ) {}
 
-  seed() {
-    const data = ['México', 'Colombia'];
-
-    data.forEach(async (name) => {
-      const event = this.countryRepository.create({ name });
-      await this.countryRepository.save(event);
-    });
-
-    return 'Seeding countries...';
-  }
-
   create(createCountryDto: CreateCountryDto) {
-    return createCountryDto;
+    return this.countryRepository.save(createCountryDto);
   }
 
   findAll() {

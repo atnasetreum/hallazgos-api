@@ -20,11 +20,6 @@ export class WorkingDaysController {
     return this.workingDaysService.create(createWorkingDayDto);
   }
 
-  @Post('seed')
-  seed() {
-    return this.workingDaysService.seed();
-  }
-
   @Get()
   findAll() {
     return this.workingDaysService.findAll();

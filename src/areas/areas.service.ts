@@ -13,32 +13,8 @@ export class AreasService {
     private readonly areaRepository: Repository<Area>,
   ) {}
 
-  seed() {
-    const data = [
-      'ADMINISTRATIVO',
-      'ECOFIRE',
-      'EMPAQUE MANUAL',
-      'LIQUIDOS',
-      'LOGISTICA BODEGA FASE 2',
-      'MANTENIMIENTO',
-      'MEZCLADO',
-      'PATIO TANQUE',
-      'SAPONIFICACION Y SECADO',
-      'SERVICIOS GENERALES',
-      'SOLIDOS',
-      'TALLER DE MANTENIMIENTO',
-    ];
-
-    data.forEach(async (name) => {
-      const area = this.areaRepository.create({ name });
-      await this.areaRepository.save(area);
-    });
-
-    return 'Seeding areas...';
-  }
-
   create(createAreaDto: CreateAreaDto) {
-    return createAreaDto;
+    return this.areaRepository.save(createAreaDto);
   }
 
   findAll() {

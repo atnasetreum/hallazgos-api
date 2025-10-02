@@ -13,19 +13,8 @@ export class GenresService {
     private readonly genreRepository: Repository<Genre>,
   ) {}
 
-  seed() {
-    const data = ['Masculino', 'Femenino'];
-
-    data.forEach(async (name) => {
-      const event = this.genreRepository.create({ name });
-      await this.genreRepository.save(event);
-    });
-
-    return 'Seeding genres...';
-  }
-
   create(createGenreDto: CreateGenreDto) {
-    return createGenreDto;
+    return this.genreRepository.save(createGenreDto);
   }
 
   findAll() {

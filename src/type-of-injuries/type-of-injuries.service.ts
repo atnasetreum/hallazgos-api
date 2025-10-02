@@ -13,28 +13,8 @@ export class TypeOfInjuriesService {
     private readonly typeOfInjuryRepository: Repository<TypeOfInjury>,
   ) {}
 
-  seed() {
-    const data = [
-      'Conmoción o trauma interno',
-      'Golpe, contusión o aplastamiento',
-      'Herida',
-      'Irritación',
-      'Otro',
-      'Quemadura',
-      'Torcedura o esguince, desgarro muscular, hernia o laceración de tendón sin herida',
-      'Trauma superficial',
-    ];
-
-    data.forEach(async (name) => {
-      const typeOfInjury = this.typeOfInjuryRepository.create({ name });
-      await this.typeOfInjuryRepository.save(typeOfInjury);
-    });
-
-    return 'Seeding type of injuries...';
-  }
-
   create(createTypeOfInjuryDto: CreateTypeOfInjuryDto) {
-    return createTypeOfInjuryDto;
+    return this.typeOfInjuryRepository.save(createTypeOfInjuryDto);
   }
 
   findAll() {

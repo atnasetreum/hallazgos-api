@@ -20,11 +20,6 @@ export class NatureOfEventsController {
     return this.natureOfEventsService.create(createNatureOfEventDto);
   }
 
-  @Post('seed')
-  seed() {
-    return this.natureOfEventsService.seed();
-  }
-
   @Get()
   findAll() {
     return this.natureOfEventsService.findAll();

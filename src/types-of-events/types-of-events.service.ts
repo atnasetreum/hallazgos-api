@@ -13,19 +13,8 @@ export class TypesOfEventsService {
     private readonly typesOfEventRepository: Repository<TypesOfEvent>,
   ) {}
 
-  seed() {
-    const data = ['Accidente de trabajo', 'Incidente de trabajo'];
-
-    data.forEach(async (name) => {
-      const event = this.typesOfEventRepository.create({ name });
-      await this.typesOfEventRepository.save(event);
-    });
-
-    return 'Seeding types of events...';
-  }
-
   create(createTypesOfEventDto: CreateTypesOfEventDto) {
-    return createTypesOfEventDto;
+    return this.typesOfEventRepository.save(createTypesOfEventDto);
   }
 
   findAll() {

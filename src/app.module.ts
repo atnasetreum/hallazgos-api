@@ -45,7 +45,6 @@ import { MachinesModule } from './machines/machines.module';
 import { AssociatedTasksModule } from './associated-tasks/associated-tasks.module';
 import { RiskFactorsModule } from './risk-factors/risk-factors.module';
 import { NatureOfEventsModule } from './nature-of-events/nature-of-events.module';
-import { AccidentsModule } from './accidents/accidents.module';
 import { CountriesModule } from './countries/countries.module';
 import { CiaelsModule } from './ciaels/ciaels.module';
 
@@ -145,7 +144,6 @@ import { CiaelsModule } from './ciaels/ciaels.module';
     AssociatedTasksModule,
     RiskFactorsModule,
     NatureOfEventsModule,
-    AccidentsModule,
     CountriesModule,
     CiaelsModule,
   ],

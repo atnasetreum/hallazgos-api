@@ -88,7 +88,10 @@ export class ManufacturingPlant {
   })
   accidentPositions: AccidentPosition[];
 
-  @OneToMany(() => Machine, (machine) => machine.manufacturingPlant)
+  @ManyToMany(() => Machine, (machine) => machine.manufacturingPlants)
+  @JoinTable({
+    name: 'machines_manufacturing_plants',
+  })
   machines: Machine[];
 
   @OneToMany(() => Ciael, (ciael) => ciael.manufacturingPlant)

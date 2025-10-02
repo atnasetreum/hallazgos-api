@@ -13,19 +13,8 @@ export class TypeOfLinksService {
     private readonly typeOfLinkRepository: Repository<TypeOfLink>,
   ) {}
 
-  seed() {
-    const data = ['Directo', 'Temporal'];
-
-    data.forEach(async (name) => {
-      const typeOfLink = this.typeOfLinkRepository.create({ name });
-      await this.typeOfLinkRepository.save(typeOfLink);
-    });
-
-    return 'Seeding type of links...';
-  }
-
   create(createTypeOfLinkDto: CreateTypeOfLinkDto) {
-    return createTypeOfLinkDto;
+    return this.typeOfLinkRepository.save(createTypeOfLinkDto);
   }
 
   findAll() {

@@ -13,28 +13,8 @@ export class BodyPartsService {
     private readonly bodyPartRepository: Repository<BodyPart>,
   ) {}
 
-  seed() {
-    const data = [
-      'Cabeza',
-      'Cuello',
-      'Manos',
-      'Miembros inferiores',
-      'Miembros superiores',
-      'Ojos',
-      'Pies',
-      'Tronco (Incluye espalda, médula espinal, columna vertebral, pelvis)',
-    ];
-
-    data.forEach(async (name) => {
-      const bodyPart = this.bodyPartRepository.create({ name });
-      await this.bodyPartRepository.save(bodyPart);
-    });
-
-    return 'Seeding body parts...';
-  }
-
   create(createBodyPartDto: CreateBodyPartDto) {
-    return createBodyPartDto;
+    return this.bodyPartRepository.create(createBodyPartDto);
   }
 
   findAll() {

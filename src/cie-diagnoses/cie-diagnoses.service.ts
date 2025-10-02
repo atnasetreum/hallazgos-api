@@ -13,29 +13,8 @@ export class CieDiagnosesService {
     private readonly cieDiagnosisRepository: Repository<CieDiagnosis>,
   ) {}
 
-  seed() {
-    const data = [
-      'Atrapamiento',
-      'Cortes',
-      'Cuerpo extraño en ojo',
-      'Dolor de espalda (lumbago)',
-      'Golpes',
-      'Herida',
-      'Irritación ocular',
-      'Quemadura',
-      'Torcedura',
-    ];
-
-    data.forEach(async (name) => {
-      const event = this.cieDiagnosisRepository.create({ name });
-      await this.cieDiagnosisRepository.save(event);
-    });
-
-    return 'Seeding CIE Diagnoses...';
-  }
-
   create(createCieDiagnosisDto: CreateCieDiagnosisDto) {
-    return createCieDiagnosisDto;
+    return this.cieDiagnosisRepository.save(createCieDiagnosisDto);
   }
 
   findAll() {

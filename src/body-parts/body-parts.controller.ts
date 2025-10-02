@@ -20,11 +20,6 @@ export class BodyPartsController {
     return this.bodyPartsService.create(createBodyPartDto);
   }
 
-  @Post('seed')
-  seed() {
-    return this.bodyPartsService.seed();
-  }
-
   @Get()
   findAll() {
     return this.bodyPartsService.findAll();

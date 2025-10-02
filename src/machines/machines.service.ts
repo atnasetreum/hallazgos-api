@@ -13,39 +13,8 @@ export class MachinesService {
     private readonly machineRepository: Repository<Machine>,
   ) {}
 
-  seed() {
-    const data = [
-      'Banda Termoencogible',
-      'Barra paletizadora',
-      'Bomba de Soda caustica',
-      'Carro dosificador de Parafina',
-      'Ciclón S6000',
-      'Compresora Final línea 8',
-      'Compresora inicial LNA 14',
-      'Cono de la compresora final',
-      'Cosedora',
-      'Estibas de madera',
-      'Exacto',
-      'Levantamiento de carga de cajas',
-      'Llave 2 Pulgadas',
-      'Paper Línea 9',
-      'Perforadora Magnética',
-      'Selladora manual',
-      'Tolva compresora inicial',
-      'Tubería de transporte de aceite',
-      'Volumétrica 16 Boquillas',
-    ];
-
-    data.forEach(async (name) => {
-      const machine = this.machineRepository.create({ name });
-      await this.machineRepository.save(machine);
-    });
-
-    return 'Seeding machines...';
-  }
-
   create(createMachineDto: CreateMachineDto) {
-    return createMachineDto;
+    return this.machineRepository.save(createMachineDto);
   }
 
   findAll() {

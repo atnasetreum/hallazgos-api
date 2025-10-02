@@ -22,11 +22,6 @@ export class AccidentPositionsController {
     return this.accidentPositionsService.create(createAccidentPositionDto);
   }
 
-  @Post('seed')
-  seed() {
-    return this.accidentPositionsService.seed();
-  }
-
   @Get()
   findAll() {
     return this.accidentPositionsService.findAll();

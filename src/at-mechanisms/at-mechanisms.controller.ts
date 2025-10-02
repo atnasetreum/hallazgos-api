@@ -20,11 +20,6 @@ export class AtMechanismsController {
     return this.atMechanismsService.create(createAtMechanismDto);
   }
 
-  @Post('seed')
-  seed() {
-    return this.atMechanismsService.seed();
-  }
-
   @Get()
   findAll() {
     return this.atMechanismsService.findAll();

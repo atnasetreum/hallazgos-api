@@ -6,19 +6,19 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
-  Index,
 } from 'typeorm';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { Ciael } from 'ciaels/entities/ciael.entity';
 
-@Index(['name', 'manufacturingPlant'], { unique: true })
 @Entity({ name: 'machines' })
 export class Machine {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   name: string;
 
   @Column({ default: true })
@@ -37,5 +37,5 @@ export class Machine {
     () => ManufacturingPlant,
     (manufacturingPlant) => manufacturingPlant.machines,
   )
-  manufacturingPlant: ManufacturingPlant;
+  manufacturingPlants: ManufacturingPlant[];
 }
