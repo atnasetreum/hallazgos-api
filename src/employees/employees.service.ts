@@ -1,10 +1,14 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere } from 'typeorm';
 
 import { Employee, EmployeeArea, EmployeePosition } from './entities';
-import { CreateEmployeeDto, UpdateEmployeeDto } from './dto';
+import {
+  CreateEmployeeDto,
+  FiltersEmployeeDto,
+  UpdateEmployeeDto,
+} from './dto';
 
 @Injectable()
 export class EmployeesService {
@@ -504,11 +508,17 @@ export class EmployeesService {
     return { message: 'Seed completed successfully' };
   }
 
-  findAll() {
+  findAll(filtersEmployeeDto: FiltersEmployeeDto) {
+    const where: FindOptionsWhere<Employee> = { isActive: true };
+
+    if (filtersEmployeeDto.manufacturingPlantId) {
+      where.manufacturingPlants = {
+        id: filtersEmployeeDto.manufacturingPlantId,
+      };
+    }
+
     return this.employeeRepository.find({
-      where: {
-        isActive: true,
-      },
+      where,
       relations: ['area', 'position'],
       order: {
         name: 'ASC',

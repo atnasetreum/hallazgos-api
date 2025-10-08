@@ -18,7 +18,10 @@ export class CieDiagnosesService {
   }
 
   findAll() {
-    return `This action returns all cieDiagnoses`;
+    return this.cieDiagnosisRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {

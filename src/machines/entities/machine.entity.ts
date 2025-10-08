@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  ManyToOne,
+  ManyToMany,
 } from 'typeorm';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
@@ -33,7 +33,7 @@ export class Machine {
   @OneToMany(() => Ciael, (ciael) => ciael.machine)
   ciaels: Ciael[];
 
-  @ManyToOne(
+  @ManyToMany(
     () => ManufacturingPlant,
     (manufacturingPlant) => manufacturingPlant.machines,
   )
