@@ -1,9 +1,14 @@
+import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 
-import { CreateAccidentPositionDto, UpdateAccidentPositionDto } from './dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
+
 import { AccidentPosition } from './entities/accident-position.entity';
+import {
+  CreateAccidentPositionDto,
+  FiltersAccidentPositionDto,
+  UpdateAccidentPositionDto,
+} from './dto';
 
 @Injectable()
 export class AccidentPositionsService {
@@ -16,8 +21,16 @@ export class AccidentPositionsService {
     return this.accidentPositionRepository.save(createAccidentPositionDto);
   }
 
-  findAll() {
-    return `This action returns all accidentPositions`;
+  findAll(filtersAccidentPositionDto: FiltersAccidentPositionDto) {
+    const where: FindOptionsWhere<AccidentPosition> = { isActive: true };
+
+    if (filtersAccidentPositionDto.manufacturingPlantId) {
+      where.manufacturingPlants = {
+        id: filtersAccidentPositionDto.manufacturingPlantId,
+      };
+    }
+
+    return this.accidentPositionRepository.find({ where });
   }
 
   findOne(id: number) {

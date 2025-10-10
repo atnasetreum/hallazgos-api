@@ -2,8 +2,8 @@ import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { REQUEST } from '@nestjs/core';
 
-import { Repository } from 'typeorm';
 import { Request } from 'express';
+import { Repository } from 'typeorm';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { AccidentPosition } from 'accident-positions/entities/accident-position.entity';
@@ -21,13 +21,12 @@ import { AtAgent } from 'at-agents/entities/at-agent.entity';
 import { Country } from 'countries/entities/country.entity';
 import { Machine } from 'machines/entities/machine.entity';
 import { CreateCiaelDto, UpdateCiaelDto } from './dto';
+import { Genre } from 'genres/entities/genre.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { Area } from 'areas/entities/area.entity';
 import { User } from 'users/entities/user.entity';
 import { Ciael } from './entities/ciael.entity';
 import { Employee } from 'employees/entities';
-import { Genre } from 'genres/entities/genre.entity';
-//import { calculateAge } from '@shared/utils';
 
 @Injectable()
 export class CiaelsService {
@@ -69,6 +68,7 @@ export class CiaelsService {
     usualWork: true,
     isDeath: true,
     isInside: true,
+    monthsOfSeniority: true,
     employee: {
       code: true,
       name: true,
@@ -357,6 +357,21 @@ export class CiaelsService {
       }
     }
 
+    function getElapsedMonths(startDateStr) {
+      const startDate = new Date(startDateStr);
+      const currentDate = new Date();
+
+      const yearsDifference =
+        currentDate.getFullYear() - startDate.getFullYear();
+      const monthsDifference = currentDate.getMonth() - startDate.getMonth();
+
+      return yearsDifference * 12 + monthsDifference;
+    }
+
+    const monthsOfSeniority = employee.dateOfAdmission
+      ? getElapsedMonths(employee.dateOfAdmission)
+      : null;
+
     const newCiael = await this.ciaelRepository.save({
       manufacturingPlant,
       description,
@@ -365,7 +380,7 @@ export class CiaelsService {
       employee,
       eventDate,
       cieDiagnosis,
-      daysOfDisability,
+      ...(daysOfDisability && { daysOfDisability }),
       zone,
       bodyPart,
       atAgent,
@@ -379,6 +394,7 @@ export class CiaelsService {
       accidentPosition,
       machine,
       isInside,
+      monthsOfSeniority,
       associatedTask,
       areaLeader,
       riskFactor,

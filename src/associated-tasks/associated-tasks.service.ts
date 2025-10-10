@@ -1,10 +1,14 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
-import { CreateAssociatedTaskDto, UpdateAssociatedTaskDto } from './dto';
 import { AssociatedTask } from './entities/associated-task.entity';
+import {
+  CreateAssociatedTaskDto,
+  FiltersAssociatedTaskDto,
+  UpdateAssociatedTaskDto,
+} from './dto';
 
 @Injectable()
 export class AssociatedTasksService {
@@ -17,8 +21,16 @@ export class AssociatedTasksService {
     return this.associatedTaskRepository.create(createAssociatedTaskDto);
   }
 
-  findAll() {
-    return `This action returns all associatedTasks`;
+  findAll(filtersAssociatedTaskDto: FiltersAssociatedTaskDto) {
+    const where: FindOptionsWhere<AssociatedTask> = { isActive: true };
+
+    if (filtersAssociatedTaskDto.manufacturingPlantId) {
+      where.manufacturingPlants = {
+        id: filtersAssociatedTaskDto.manufacturingPlantId,
+      };
+    }
+
+    return this.associatedTaskRepository.find({ where });
   }
 
   findOne(id: number) {

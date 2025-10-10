@@ -17,7 +17,10 @@ export class AtAgentsService {
   }
 
   findAll() {
-    return `This action returns all atAgents`;
+    return this.atAgentRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {

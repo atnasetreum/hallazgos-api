@@ -1,9 +1,9 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
-import { CreateMachineDto, UpdateMachineDto } from './dto';
+import { CreateMachineDto, FiltersMachineDto, UpdateMachineDto } from './dto';
 import { Machine } from './entities/machine.entity';
 
 @Injectable()
@@ -17,10 +17,17 @@ export class MachinesService {
     return this.machineRepository.save(createMachineDto);
   }
 
-  findAll() {
-    return `This action returns all machines`;
-  }
+  findAll(filtersMachineDto: FiltersMachineDto) {
+    const where: FindOptionsWhere<Machine> = { isActive: true };
 
+    if (filtersMachineDto.manufacturingPlantId) {
+      where.manufacturingPlants = {
+        id: filtersMachineDto.manufacturingPlantId,
+      };
+    }
+
+    return this.machineRepository.find({ where });
+  }
   findOne(id: number) {
     return `This action returns a #${id} machine`;
   }

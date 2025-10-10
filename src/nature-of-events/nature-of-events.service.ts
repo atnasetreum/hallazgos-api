@@ -18,7 +18,10 @@ export class NatureOfEventsService {
   }
 
   findAll() {
-    return `This action returns all natureOfEvents`;
+    return this.natureOfEventRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {

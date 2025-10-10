@@ -6,10 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
-import { CreateAssociatedTaskDto, UpdateAssociatedTaskDto } from './dto';
 import { AssociatedTasksService } from './associated-tasks.service';
+import {
+  CreateAssociatedTaskDto,
+  FiltersAssociatedTaskDto,
+  UpdateAssociatedTaskDto,
+} from './dto';
 
 @Controller('associated-tasks')
 export class AssociatedTasksController {
@@ -23,8 +28,8 @@ export class AssociatedTasksController {
   }
 
   @Get()
-  findAll() {
-    return this.associatedTasksService.findAll();
+  findAll(@Query() filtersAssociatedTaskDto: FiltersAssociatedTaskDto) {
+    return this.associatedTasksService.findAll(filtersAssociatedTaskDto);
   }
 
   @Get(':id')

@@ -6,10 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
-import { CreateAccidentPositionDto, UpdateAccidentPositionDto } from './dto';
 import { AccidentPositionsService } from './accident-positions.service';
+import {
+  CreateAccidentPositionDto,
+  FiltersAccidentPositionDto,
+  UpdateAccidentPositionDto,
+} from './dto';
 
 @Controller('accident-positions')
 export class AccidentPositionsController {
@@ -23,8 +28,8 @@ export class AccidentPositionsController {
   }
 
   @Get()
-  findAll() {
-    return this.accidentPositionsService.findAll();
+  findAll(@Query() filtersAccidentPositionDto: FiltersAccidentPositionDto) {
+    return this.accidentPositionsService.findAll(filtersAccidentPositionDto);
   }
 
   @Get(':id')

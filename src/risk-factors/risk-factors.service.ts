@@ -18,7 +18,10 @@ export class RiskFactorsService {
   }
 
   findAll() {
-    return `This action returns all riskFactors`;
+    return this.riskFactorRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {

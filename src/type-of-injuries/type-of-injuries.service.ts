@@ -18,7 +18,10 @@ export class TypeOfInjuriesService {
   }
 
   findAll() {
-    return `This action returns all typeOfInjuries`;
+    return this.typeOfInjuryRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {

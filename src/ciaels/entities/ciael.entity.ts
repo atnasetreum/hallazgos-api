@@ -61,6 +61,11 @@ export class Ciael {
   @Column()
   isInside: boolean;
 
+  @Column('int', {
+    nullable: true,
+  })
+  monthsOfSeniority: number;
+
   @Column({ default: true })
   isActive: boolean;
 

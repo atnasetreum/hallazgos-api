@@ -18,7 +18,10 @@ export class AtMechanismsService {
   }
 
   findAll() {
-    return `This action returns all atMechanisms`;
+    return this.atMechanismRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {

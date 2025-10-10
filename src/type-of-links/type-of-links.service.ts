@@ -18,7 +18,10 @@ export class TypeOfLinksService {
   }
 
   findAll() {
-    return `This action returns all typeOfLinks`;
+    return this.typeOfLinkRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {

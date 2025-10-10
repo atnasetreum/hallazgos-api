@@ -6,9 +6,10 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
-import { CreateMachineDto, UpdateMachineDto } from './dto';
+import { CreateMachineDto, FiltersMachineDto, UpdateMachineDto } from './dto';
 import { MachinesService } from './machines.service';
 
 @Controller('machines')
@@ -21,8 +22,8 @@ export class MachinesController {
   }
 
   @Get()
-  findAll() {
-    return this.machinesService.findAll();
+  findAll(@Query() filtersMachineDto: FiltersMachineDto) {
+    return this.machinesService.findAll(filtersMachineDto);
   }
 
   @Get(':id')

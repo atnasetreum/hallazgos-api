@@ -18,7 +18,10 @@ export class WorkingDaysService {
   }
 
   findAll() {
-    return `This action returns all workingDays`;
+    return this.workingDayRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {

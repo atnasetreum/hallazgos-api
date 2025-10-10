@@ -18,7 +18,10 @@ export class BodyPartsService {
   }
 
   findAll() {
-    return `This action returns all bodyParts`;
+    return this.bodyPartRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
   }
 
   findOne(id: number) {
