@@ -137,7 +137,13 @@ export class CiaelsService {
     private readonly countryRepository: Repository<Country>,
     @InjectRepository(Genre)
     private readonly genreRepository: Repository<Genre>,
-  ) {}
+  ) {
+    this.logger.log('CiaelsService initialized');
+    this.areaRepository;
+    this.atAgentRepository;
+    this.countryRepository;
+    this.genreRepository;
+  }
 
   async getPlantMx() {
     const manufacturingPlantMX = await this.manufacturingPlantRepository.find({
