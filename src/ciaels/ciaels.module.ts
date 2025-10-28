@@ -22,7 +22,7 @@ import { Zone } from 'zones/entities/zone.entity';
 import { Area } from 'areas/entities/area.entity';
 import { CiaelsService } from './ciaels.service';
 import { Ciael } from './entities/ciael.entity';
-import { Employee } from 'employees/entities';
+import { Employee, EmployeeArea } from 'employees/entities';
 import { Genre } from 'genres/entities/genre.entity';
 
 @Module({
@@ -49,6 +49,7 @@ import { Genre } from 'genres/entities/genre.entity';
       AtAgent,
       Country,
       Genre,
+      EmployeeArea,
     ]),
   ],
   controllers: [CiaelsController],
