@@ -1,6 +1,7 @@
 import {
   ArrayMinSize,
   IsArray,
+  IsBoolean,
   IsOptional,
   IsPositive,
   IsString,
@@ -20,4 +21,8 @@ export class QueryZoneDto {
   @IsString({ each: true })
   @ArrayMinSize(1)
   manufacturingPlantNames: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  withArea: boolean = false;
 }

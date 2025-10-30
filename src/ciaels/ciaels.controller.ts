@@ -53,12 +53,6 @@ export class CiaelsController {
       .then((workbook) => {
         const sheet = workbook.sheet('Registro');
 
-        /* sheet.cell('B4').value('NOMBRE DEL EMPLEADO: ' + epp.employee.name);
-        sheet.cell('E4').value('CÉDULA: ' + epp.employee.code);
-
-        sheet.cell('B5').value('CARGO: ' + epp.employee.position.name);
-        sheet.cell('E5').value('ÁREA: ' + epp.employee.area.name); */
-
         for (const [idx, ciael] of data.entries()) {
           const currentIdx = 9 + idx;
 
@@ -91,7 +85,9 @@ export class CiaelsController {
             );
           sheet.cell(`K${currentIdx}`).value(ciael.cieDiagnosis.name);
           sheet.cell(`L${currentIdx}`).value(ciael.daysOfDisability);
-          sheet.cell(`M${currentIdx}`).value(ciael.zone.area.name);
+          sheet
+            .cell(`M${currentIdx}`)
+            .value(ciael.zone.area?.name || 'Sin área asignada');
           sheet.cell(`N${currentIdx}`).value(ciael.accidentPosition.name);
           sheet.cell(`O${currentIdx}`).value(ciael.bodyPart.name);
           sheet.cell(`P${currentIdx}`).value(ciael.atAgent.name);

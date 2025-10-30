@@ -29,7 +29,7 @@ export class ZonesService {
   }
 
   async findAll(queryZoneDto: QueryZoneDto): Promise<Zone[]> {
-    const { name, manufacturingPlantId, manufacturingPlantNames } =
+    const { name, manufacturingPlantId, manufacturingPlantNames, withArea } =
       queryZoneDto;
 
     const manufacturingPlantIds = [];
@@ -54,6 +54,7 @@ export class ZonesService {
     return this.zoneRepository.find({
       where: {
         isActive: true,
+        ...(withArea && { area: { isActive: true } }),
         ...(name && { name: ILike(`%${name}%`) }),
         ...(manufacturingPlantIds.length
           ? {
