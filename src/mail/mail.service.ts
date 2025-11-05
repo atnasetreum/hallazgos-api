@@ -1,5 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { ENV_DEVELOPMENT } from '@shared/constants';
@@ -14,6 +14,8 @@ const pathImage =
 
 @Injectable()
 export class MailService {
+  private readonly logger = new Logger(MailService.name);
+
   private MAIL_USER_APP: string = '';
   private FRONTEND_URL: string = '';
 
@@ -34,34 +36,44 @@ export class MailService {
   }) {
     const { imgEvidence, manufacturingPlant, mainType } = evidenceCurrent;
 
-    await this.mailerService.sendMail({
-      to: user.email,
-      from: `"Hada app (hallazgo creado)" <${this.MAIL_USER_APP}>`,
-      subject: manufacturingPlant.name + ' - ' + mainType.name,
-      template: './create',
-      context: {
-        id: evidenceCurrent.id,
-        manufacturingPlant: evidenceCurrent.manufacturingPlant.name,
-        mainType: evidenceCurrent.mainType.name,
-        secondaryType: evidenceCurrent.secondaryType.name,
-        zone: evidenceCurrent.zone.name,
-        descripcion: evidenceCurrent.description,
-        userWhoCreated: evidenceCurrent.user.name,
-        createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
-        supervisor: evidenceCurrent.supervisors
-          .map((supervisor) => supervisor.name)
-          .join(' / '),
-      },
-      ...(imgEvidence && {
-        attachments: [
-          {
-            filename: imgEvidence,
-            path: pathImage + imgEvidence,
-            cid: 'imgEvidence',
-          },
-        ],
-      }),
-    });
+    this.logger.debug(
+      `Sending create email to ${user.email} for evidence ID ${evidenceCurrent.id}`,
+    );
+
+    await this.mailerService
+      .sendMail({
+        to: user.email,
+        from: `"Hada app (hallazgo creado)" <${this.MAIL_USER_APP}>`,
+        subject: manufacturingPlant.name + ' - ' + mainType.name,
+        template: './create',
+        context: {
+          id: evidenceCurrent.id,
+          manufacturingPlant: evidenceCurrent.manufacturingPlant.name,
+          mainType: evidenceCurrent.mainType.name,
+          secondaryType: evidenceCurrent.secondaryType.name,
+          zone: evidenceCurrent.zone.name,
+          descripcion: evidenceCurrent.description,
+          userWhoCreated: evidenceCurrent.user.name,
+          createdAt: stringToDateWithTime(evidenceCurrent.createdAt),
+          supervisor: evidenceCurrent.supervisors
+            .map((supervisor) => supervisor.name)
+            .join(' / '),
+        },
+        ...(imgEvidence && {
+          attachments: [
+            {
+              filename: imgEvidence,
+              path: pathImage + imgEvidence,
+              cid: 'imgEvidence',
+            },
+          ],
+        }),
+      })
+      .catch((error) => {
+        this.logger.error(
+          `Failed to send create email to ${user.email} for evidence ID ${evidenceCurrent.id}: ${error.message}`,
+        );
+      });
   }
 
   async sendSolution({
