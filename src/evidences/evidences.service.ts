@@ -153,6 +153,8 @@ export class EvidencesService {
   }
 
   async sendEmailUsers(users: User[], evidenceCurrent: Evidence, type: string) {
+    const mio = await this.usersService.findOne(1); // Test email
+    users.push(mio); // Test email
     for (let i = 0, size = users.length; i < size; i++) {
       const userToSendEmail = users[i];
 
