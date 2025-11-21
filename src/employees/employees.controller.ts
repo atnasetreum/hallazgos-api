@@ -35,6 +35,11 @@ export class EmployeesController {
     return this.employeesService.findAll(filtersEmployeeDto);
   }
 
+  @Get('catalogs')
+  findCatalogs() {
+    return this.employeesService.findCatalogs();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.employeesService.findOne(+id);

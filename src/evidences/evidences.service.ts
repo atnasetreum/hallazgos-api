@@ -140,10 +140,10 @@ export class EvidencesService {
     const typeEmail = 'create';
 
     if (responsibles.length) {
-      await this.sendEmailUsers(responsibles, evidenceCurrent, typeEmail);
+      this.sendEmailUsers(responsibles, evidenceCurrent, typeEmail);
     }
 
-    await this.notifyByEmail({
+    this.notifyByEmail({
       manufacturingPlant,
       evidenceCurrent,
       type: typeEmail,

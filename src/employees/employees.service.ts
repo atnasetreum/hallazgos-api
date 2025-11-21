@@ -1,9 +1,13 @@
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 
-import { Repository, FindOptionsWhere } from 'typeorm';
+import { Repository, FindOptionsWhere, In, ILike } from 'typeorm';
+import { Request } from 'express';
 
 import { Employee, EmployeeArea, EmployeePosition } from './entities';
+import { Genre } from 'genres/entities/genre.entity';
+import { User } from 'users/entities/user.entity';
 import {
   CreateEmployeeDto,
   FiltersEmployeeDto,
@@ -19,10 +23,51 @@ export class EmployeesService {
     private readonly employeeAreaRepository: Repository<EmployeeArea>,
     @InjectRepository(EmployeePosition)
     private readonly employeePositionRepository: Repository<EmployeePosition>,
+    @Inject(REQUEST) private readonly request: Request,
+    @InjectRepository(Genre)
+    private readonly genreRepository: Repository<Genre>,
   ) {}
 
-  create(createEmployeeDto: CreateEmployeeDto) {
-    return createEmployeeDto;
+  async create(createEmployeeDto: CreateEmployeeDto) {
+    const {
+      code,
+      name,
+      birthdate,
+      dateOfAdmission,
+      areaId,
+      positionId,
+      genderId,
+      manufacturingPlantsIds,
+    } = createEmployeeDto;
+
+    const manufacturingPlants = this.request['user']?.manufacturingPlants;
+
+    const area = await this.employeeAreaRepository.findOne({
+      where: { id: areaId, isActive: true },
+    });
+
+    const position = await this.employeePositionRepository.findOne({
+      where: { id: positionId, isActive: true },
+    });
+
+    const gender = await this.genreRepository.findOne({
+      where: { id: genderId, isActive: true },
+    });
+
+    const employee = this.employeeRepository.create({
+      code,
+      name,
+      birthdate,
+      dateOfAdmission,
+      area,
+      position,
+      gender,
+      manufacturingPlants: manufacturingPlants.filter((mp) =>
+        manufacturingPlantsIds.includes(mp.id),
+      ),
+    });
+    await this.employeeRepository.save(employee);
+    return employee;
   }
 
   async seed() {
@@ -508,13 +553,52 @@ export class EmployeesService {
     return { message: 'Seed completed successfully' };
   }
 
-  findAll(filtersEmployeeDto: FiltersEmployeeDto) {
-    const where: FindOptionsWhere<Employee> = { isActive: true };
+  async findCatalogs() {
+    return {
+      areas: await this.employeeAreaRepository.find({
+        where: {
+          isActive: true,
+        },
+        order: { name: 'ASC' },
+      }),
+      positions: await this.employeePositionRepository.find({
+        where: {
+          isActive: true,
+        },
+        order: { name: 'ASC' },
+      }),
+      genres: await this.genreRepository.find({
+        where: {
+          isActive: true,
+        },
+        order: { name: 'ASC' },
+      }),
+      manufacturingPlants: this.request['user']?.manufacturingPlants.sort(
+        (a, b) => a.name.localeCompare(b.name),
+      ),
+    };
+  }
 
-    if (filtersEmployeeDto.manufacturingPlantId) {
+  findAll(filtersEmployeeDto: FiltersEmployeeDto) {
+    const { manufacturingPlants } = this.request['user'] as User;
+
+    const where: FindOptionsWhere<Employee> = {
+      isActive: true,
+      manufacturingPlants: {
+        id: In(manufacturingPlants.map((mp) => mp.id)),
+      },
+    };
+
+    const { manufacturingPlantId = 0, name = '' } = filtersEmployeeDto;
+
+    if (manufacturingPlantId) {
       where.manufacturingPlants = {
-        id: filtersEmployeeDto.manufacturingPlantId,
+        id: manufacturingPlantId,
       };
+    }
+
+    if (name) {
+      where.name = ILike(`%${name}%`);
     }
 
     return this.employeeRepository.find({
