@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { REQUEST } from '@nestjs/core';
 
@@ -16,6 +16,13 @@ import {
 
 @Injectable()
 export class EmployeesService {
+  private readonly relations = [
+    'area',
+    'position',
+    'gender',
+    'manufacturingPlants',
+  ];
+
   constructor(
     @InjectRepository(Employee)
     private readonly employeeRepository: Repository<Employee>,
@@ -603,28 +610,83 @@ export class EmployeesService {
 
     return this.employeeRepository.find({
       where,
-      relations: ['area', 'position'],
+      relations: this.relations,
       order: {
         name: 'ASC',
       },
     });
   }
 
-  findOne(id: number) {
-    return this.employeeRepository.findOne({
+  async findOne(id: number) {
+    const employee = await this.employeeRepository.findOne({
       where: {
         id,
         isActive: true,
       },
-      relations: ['area', 'position'],
+      relations: this.relations,
     });
+
+    if (!employee) {
+      throw new NotFoundException(`Employee with id ${id} not found`);
+    }
+
+    return employee;
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return { id, updateEmployeeDto };
+  async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+    const employee = await this.findOne(id);
+
+    const {
+      code,
+      name,
+      birthdate,
+      dateOfAdmission,
+      areaId,
+      positionId,
+      genderId,
+      manufacturingPlantsIds,
+    } = updateEmployeeDto;
+
+    const manufacturingPlants = this.request['user']?.manufacturingPlants;
+
+    const area = await this.employeeAreaRepository.findOne({
+      where: { id: areaId, isActive: true },
+    });
+
+    const position = await this.employeePositionRepository.findOne({
+      where: { id: positionId, isActive: true },
+    });
+
+    const gender = await this.genreRepository.findOne({
+      where: { id: genderId, isActive: true },
+    });
+
+    console.log({
+      birthdate,
+    });
+
+    Object.assign(employee, {
+      code,
+      name,
+      birthdate,
+      dateOfAdmission,
+      area,
+      position,
+      gender,
+      manufacturingPlants: manufacturingPlants.filter((mp) =>
+        manufacturingPlantsIds.includes(mp.id),
+      ),
+    });
+
+    return this.employeeRepository.save({ ...employee });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} employee`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    return await this.employeeRepository.save({
+      id,
+      isActive: false,
+    });
   }
 }

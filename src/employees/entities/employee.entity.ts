@@ -34,7 +34,8 @@ export class Employee {
     type: 'date',
     transformer: {
       from: (value: string) => value ?? null,
-      to: (value: Date) => (value ? value.toISOString().slice(0, 10) : null),
+      to: (value: Date) =>
+        value ? new Date(value).toISOString().slice(0, 10) : null,
     },
   })
   birthdate: Date;
@@ -44,7 +45,8 @@ export class Employee {
     type: 'date',
     transformer: {
       from: (value: string) => value ?? null,
-      to: (value: Date) => (value ? value.toISOString().slice(0, 10) : null),
+      to: (value: Date) =>
+        value ? new Date(value).toISOString().slice(0, 10) : null,
     },
   })
   dateOfAdmission: Date;
