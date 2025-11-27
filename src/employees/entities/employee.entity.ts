@@ -15,6 +15,7 @@ import { EmployeeArea } from './employee-area.entity';
 import { Ciael } from 'ciaels/entities/ciael.entity';
 import { Genre } from 'genres/entities/genre.entity';
 import { Epp } from 'epps/entities/epp.entity';
+import { Ics } from 'ics/entities/ics.entity';
 
 @Entity()
 export class Employee {
@@ -80,4 +81,7 @@ export class Employee {
 
   @ManyToOne(() => Genre, (genre) => genre.employees)
   gender: Genre;
+
+  @ManyToMany(() => Ics, (ics) => ics.employees)
+  ics: Ics[];
 }

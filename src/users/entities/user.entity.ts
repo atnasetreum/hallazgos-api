@@ -20,6 +20,7 @@ import { Comment } from 'evidences/entities/comments.entity';
 import { Ciael } from 'ciaels/entities/ciael.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { Epp } from 'epps/entities/epp.entity';
+import { Ics } from 'ics/entities/ics.entity';
 
 @Entity()
 @ObjectType()
@@ -85,8 +86,8 @@ export class User {
   @Field(() => [Comment])
   comments: Comment[];
 
-  /*@ManyToOne(() => Evidence, (evidence) => evidence.supervisors)
-  assignedEvidence: Evidence;*/
+  @OneToMany(() => Ics, (ics) => ics.createdBy)
+  ics: Ics[];
 
   @OneToMany(() => Epp, (epp) => epp.createBy)
   epps: Epp[];

@@ -47,6 +47,8 @@ import { RiskFactorsModule } from './risk-factors/risk-factors.module';
 import { NatureOfEventsModule } from './nature-of-events/nature-of-events.module';
 import { CountriesModule } from './countries/countries.module';
 import { CiaelsModule } from './ciaels/ciaels.module';
+import { RulesOfLifeModule } from 'rules-of-life/rules-of-life.module';
+import { IcsModule } from './ics/ics.module';
 
 @Module({
   imports: [
@@ -146,6 +148,8 @@ import { CiaelsModule } from './ciaels/ciaels.module';
     NatureOfEventsModule,
     CountriesModule,
     CiaelsModule,
+    RulesOfLifeModule,
+    IcsModule,
   ],
   controllers: [],
   providers: [JwtService],

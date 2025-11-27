@@ -21,6 +21,7 @@ import { Machine } from 'machines/entities/machine.entity';
 import { Ciael } from 'ciaels/entities/ciael.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { Employee } from 'employees/entities';
+import { Ics } from 'ics/entities/ics.entity';
 @Entity()
 @ObjectType()
 export class ManufacturingPlant {
@@ -96,6 +97,9 @@ export class ManufacturingPlant {
 
   @OneToMany(() => Ciael, (ciael) => ciael.manufacturingPlant)
   ciaels: Ciael[];
+
+  @OneToMany(() => Ics, (ics) => ics.manufacturingPlant)
+  ics: Ics[];
 
   @ManyToMany(
     () => AssociatedTask,
