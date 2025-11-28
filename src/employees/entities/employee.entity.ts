@@ -23,13 +23,7 @@ export class Employee {
   id: number;
 
   @Column({
-    nullable: true,
     unique: true,
-  })
-  code2: number;
-
-  @Column({
-    nullable: true,
     type: 'bigint',
   })
   code: number;
