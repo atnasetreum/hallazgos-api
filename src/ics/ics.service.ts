@@ -56,12 +56,12 @@ export class IcsService {
       ruleOfLife: {
         id: ruleOfLifeId,
       },
-      standardOfBehavior: {
-        id: standardOfBehaviorId,
-      },
-      areaOfBehavior: {
-        id: areaOfBehaviorId,
-      },
+      ...(standardOfBehaviorId && {
+        standardOfBehavior: { id: standardOfBehaviorId },
+      }),
+      ...(areaOfBehaviorId && {
+        areaOfBehavior: { id: areaOfBehaviorId },
+      }),
       createdBy: {
         id: createdBy,
       },
@@ -76,6 +76,7 @@ export class IcsService {
   catalogs() {
     return this.rulesOfLifeRepository.find({
       relations: ['standards', 'standards.areas'],
+      order: { order: 'ASC' },
     });
   }
 
@@ -104,7 +105,13 @@ export class IcsService {
     return { id, updateIcDto };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ic`;
+  async remove(id: number) {
+    const ics = await this.findOne(id);
+    await this.icsRepository.update(id, {
+      isActive: false,
+      updatedAt: new Date(),
+    });
+
+    return ics;
   }
 }

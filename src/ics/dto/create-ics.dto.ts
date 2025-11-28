@@ -1,6 +1,5 @@
 import { Type } from 'class-transformer';
 import {
-  ArrayMinSize,
   ArrayNotEmpty,
   IsArray,
   IsNumber,
@@ -27,13 +26,14 @@ export class CreateIcsDto {
   @IsPositive()
   readonly ruleOfLifeId: number;
 
+  @IsOptional()
   @IsPositive()
-  readonly standardOfBehaviorId: number;
+  readonly standardOfBehaviorId?: number;
 
+  @IsOptional()
   @IsPositive()
-  readonly areaOfBehaviorId: number;
+  readonly areaOfBehaviorId?: number;
 
-  @ArrayMinSize(1)
   @IsArray()
   @ArrayNotEmpty()
   @IsNumber({}, { each: true })
