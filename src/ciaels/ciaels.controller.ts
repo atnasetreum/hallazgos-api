@@ -67,7 +67,7 @@ export class CiaelsController {
 
           sheet.cell(`A${currentIdx}`).value(ciael.typeOfEvent.name);
           sheet.cell(`B${currentIdx}`).value(ciael.description);
-          sheet.cell(`C${currentIdx}`).value(ciael.employee.code);
+          sheet.cell(`C${currentIdx}`).value(ciael.employee.code2);
           sheet.cell(`D${currentIdx}`).value(ciael.employee.name);
           sheet.cell(`E${currentIdx}`).value(ciael.employee.gender?.name || '');
           sheet.cell(`F${currentIdx}`).value(birthdate);

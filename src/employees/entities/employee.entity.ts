@@ -24,12 +24,6 @@ export class Employee {
 
   @Column({
     nullable: true,
-    unique: true,
-  })
-  code: number;
-
-  @Column({
-    nullable: true,
     type: 'bigint',
   })
   code2: number;
