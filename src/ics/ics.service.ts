@@ -34,7 +34,7 @@ export class IcsService {
     const {
       description,
       manufacturingPlantId,
-      numberPeopleObserved,
+      totalPeople,
       ruleOfLifeId,
       standardOfBehaviorId,
       areaOfBehaviorId,
@@ -47,11 +47,16 @@ export class IcsService {
       imgEvidence = file.filename;
     }
 
+    const totalIncorrectPeople = employeesIds.length;
+    const totalCorrectPeople = totalPeople - totalIncorrectPeople;
+
     return this.icsRepository.save({
       description,
-      numberPeopleObserved,
+      totalPeople,
+      totalCorrectPeople,
+      totalIncorrectPeople: totalIncorrectPeople,
       icsPercentage: Number(
-        ((employeesIds.length / numberPeopleObserved) * 100).toFixed(2),
+        ((totalCorrectPeople / totalPeople) * 100).toFixed(2),
       ),
       ruleOfLife: {
         id: ruleOfLifeId,

@@ -34,7 +34,13 @@ export class Ics {
   imgEvidence?: string;
 
   @Column()
-  numberPeopleObserved: number;
+  totalPeople: number;
+
+  @Column()
+  totalCorrectPeople: number;
+
+  @Column()
+  totalIncorrectPeople: number;
 
   @Column({ type: 'float' })
   icsPercentage: number;

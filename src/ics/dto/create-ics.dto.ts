@@ -18,7 +18,7 @@ export class CreateIcsDto {
   readonly imgEvidence?: string;
 
   @IsPositive()
-  readonly numberPeopleObserved: number;
+  readonly totalPeople: number;
 
   @IsPositive()
   readonly manufacturingPlantId: number;
