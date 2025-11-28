@@ -70,7 +70,7 @@ export class CiaelsService {
     isInside: true,
     monthsOfSeniority: true,
     employee: {
-      code2: true,
+      code: true,
       name: true,
       dateOfAdmission: true,
       gender: { name: true },

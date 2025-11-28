@@ -65,7 +65,7 @@ export class EmployeesService {
     });
 
     const employee = this.employeeRepository.create({
-      code2: code,
+      code,
       name,
       birthdate,
       dateOfAdmission,

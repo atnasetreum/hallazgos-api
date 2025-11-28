@@ -70,7 +70,7 @@ export class EppsController {
         const sheet = workbook.sheet('EPP Personas');
 
         sheet.cell('B4').value('NOMBRE DEL EMPLEADO: ' + epp.employee.name);
-        sheet.cell('E4').value('CÉDULA: ' + epp.employee.code2);
+        sheet.cell('E4').value('CÉDULA: ' + epp.employee.code);
 
         sheet.cell('B5').value('CARGO: ' + epp.employee.position.name);
         sheet.cell('E5').value('ÁREA: ' + epp.employee.area.name);
