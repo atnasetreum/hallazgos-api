@@ -26,13 +26,13 @@ export class Employee {
     nullable: true,
     unique: true,
   })
-  code: number;
+  code2: number;
 
   @Column({
     nullable: true,
     type: 'bigint',
   })
-  code2: number;
+  code: number;
 
   @Column()
   name: string;
