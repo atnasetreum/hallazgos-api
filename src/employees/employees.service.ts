@@ -22,6 +22,9 @@ export class EmployeesService {
     'position',
     'gender',
     'manufacturingPlants',
+    'trainingGuides',
+    'trainingGuides.evaluations',
+    'trainingGuides.position',
   ];
 
   constructor(
@@ -116,7 +119,12 @@ export class EmployeesService {
       },
     };
 
-    const { manufacturingPlantId = 0, name = '' } = filtersEmployeeDto;
+    const {
+      manufacturingPlantId = 0,
+      name = '',
+      positionId = 0,
+      assignedUserId = 0,
+    } = filtersEmployeeDto;
 
     if (manufacturingPlantId) {
       where.manufacturingPlants = {
@@ -124,8 +132,29 @@ export class EmployeesService {
       };
     }
 
+    if (positionId) {
+      where.position = {
+        id: positionId,
+      };
+    }
+
     if (name) {
       where.name = ILike(`%${name}%`);
+    }
+
+    if (assignedUserId) {
+      where.trainingGuides = [
+        {
+          humanResourceManager: {
+            id: assignedUserId,
+          },
+        },
+        {
+          areaManager: {
+            id: assignedUserId,
+          },
+        },
+      ];
     }
 
     return this.employeeRepository.find({

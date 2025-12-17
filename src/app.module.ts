@@ -49,6 +49,7 @@ import { CountriesModule } from './countries/countries.module';
 import { CiaelsModule } from './ciaels/ciaels.module';
 import { RulesOfLifeModule } from 'rules-of-life/rules-of-life.module';
 import { IcsModule } from './ics/ics.module';
+import { TrainingGuidesModule } from './training-guides/training-guides.module';
 
 @Module({
   imports: [
@@ -150,6 +151,7 @@ import { IcsModule } from './ics/ics.module';
     CiaelsModule,
     RulesOfLifeModule,
     IcsModule,
+    TrainingGuidesModule,
   ],
   controllers: [],
   providers: [JwtService],

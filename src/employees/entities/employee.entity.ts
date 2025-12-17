@@ -10,6 +10,8 @@ import {
 } from 'typeorm';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
+import { TrainingGuideTopic } from 'training-guides/entities/training-guide-topic.entity';
+import { TrainingGuideEmployee } from 'training-guides/entities';
 import { EmployeePosition } from './employee-position.entity';
 import { EmployeeArea } from './employee-area.entity';
 import { Ciael } from 'ciaels/entities/ciael.entity';
@@ -85,4 +87,16 @@ export class Employee {
 
   @ManyToMany(() => Ics, (ics) => ics.employees)
   ics: Ics[];
+
+  @ManyToMany(
+    () => TrainingGuideTopic,
+    (trainingGuideTopic) => trainingGuideTopic.responsibles,
+  )
+  trainingGuideTopics: TrainingGuideTopic[];
+
+  @OneToMany(
+    () => TrainingGuideEmployee,
+    (trainingGuideEmployee) => trainingGuideEmployee.user,
+  )
+  trainingGuides: TrainingGuideEmployee[];
 }

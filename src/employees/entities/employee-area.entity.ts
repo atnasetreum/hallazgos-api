@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Employee } from './employee.entity';
+import { TrainingGuideEmployee } from 'training-guides/entities';
 
 @Entity()
 export class EmployeeArea {
@@ -27,4 +28,10 @@ export class EmployeeArea {
 
   @OneToMany(() => Employee, (employee) => employee.area)
   employees: Employee[];
+
+  @OneToMany(
+    () => TrainingGuideEmployee,
+    (trainingGuideEmployee) => trainingGuideEmployee.area,
+  )
+  trainingGuideEmployees: TrainingGuideEmployee[];
 }

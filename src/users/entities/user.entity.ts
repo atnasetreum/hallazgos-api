@@ -14,6 +14,8 @@ import {
 } from 'typeorm';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
+import { TrainingGuide } from 'training-guides/entities/training-guide.entity';
+import { TrainingGuideEmployee } from 'training-guides/entities';
 import { Processes } from 'processes/entities/processes.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Comment } from 'evidences/entities/comments.entity';
@@ -92,6 +94,15 @@ export class User {
   @OneToMany(() => Epp, (epp) => epp.createBy)
   epps: Epp[];
 
+  @OneToMany(() => TrainingGuide, (trainingGuide) => trainingGuide.areaManager)
+  areaTg: TrainingGuide[];
+
+  @OneToMany(
+    () => TrainingGuide,
+    (trainingGuide) => trainingGuide.humanResourceManager,
+  )
+  humanResourceTg: TrainingGuide[];
+
   @OneToMany(() => Ciael, (ciael) => ciael.createdBy)
   ciaels: Ciael[];
 
@@ -100,6 +111,18 @@ export class User {
 
   @OneToMany(() => Ciael, (ciael) => ciael.areaLeader)
   ciaelsAreaManager: Ciael[];
+
+  @OneToMany(
+    () => TrainingGuideEmployee,
+    (trainingGuide) => trainingGuide.areaManager,
+  )
+  areaTge: TrainingGuideEmployee[];
+
+  @OneToMany(
+    () => TrainingGuideEmployee,
+    (trainingGuide) => trainingGuide.humanResourceManager,
+  )
+  humanResourceTge: TrainingGuideEmployee[];
 
   @BeforeInsert()
   async hashPassword() {
