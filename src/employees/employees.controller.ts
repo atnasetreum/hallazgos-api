@@ -40,6 +40,11 @@ export class EmployeesController {
     return this.employeesService.findCatalogs();
   }
 
+  @Get('positions')
+  findPositions() {
+    return this.employeesService.findPositions();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.employeesService.findOne(+id);

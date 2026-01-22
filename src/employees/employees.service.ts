@@ -22,9 +22,6 @@ export class EmployeesService {
     'position',
     'gender',
     'manufacturingPlants',
-    'trainingGuides',
-    'trainingGuides.evaluations',
-    'trainingGuides.position',
   ];
 
   constructor(
@@ -40,6 +37,33 @@ export class EmployeesService {
     @InjectRepository(Genre)
     private readonly genreRepository: Repository<Genre>,
   ) {}
+
+  get areas() {
+    return this.employeeAreaRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
+  }
+
+  get positions() {
+    return this.employeePositionRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
+  }
+
+  get genres() {
+    return this.genreRepository.find({
+      where: { isActive: true },
+      order: { name: 'ASC' },
+    });
+  }
+
+  get manufacturingPlants() {
+    return this.request['user']?.manufacturingPlants.sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+  }
 
   async create(createEmployeeDto: CreateEmployeeDto) {
     const {
@@ -85,28 +109,15 @@ export class EmployeesService {
 
   async findCatalogs() {
     return {
-      areas: await this.employeeAreaRepository.find({
-        where: {
-          isActive: true,
-        },
-        order: { name: 'ASC' },
-      }),
-      positions: await this.employeePositionRepository.find({
-        where: {
-          isActive: true,
-        },
-        order: { name: 'ASC' },
-      }),
-      genres: await this.genreRepository.find({
-        where: {
-          isActive: true,
-        },
-        order: { name: 'ASC' },
-      }),
-      manufacturingPlants: this.request['user']?.manufacturingPlants.sort(
-        (a, b) => a.name.localeCompare(b.name),
-      ),
+      areas: await this.areas,
+      positions: await this.positions,
+      genres: await this.genres,
+      manufacturingPlants: this.manufacturingPlants,
     };
+  }
+
+  findPositions() {
+    return this.positions;
   }
 
   findAll(filtersEmployeeDto: FiltersEmployeeDto) {
@@ -123,7 +134,7 @@ export class EmployeesService {
       manufacturingPlantId = 0,
       name = '',
       positionId = 0,
-      assignedUserId = 0,
+      /* assignedUserId = 0, */
     } = filtersEmployeeDto;
 
     if (manufacturingPlantId) {
@@ -142,7 +153,7 @@ export class EmployeesService {
       where.name = ILike(`%${name}%`);
     }
 
-    if (assignedUserId) {
+    /* if (assignedUserId) {
       where.trainingGuides = [
         {
           humanResourceManager: {
@@ -155,7 +166,7 @@ export class EmployeesService {
           },
         },
       ];
-    }
+    } */
 
     return this.employeeRepository.find({
       where,

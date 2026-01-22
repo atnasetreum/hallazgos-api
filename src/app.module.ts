@@ -49,7 +49,8 @@ import { CountriesModule } from './countries/countries.module';
 import { CiaelsModule } from './ciaels/ciaels.module';
 import { RulesOfLifeModule } from 'rules-of-life/rules-of-life.module';
 import { IcsModule } from './ics/ics.module';
-import { TrainingGuidesModule } from './training-guides/training-guides.module';
+import { TopicsModule } from './topics/topics.module';
+import { ConfigsTgModule } from './configs-tg/configs-tg.module';
 
 @Module({
   imports: [
@@ -151,7 +152,8 @@ import { TrainingGuidesModule } from './training-guides/training-guides.module';
     CiaelsModule,
     RulesOfLifeModule,
     IcsModule,
-    TrainingGuidesModule,
+    TopicsModule,
+    ConfigsTgModule,
   ],
   controllers: [],
   providers: [JwtService],

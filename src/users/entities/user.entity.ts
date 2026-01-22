@@ -14,11 +14,11 @@ import {
 } from 'typeorm';
 
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
-import { TrainingGuide } from 'training-guides/entities/training-guide.entity';
-import { TrainingGuideEmployee } from 'training-guides/entities';
+import { ConfigsTg } from 'configs-tg/entities/configs-tg.entity';
 import { Processes } from 'processes/entities/processes.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Comment } from 'evidences/entities/comments.entity';
+import { Topic } from 'topics/entities/topic.entity';
 import { Ciael } from 'ciaels/entities/ciael.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { Epp } from 'epps/entities/epp.entity';
@@ -94,14 +94,23 @@ export class User {
   @OneToMany(() => Epp, (epp) => epp.createBy)
   epps: Epp[];
 
-  @OneToMany(() => TrainingGuide, (trainingGuide) => trainingGuide.areaManager)
-  areaTg: TrainingGuide[];
+  @OneToMany(() => Topic, (topic) => topic.createdBy)
+  topicsCreated: Topic[];
 
-  @OneToMany(
-    () => TrainingGuide,
-    (trainingGuide) => trainingGuide.humanResourceManager,
-  )
-  humanResourceTg: TrainingGuide[];
+  @OneToMany(() => Topic, (topic) => topic.updatedBy)
+  topicsUpdated: Topic[];
+
+  @OneToMany(() => ConfigsTg, (configsTg) => configsTg.createdBy)
+  configTgCreated: ConfigsTg[];
+
+  @OneToMany(() => ConfigsTg, (configsTg) => configsTg.updatedBy)
+  configTgUpdated: ConfigsTg[];
+
+  @OneToMany(() => ConfigsTg, (configsTg) => configsTg.areaManager)
+  areaTg: ConfigsTg[];
+
+  @OneToMany(() => ConfigsTg, (configsTg) => configsTg.humanResourceManager)
+  humanResourceTg: ConfigsTg[];
 
   @OneToMany(() => Ciael, (ciael) => ciael.createdBy)
   ciaels: Ciael[];
@@ -111,18 +120,6 @@ export class User {
 
   @OneToMany(() => Ciael, (ciael) => ciael.areaLeader)
   ciaelsAreaManager: Ciael[];
-
-  @OneToMany(
-    () => TrainingGuideEmployee,
-    (trainingGuide) => trainingGuide.areaManager,
-  )
-  areaTge: TrainingGuideEmployee[];
-
-  @OneToMany(
-    () => TrainingGuideEmployee,
-    (trainingGuide) => trainingGuide.humanResourceManager,
-  )
-  humanResourceTge: TrainingGuideEmployee[];
 
   @BeforeInsert()
   async hashPassword() {
