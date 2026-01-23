@@ -12,12 +12,12 @@ import { Request } from 'express';
 
 import { ConfigsTg } from './entities/configs-tg.entity';
 import { User } from 'users/entities/user.entity';
+import { ConfigsTopicTg } from './entities';
 import {
   CreateConfigsTgDto,
   QueryConfigsTgDto,
   UpdateConfigsTgDto,
 } from './dto';
-import { ConfigsTopicTg } from './entities';
 
 @Injectable()
 export class ConfigsTgService {
@@ -63,6 +63,8 @@ export class ConfigsTgService {
     @Inject(REQUEST) private readonly request: Request,
     @InjectRepository(ConfigsTg)
     private readonly configsTgRepository: Repository<ConfigsTg>,
+    @InjectRepository(ConfigsTopicTg)
+    private readonly configsTopicTgRepository: Repository<ConfigsTopicTg>,
   ) {}
 
   async create(createConfigsTgDto: CreateConfigsTgDto) {
@@ -75,8 +77,6 @@ export class ConfigsTgService {
       topics,
       manufacturingPlantId,
     } = createConfigsTgDto;
-
-    topics;
 
     try {
       const configNew = this.configsTgRepository.create({
@@ -155,11 +155,10 @@ export class ConfigsTgService {
       areaManagerId,
       humanResourceManagerId,
       manufacturingPlantId,
-      ...data
+      topics,
     } = updateConfigsTgDto;
 
     Object.assign(config, {
-      ...data,
       ...(positionId && { position: { id: positionId } }),
       ...(areaManagerId && { areaManager: { id: areaManagerId } }),
       ...(humanResourceManagerId && {
@@ -168,13 +167,31 @@ export class ConfigsTgService {
       ...(manufacturingPlantId && {
         manufacturingPlant: { id: manufacturingPlantId },
       }),
+      topics: [],
       updatedBy,
       updatedAt: new Date(),
     });
 
     try {
       await this.configsTgRepository.save(config);
-      return this.findOne(id);
+
+      await this.configsTopicTgRepository.delete({
+        configTg: { id: config.id },
+      });
+
+      config.topics = topics.map((topicDto, idx) => {
+        return {
+          order: idx + 1,
+          topic: { id: topicDto.id },
+          responsibles: topicDto.responsibleIds.map((responsibleId) => ({
+            id: responsibleId,
+          })),
+        } as ConfigsTopicTg;
+      });
+
+      await this.configsTgRepository.save(config);
+
+      return this.findOne(config.id);
     } catch (error) {
       throw new Error(error);
     }
