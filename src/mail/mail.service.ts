@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { ENV_DEVELOPMENT } from '@shared/constants';
 import { durantionToTime, stringToDateWithTime } from '@shared/utils';
 import { Evidence } from 'evidences/entities/evidence.entity';
+import { TrainingGuide } from 'training-guides/entities';
 import { User } from 'users/entities/user.entity';
 
 const pathImage =
@@ -181,6 +182,19 @@ export class MailService {
       context: {
         token,
         resetLink: `${this.FRONTEND_URL}?token=${token}`,
+      },
+    });
+  }
+
+  async sendPendingTrainingGuide(trainingGuide: TrainingGuide, email: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      from: `"Hada app (Guía de entrenamiento pendiente)" <${this.MAIL_USER_APP}>`,
+      subject: 'Guía de entrenamiento pendiente',
+      template: './pending-training-guide',
+      context: {
+        ...trainingGuide,
+        link: `${this.FRONTEND_URL}/training-guide?employee=${trainingGuide.employee.name}`,
       },
     });
   }

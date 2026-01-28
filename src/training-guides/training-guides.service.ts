@@ -20,6 +20,8 @@ import {
   SignatureDto,
   UpdateTrainingGuideDto,
 } from './dto';
+import { MailService } from 'mail/mail.service';
+import { ENV_DEVELOPMENT } from '@shared/constants';
 
 @Injectable()
 export class TrainingGuidesService {
@@ -42,6 +44,7 @@ export class TrainingGuidesService {
     private readonly configsTgRepository: Repository<ConfigsTg>,
     private readonly configsTgService: ConfigsTgService,
     private readonly employeesService: EmployeesService,
+    private readonly mailService: MailService,
   ) {}
 
   async previousTopics(employeeId: number) {
@@ -235,12 +238,12 @@ export class TrainingGuidesService {
 
     userId;
 
-    await this.findOne(id);
+    const trainingGuideRow = await this.findOne(id);
 
     const whereDefault = { id, isActive: true };
 
     switch (type) {
-      case 'user':
+      case 'employee':
         await this.trainingGuideRepository.update(
           { id, isActive: true },
           {
@@ -248,6 +251,29 @@ export class TrainingGuidesService {
             signatureEmployeeDate: new Date(),
           },
         );
+
+        const { areaManager, humanResourceManager } = await this.findOne(id);
+
+        if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+          this.mailService.sendPendingTrainingGuide(
+            trainingGuideRow,
+            'eduardo-266@hotmail.com',
+          );
+        } else {
+          this.mailService.sendPendingTrainingGuide(
+            trainingGuideRow,
+            'ggarcia@hadamexico.com',
+          );
+          this.mailService.sendPendingTrainingGuide(
+            trainingGuideRow,
+            areaManager.email,
+          );
+          this.mailService.sendPendingTrainingGuide(
+            trainingGuideRow,
+            humanResourceManager.email,
+          );
+        }
+
         break;
       case 'areaManager':
         await this.trainingGuideRepository.update(whereDefault, {
