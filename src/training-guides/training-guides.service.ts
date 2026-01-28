@@ -210,7 +210,7 @@ export class TrainingGuidesService {
           },
         );
 
-        const { areaManager, humanResourceManager } = await this.findOne(id);
+        //const { areaManager, humanResourceManager } = trainingGuideRow
 
         if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
           this.mailService.sendPendingTrainingGuide(
@@ -222,14 +222,14 @@ export class TrainingGuidesService {
             trainingGuideRow,
             'ggarcia@hadamexico.com',
           );
-          this.mailService.sendPendingTrainingGuide(
+          /* this.mailService.sendPendingTrainingGuide(
             trainingGuideRow,
             areaManager.email,
           );
           this.mailService.sendPendingTrainingGuide(
             trainingGuideRow,
             humanResourceManager.email,
-          );
+          ); */
         }
 
         break;
