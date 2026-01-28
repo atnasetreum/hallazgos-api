@@ -235,10 +235,6 @@ export class EmployeesService {
       where: { id: genderId, isActive: true },
     });
 
-    console.log({
-      birthdate,
-    });
-
     Object.assign(employee, {
       code,
       name,

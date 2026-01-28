@@ -47,18 +47,6 @@ export class TrainingGuidesService {
     private readonly mailService: MailService,
   ) {}
 
-  async previousTopics(employeeId: number) {
-    const previousGuides = await this.trainingGuideRepository.find({
-      where: {
-        employee: { id: employeeId },
-        isActive: true,
-      },
-      relations: this.relations,
-    });
-
-    return previousGuides;
-  }
-
   async create(createTrainingGuideDto: CreateTrainingGuideDto) {
     const createdBy = this.request['user'] as User;
 
@@ -78,37 +66,7 @@ export class TrainingGuidesService {
         manufacturingPlantId,
       );
 
-    let previousTopics = await this.previousTopics(employeeId);
-
-    let currentEvaluations = [];
-
-    if (previousTopics.length) {
-      const topicsRequiredIds = configTg.topics.map((topic) => topic.topic.id);
-
-      previousTopics = previousTopics.filter((tg) =>
-        tg.evaluations.some((ev) => topicsRequiredIds.includes(ev.topic.id)),
-      );
-
-      currentEvaluations = previousTopics
-        .map((tg) => tg.evaluations)
-        .flat()
-        .map((ev) => {
-          return {
-            topicId: ev.topic.id,
-            date: ev.evaluationDate,
-            evaluation: ev.evaluationValue,
-            observations: ev.observations,
-          };
-        });
-
-      const evaluationTopicIds = evaluations.map((ev) => ev.topicId);
-
-      currentEvaluations = currentEvaluations.filter(
-        (ev) => !evaluationTopicIds.includes(ev.topicId),
-      );
-    } else {
-      currentEvaluations = evaluations;
-    }
+    let currentEvaluations = evaluations;
 
     const totalTopics = configTg.topics.length + 3;
     const completedTopics = currentEvaluations.filter(
