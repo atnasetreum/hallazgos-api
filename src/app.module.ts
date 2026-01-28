@@ -51,6 +51,7 @@ import { RulesOfLifeModule } from 'rules-of-life/rules-of-life.module';
 import { IcsModule } from './ics/ics.module';
 import { TopicsModule } from './topics/topics.module';
 import { ConfigsTgModule } from './configs-tg/configs-tg.module';
+import { TrainingGuidesModule } from './training-guides/training-guides.module';
 
 @Module({
   imports: [
@@ -154,6 +155,7 @@ import { ConfigsTgModule } from './configs-tg/configs-tg.module';
     IcsModule,
     TopicsModule,
     ConfigsTgModule,
+    TrainingGuidesModule,
   ],
   controllers: [],
   providers: [JwtService],

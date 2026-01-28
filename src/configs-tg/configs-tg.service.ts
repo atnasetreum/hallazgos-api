@@ -87,9 +87,9 @@ export class ConfigsTgService {
         createdBy,
         createdAt: new Date(),
         updatedAt: new Date(),
-        topics: topics.map((topicDto, index) => {
+        topics: topics.map((topicDto, idx) => {
           return {
-            order: index + 1,
+            order: idx + 1,
             topic: { id: topicDto.id },
             responsibles: topicDto.responsibleIds.map((responsibleId) => ({
               id: responsibleId,
@@ -140,6 +140,30 @@ export class ConfigsTgService {
 
     if (!config) {
       throw new NotFoundException(`Config with id ${id} not found`);
+    }
+
+    return config;
+  }
+
+  async findByPositionAndManufacturingPlant(
+    positionId: number,
+    manufacturingPlantId: number,
+  ) {
+    const where: FindOptionsWhere<ConfigsTg> = {
+      position: { id: positionId },
+      manufacturingPlant: { id: manufacturingPlantId },
+      ...this.where,
+    };
+
+    const config = await this.configsTgRepository.findOne({
+      ...this.optionsDefault,
+      where,
+    });
+
+    if (!config) {
+      throw new NotFoundException(
+        `Configuration for position id ${positionId} and manufacturing plant id ${manufacturingPlantId} not found`,
+      );
     }
 
     return config;

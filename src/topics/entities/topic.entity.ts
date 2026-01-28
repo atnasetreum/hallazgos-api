@@ -12,6 +12,7 @@ import {
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { ConfigsTopicTg } from 'configs-tg/entities';
 import { User } from 'users/entities/user.entity';
+import { TrainingGuideEvaluation } from 'training-guides/entities';
 
 export enum TypesOfEvaluations {
   BOOLEAN = 'BOOLEAN',
@@ -61,4 +62,10 @@ export class Topic {
 
   @OneToMany(() => ConfigsTopicTg, (configsTopicTg) => configsTopicTg.topic)
   configs: ConfigsTopicTg[];
+
+  @OneToMany(
+    () => TrainingGuideEvaluation,
+    (trainingGuideEvaluation) => trainingGuideEvaluation.topic,
+  )
+  evaluations: TrainingGuideEvaluation[];
 }

@@ -22,6 +22,10 @@ export class EmployeesService {
     'position',
     'gender',
     'manufacturingPlants',
+    'trainingGuides',
+    'trainingGuides.position',
+    'trainingGuides.evaluations',
+    'trainingGuides.evaluations.topic',
   ];
 
   constructor(
@@ -134,7 +138,7 @@ export class EmployeesService {
       manufacturingPlantId = 0,
       name = '',
       positionId = 0,
-      /* assignedUserId = 0, */
+      assignedUserId = 0,
     } = filtersEmployeeDto;
 
     if (manufacturingPlantId) {
@@ -153,7 +157,7 @@ export class EmployeesService {
       where.name = ILike(`%${name}%`);
     }
 
-    /* if (assignedUserId) {
+    if (assignedUserId) {
       where.trainingGuides = [
         {
           humanResourceManager: {
@@ -166,7 +170,7 @@ export class EmployeesService {
           },
         },
       ];
-    } */
+    }
 
     return this.employeeRepository.find({
       where,
@@ -191,6 +195,16 @@ export class EmployeesService {
     }
 
     return employee;
+  }
+
+  async findPositionById(positionId: number) {
+    const position = await this.employeePositionRepository.findOne({
+      where: { id: positionId, isActive: true },
+    });
+    if (!position) {
+      throw new NotFoundException(`Position with id ${positionId} not found`);
+    }
+    return position;
   }
 
   async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {

@@ -17,6 +17,7 @@ import { Genre } from 'genres/entities/genre.entity';
 import { ConfigsTopicTg } from 'configs-tg/entities';
 import { Epp } from 'epps/entities/epp.entity';
 import { Ics } from 'ics/entities/ics.entity';
+import { TrainingGuide } from 'training-guides/entities/training-guide.entity';
 
 @Entity()
 export class Employee {
@@ -92,4 +93,7 @@ export class Employee {
     (configsTopicTg) => configsTopicTg.responsibles,
   )
   configsTopicTg: ConfigsTopicTg[];
+
+  @OneToMany(() => TrainingGuide, (trainingGuide) => trainingGuide.employee)
+  trainingGuides: TrainingGuide[];
 }

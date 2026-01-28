@@ -23,6 +23,7 @@ import { Ciael } from 'ciaels/entities/ciael.entity';
 import { Zone } from 'zones/entities/zone.entity';
 import { Epp } from 'epps/entities/epp.entity';
 import { Ics } from 'ics/entities/ics.entity';
+import { TrainingGuide } from 'training-guides/entities';
 
 @Entity()
 @ObjectType()
@@ -120,6 +121,15 @@ export class User {
 
   @OneToMany(() => Ciael, (ciael) => ciael.areaLeader)
   ciaelsAreaManager: Ciael[];
+
+  @OneToMany(() => TrainingGuide, (trainingGuide) => trainingGuide.areaManager)
+  trainingGuidesAreaManager: TrainingGuide[];
+
+  @OneToMany(
+    () => TrainingGuide,
+    (trainingGuide) => trainingGuide.humanResourceManager,
+  )
+  trainingGuidesHumanResourceManager: TrainingGuide[];
 
   @BeforeInsert()
   async hashPassword() {

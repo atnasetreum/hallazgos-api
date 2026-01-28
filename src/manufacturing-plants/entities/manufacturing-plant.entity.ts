@@ -18,6 +18,7 @@ import { Processes } from 'processes/entities/processes.entity';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { Country } from 'countries/entities/country.entity';
 import { Machine } from 'machines/entities/machine.entity';
+import { TrainingGuide } from 'training-guides/entities';
 import { Topic } from 'topics/entities/topic.entity';
 import { Ciael } from 'ciaels/entities/ciael.entity';
 import { Zone } from 'zones/entities/zone.entity';
@@ -120,4 +121,10 @@ export class ManufacturingPlant {
 
   @OneToMany(() => ConfigsTg, (ciael) => ciael.manufacturingPlant)
   configsTg: ConfigsTg[];
+
+  @OneToMany(
+    () => TrainingGuide,
+    (trainingGuide) => trainingGuide.manufacturingPlant,
+  )
+  trainingGuides: TrainingGuide[];
 }
