@@ -51,6 +51,8 @@ export class EppsService {
       employee,
       signature,
       createBy,
+      creationDate: new Date(),
+      updatedAt: new Date(),
     });
 
     for (const equipment of equipments) {
@@ -70,6 +72,8 @@ export class EppsService {
         observations: equipment.observations,
         equipment: currentEquipment,
         epp,
+        creationDate: new Date(),
+        updatedAt: new Date(),
       });
     }
 
