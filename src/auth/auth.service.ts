@@ -13,7 +13,7 @@ import { Repository } from 'typeorm';
 import * as argon2 from 'argon2';
 import { Request } from 'express';
 
-import { ENV_PRODUCTION } from '@shared/constants';
+import { ENV_DEVELOPMENT, ENV_PRODUCTION } from '@shared/constants';
 import { User } from 'users/entities/user.entity';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from './jwt.service';
@@ -153,6 +153,11 @@ export class AuthService {
       throw new NotFoundException(`Usuario con email ${email} no encontrado`);
     }
     const token = this.jwtService.create(user.id, true);
+
+    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+      email = 'eduardo-266@hotmail.com';
+    }
+
     await this.mailService.sendForgotPassword(email, token);
 
     return {

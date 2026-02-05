@@ -8,7 +8,7 @@ import * as argon2 from 'argon2';
 
 import { CreateUserDto, QueryUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
-import { ENV_DEVELOPMENT, ROLE_SUPERVISOR } from '@shared/constants';
+import { ROLE_SUPERVISOR } from '@shared/constants';
 import { ManufacturingPlantsService } from 'manufacturing-plants/manufacturing-plants.service';
 import { ZonesService } from 'zones/zones.service';
 import { ProcessesService } from 'processes/processes.service';
@@ -96,18 +96,6 @@ export class UsersService {
   }
 
   findAllByPlant(plantId: number): Promise<User[]> {
-    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
-      return this.userRepository.find({
-        where: {
-          email: 'eduardo-266@hotmail.com',
-          isActive: true,
-          manufacturingPlants: {
-            id: plantId,
-          },
-        },
-      });
-    }
-
     if (plantId === 3) {
       return this.userRepository.find({
         where: {

@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  db:
+  db-hallazgos:
     env_file:
       - .env.development
     image: postgres:14.3

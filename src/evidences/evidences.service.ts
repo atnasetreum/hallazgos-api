@@ -15,7 +15,12 @@ import { Request, Response } from 'express';
 import { ManufacturingPlantsService } from 'manufacturing-plants/manufacturing-plants.service';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { SecondaryTypesService } from 'secondary-types/secondary-types.service';
-import { STATUS_CANCEL, STATUS_CLOSE, STATUS_OPEN } from '@shared/constants';
+import {
+  ENV_DEVELOPMENT,
+  STATUS_CANCEL,
+  STATUS_CLOSE,
+  STATUS_OPEN,
+} from '@shared/constants';
 import { MainTypesService } from 'main-types/main-types.service';
 import { ProcessesService } from 'processes/processes.service';
 import { Evidence } from './entities/evidence.entity';
@@ -103,7 +108,7 @@ export class EvidencesService {
     const user = await this.usersService.findOne(userId);
 
     const supervisors = await this.usersService.findSupervisor({
-      manufacturingPlantId: manufacturingPlant.id,
+      manufacturingPlantId,
       zoneId: zone,
       supervisorId: supervisor,
     });
@@ -114,10 +119,19 @@ export class EvidencesService {
       );
 
     const responsibles = await this.usersService.findProcesses({
-      manufacturingPlantId: manufacturingPlant.id,
+      manufacturingPlantId,
       processId: process,
       supervisorId: supervisor,
     });
+
+    const colombianIds = [4, 3, 6, 5];
+
+    const getColombiaNow = () => {
+      const now = new Date();
+      return new Date(
+        now.toLocaleString('en-US', { timeZone: 'America/Bogota' }),
+      );
+    };
 
     const evidenceCurrent = await this.evidenceRepository.save(
       this.evidenceRepository.create({
@@ -131,8 +145,12 @@ export class EvidencesService {
         supervisors,
         responsibles,
         status: STATUS_OPEN,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: colombianIds.includes(manufacturingPlantId)
+          ? getColombiaNow()
+          : new Date(),
+        updatedAt: colombianIds.includes(manufacturingPlantId)
+          ? getColombiaNow()
+          : new Date(),
         description: description || '',
       }),
     );
@@ -153,8 +171,11 @@ export class EvidencesService {
   }
 
   async sendEmailUsers(users: User[], evidenceCurrent: Evidence, type: string) {
-    //const mio = await this.usersService.findOne(1); // Test email
-    //users.push(mio); // Test email
+    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+      const mio = await this.usersService.findOne(1);
+      users = [mio];
+    }
+
     for (let i = 0, size = users.length; i < size; i++) {
       const userToSendEmail = users[i];
 

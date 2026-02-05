@@ -2,10 +2,10 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { ENV_DEVELOPMENT } from '@shared/constants';
 import { durantionToTime, stringToDateWithTime } from '@shared/utils';
 import { Evidence } from 'evidences/entities/evidence.entity';
 import { TrainingGuide } from 'training-guides/entities';
+import { ENV_DEVELOPMENT } from '@shared/constants';
 import { User } from 'users/entities/user.entity';
 
 const pathImage =
@@ -28,6 +28,13 @@ export class MailService {
     this.FRONTEND_URL = this.configService.get<string>('frontendUrl');
   }
 
+  get emailTest() {
+    if (process.env.NODE_ENV === ENV_DEVELOPMENT) {
+      return 'eduardo-266@hotmail.com';
+    }
+    return '';
+  }
+
   async sendCreate({
     user,
     evidenceCurrent,
@@ -43,7 +50,7 @@ export class MailService {
 
     await this.mailerService
       .sendMail({
-        to: user.email,
+        to: this.emailTest ?? user.email,
         from: `"Hada app (hallazgo creado)" <${this.MAIL_USER_APP}>`,
         subject: manufacturingPlant.name + ' - ' + mainType.name,
         template: './create',
@@ -107,7 +114,7 @@ export class MailService {
     }
 
     await this.mailerService.sendMail({
-      to: user.email,
+      to: this.emailTest ?? user.email,
       from: `"Hada app (hallazgo solucionado)" <${this.MAIL_USER_APP}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
       template: './solution',
@@ -144,7 +151,7 @@ export class MailService {
     const { imgEvidence, manufacturingPlant, mainType } = evidenceCurrent;
 
     await this.mailerService.sendMail({
-      to: user.email,
+      to: this.emailTest ?? user.email,
       from: `"Hada app (hallazgo cancelado)" <${this.MAIL_USER_APP}>`,
       subject: manufacturingPlant.name + ' - ' + mainType.name,
       template: './cancel',
@@ -175,7 +182,7 @@ export class MailService {
 
   async sendForgotPassword(email: string, token: string) {
     await this.mailerService.sendMail({
-      to: email,
+      to: this.emailTest ?? email,
       from: `"Hada app (restablecimiento de contraseña)" <${this.MAIL_USER_APP}>`,
       subject: 'Restablecimiento de contraseña',
       template: './forgot-password',
@@ -188,7 +195,7 @@ export class MailService {
 
   async sendPendingTrainingGuide(trainingGuide: TrainingGuide, email: string) {
     await this.mailerService.sendMail({
-      to: email,
+      to: this.emailTest ?? email,
       from: `"Hada app (Guía de entrenamiento pendiente)" <${this.MAIL_USER_APP}>`,
       subject: 'Guía de entrenamiento pendiente',
       template: './pending-training-guide',
