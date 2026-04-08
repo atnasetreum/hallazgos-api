@@ -4,45 +4,24 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  Check,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
+import { ExtinguisherInspectionEvaluation } from './extinguisher-inspection-evaluation.entity';
 import { ManufacturingPlant } from 'manufacturing-plants/entities/manufacturing-plant.entity';
 import { User } from 'users/entities/user.entity';
 
-export enum ExtinguisherType {
-  PQS = 'PQS',
-  CO2 = 'CO2',
-  AFFF = 'AFFF',
-}
-
-@Entity({ name: 'emergency_teams' })
-@Check(`char_length("location") >= 5`)
-export class EmergencyTeam {
+@Entity({ name: 'extinguisher_inspections' })
+export class ExtinguisherInspection {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    length: 150,
-  })
-  location: string;
+  @ManyToOne(() => User)
+  responsible: User;
 
-  @Column({ type: 'integer' })
-  extinguisherNumber: number;
-
-  @Column({
-    type: 'enum',
-    enum: ExtinguisherType,
-  })
-  typeOfExtinguisher: ExtinguisherType;
-
-  @Column({
-    type: 'decimal',
-    precision: 10,
-    scale: 2,
-  })
-  capacity: number;
+  @Column({ type: 'date' })
+  inspectionDate: Date;
 
   @Column({ default: true })
   isActive: boolean;
@@ -61,7 +40,14 @@ export class EmergencyTeam {
 
   @ManyToOne(
     () => ManufacturingPlant,
-    (manufacturingPlant) => manufacturingPlant.emergencyTeams,
+    (manufacturingPlant) => manufacturingPlant.extinguisherInspections,
   )
   manufacturingPlant: ManufacturingPlant;
+
+  @OneToMany(
+    () => ExtinguisherInspectionEvaluation,
+    (extinguisherInspectionEvaluation) =>
+      extinguisherInspectionEvaluation.extinguisherInspection,
+  )
+  evaluations: ExtinguisherInspectionEvaluation[];
 }
